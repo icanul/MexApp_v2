@@ -5,7 +5,7 @@ import Api from'../api/tms'
 import moment from 'moment/moment';
 import { useNavigation } from '@react-navigation/native';
 import storageData from '../utils/storageData';
-import Maintenance from '../modals/maintenance';
+import Maintenance from '../modals/new_mto';
 import tms from '../api/tms';
 
 
@@ -41,7 +41,7 @@ function ReporterScreen (){
       var token=gettoken.token 
       global.token=token
       try {
-        const getreports= await tms.getreports(1167, token)
+        const getreports= await tms.getreports(555, token)
         setItems(getreports)
        console.log(getreports)
 

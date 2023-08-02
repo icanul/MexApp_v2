@@ -2,40 +2,37 @@ import React,{ useState,useEffect} from 'react';
 import { View,Text,StyleSheet,Image, Pressable,Modal, Alert} from 'react-native';
 import TMS from '../api/tms'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Maintenance from './maintenance';
+import Maintenance from './new_mto';
 
 function Confirmated (props){
-    const context=props
+  const context=props
+    const data=props.data
     const [isload,serLoad]= useState(false);
     const [isModalvisible,setModalVisible]=useState(false)
     const [items,setItems]=useState([])
     const[texto,setText]=useState('')
 
     useEffect(() => {
-
-      getData()
-      setTimeout(() => {
+  
         getData()
-      }, 1000);
    
-  })
+  },[])
 
   async function getData(){
     var token=global.token//gettoken.token 
-    console.log('orde  '+props.ot)
+    console.log('la orden es: '+ data.ot)
     try {
-      const getreports= await TMS.getreportsdetail(token,props.ot)
-      console.log(getreports)
+      const getreports= await TMS.getreportsdetail(token,data.ot)
+     // console.log(getreports)
       setItems(getreports)
 
-      var str=''
+      var str=' '
 
-      for (var i = 0; i < items.length; i++) {
+      for (var i = 0; i < getreports.length; i++) {
 
-        console.log(items[i].id)
-        var id=items[i].id
-        var causa=items[i].report_type
-        str+=id+'        '+causa+'\n\n'
+        var id=getreports[i].id
+        var causa=getreports[i].report_type
+        str+=id+'           '+causa+'\n\n'
         
        
       }
@@ -65,12 +62,12 @@ function Confirmated (props){
     }
     const Incorrecto= async ()=>{
       try {
-//      setModalVisible(true)
+      setModalVisible(true)
        const validate=await TMS.validatereports(props.data.id,false)
        console.log(validate)
 
        Alert.alert('crear reporte',
-       '¿Quires crear otro reporte para la unidad '+props.vehicle+' ?',
+       '¿Quires crear otro reporte para esta unidad ?',
        [
            {
                text:'Si',
@@ -119,13 +116,15 @@ function Confirmated (props){
                 <Maintenance setHelpmodal1={setModalVisible}/>
             </Modal>
               <View style={style.modal} >
-                <Text style={style.title}>¿Deseas validar la orde de trabajo {props.data.ot} ?</Text>
-                <Text style={style.title}>Los siguientes reportes seran validados: </Text>  
+                <Text style={style.title}>¿Deseas Evaluar la orde de trabajo {props.data.ot} ?</Text>
+                <Text style={style.title}>Los siguientes reportes seran Evaluados: </Text>  
                 <Text style={style.title}></Text>
-                <Text style={style.title}>Folio         Tipo             </Text>    
+                <Text style={style.title}>Folio      Tipo             </Text>    
     
   
-                <Text style={style.title}>{texto}</Text>    
+                <Text style={style.texto}>{texto}</Text>   
+              
+ 
                 <View style={style.horizontal}>
              
 
@@ -156,7 +155,7 @@ function Confirmated (props){
 }
 const style=StyleSheet.create({
     content:{
-       
+      margin:10,
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
@@ -179,12 +178,7 @@ const style=StyleSheet.create({
     },
 
     modal:{
-      width:340,
-      height:300,
-      alignContent:'center',
-      alignContent:'center',
-      justifyContent: 'center',
-      alignItems: "center",
+    
       backgroundColor: '#ffffffd9',
       elevation: 5
 
@@ -246,13 +240,25 @@ const style=StyleSheet.create({
     },
     title:{
       
-        textAlign: 'center',
         fontSize:16,
         fontWeight: "bold",
         color:'#000000',
+        marginLeft:10,
+        marginRight:5
 
        
     },
+    texto:{
+      
+      fontSize:16,
+      fontWeight: "normal",
+      fontSize:14,
+      color:'#000000',
+      marginLeft:10,
+      marginRight:5
+
+     
+  },
     datePicker: {
         justifyContent: 'center',
         alignItems: 'flex-start',

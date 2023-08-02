@@ -38,6 +38,17 @@ const Style=StyleSheet.create({
     
     
     },
+    modal2:{
+      width:300,
+      alignContent:'center',
+      alignContent:'center',
+      justifyContent: 'center',
+      alignItems: "center",
+      backgroundColor: '#ffffffd9',
+      elevation: 5
+    
+    
+    },
     horizontal:{
      
       flexDirection:'row',

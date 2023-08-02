@@ -3,7 +3,6 @@ import { View,Text,ScrollView,StyleSheet,Image,Pressable, Alert,Modal} from 'rea
 import { useNavigation } from '@react-navigation/native';
 import storageData from '../utils/storageData';
 import Help from '../modals/helpmodal';
-import Maintenance from '../modals/maintenance';
 
 function Detailscreen (props){
     const context=props 
@@ -91,12 +90,7 @@ function Detailscreen (props){
                 visible={helpmodal}>
                 <Help setHelpmodal={setHelpmodal}/>
             </Modal>
-            <Modal
-                animationType="slide"
-                transparent={true}
-                visible={helpmodal1}>
-                <Maintenance setHelpmodal1={setHelpmodal1}/>
-            </Modal>
+         
             <View style={style.header}>
                 <View>
                 <Image  source={require('../drawables/userlogo.png')} style={style.logo}/>
