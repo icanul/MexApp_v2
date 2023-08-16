@@ -54,9 +54,8 @@ function Maintenance(props){
 
 
     const close= () =>{
- 
         props.setHelpmodal1(false)
-    
+        props.onRefresh()
     }
     const geolocation=()=>{
         console.log("actualizando localozacion")
@@ -93,7 +92,7 @@ function Maintenance(props){
         if(selected1=='UNIDAD MOTRIZ'||selected1==1){
             formData.append('vehicle_id',global.vehicle_id)
         }else{
-            formData.append('vehicle_id',555)
+            formData.append('vehicle_id',global.id_remolque)
 
         }
         formData.append('driver_id',global.id_operador)

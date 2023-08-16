@@ -28,7 +28,7 @@ function ReporterScreen (){
     }
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
-      getGastos()
+      getData()
         wait(2000).then(() => setRefreshing(false));
       }, []);
 
@@ -41,7 +41,7 @@ function ReporterScreen (){
       var token=gettoken.token 
       global.token=token
       try {
-        const getreports= await tms.getreports(555, token)
+        const getreports= await tms.getreports(global.id_remolque, token)
         setItems(getreports)
        console.log(getreports)
 
@@ -49,35 +49,35 @@ function ReporterScreen (){
         
       }
 
-    }
-  
-    function GetSortOrder(prop) {    
-    return function(a, b) {    
-        if (a[prop] > b[prop]) {    
-            return 1;    
-        } else if (a[prop] < b[prop]) {    
-            return -1;    
-        }    
-        return 0;    
-    }    
-}  
+    } 
    
 
 
     return(
-      <View style={{width:'100%',height:'100%' }}>
+      <View  style={{width:'100%',height:'100%' }}>
+      <ScrollView 
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+        />
+      }>
             <Modal
                 animationType="slide"
                 transparent={true}
                 visible={helpmodal1}>
-                <Maintenance setHelpmodal1={setHelpmodal1}/>
+                <Maintenance 
+                onRefresh={onRefresh}
+                setHelpmodal1={setHelpmodal1}/>
             </Modal>
         <ReporterList data={items}/>
-        <View style={style.horizontal} >
+     
+    </ScrollView>
+    <View style={style.horizontal} >
             <Pressable onPress={openmodal}>
 
                 <Image style={{width:50,height:50}} source={require('../drawables/mas.png')}/>
-                <Text style={{marginBottom:20}}>Agregar</Text>
+                <Text style={{marginBottom:20,color:'#000000'}}>Agregar</Text>
 
             </Pressable>
         </View>

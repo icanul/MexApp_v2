@@ -122,6 +122,7 @@ function TravelsScreen (props){
             global.destino=currenttravel.destiny
             global.solicitud=currenttravel.id
             global.vehicle_carga=currenttravel.vehicle_carga
+            global.id_remolque=currenttravel.id_remolque
 
             if(currenttravel.travel_confirmed==false){
                 setConfimated(true)
@@ -313,8 +314,13 @@ function TravelsScreen (props){
                             <ConfirmatedImage confirmated={bandera_c1} />
                         </Pressable>
                         <View  style={[style.horizontal,{backgroundColor:solicitudcolor}]}>
-                            <Text style={Styles.titletext}>Direccion origen:  </Text>
-                            <Text style={Styles.simpletext}>{travel_current.origin_address}  {travel_current.pickup_datetime}</Text>
+                            <Text style={style.text3}>Direccion origen:  </Text>
+                            <Text style={style.text4}>{travel_current.origin_address} </Text>
+    
+                        </View>
+                        <View  style={[style.horizontal,{backgroundColor:solicitudcolor}]}>
+                            <Text style={style.text3}>Cita de carga:  </Text>
+                            <Text style={style.text4}> {travel_current.pickup_datetime} </Text>
     
                         </View>
                         <Pressable 
@@ -338,8 +344,12 @@ function TravelsScreen (props){
     
                         </Pressable>
                         <View  style={[style.horizontal,{backgroundColor:cargacolor}]}>
-                            <Text style={Styles.titletext}>Direccion Destino:  </Text>
-                            <Text style={Styles.simpletext}>{travel_current.destiny_address}  {travel_current.delivery_datetime}</Text>
+                            <Text style={style.text3}>Direccion Destino:  </Text>
+                            <Text style={style.text4}>{travel_current.destiny_address}  </Text>
+                        </View>
+                        <View  style={[style.horizontal,{backgroundColor:cargacolor}]}>
+                            <Text style={style.text3}>Cita de descarga:  </Text>
+                            <Text style={style.text4}>{travel_current.delivery_datetime}</Text>
                         </View>
                         <Text style={style.textbutton}>Llegada Destino{travel_current.destiny} </Text>
                         <Pressable
@@ -436,12 +446,13 @@ const style=StyleSheet.create({
   
     horizontal:{
        width:'100%',
+       flex:1,
         backgroundColor:'#ffffffcc',
         flexDirection:'row',
         paddingVertical: 10,
         borderRadius: 4,
         elevation: 3,
-     
+        marginBottom:5,
 
     },
     menuitems:{
@@ -462,6 +473,20 @@ const style=StyleSheet.create({
     text1:{
         width:"25%",
         fontWeight: 'bold',
+
+    },
+    text3:{
+        width:"25%",
+        fontWeight: 'bold',
+        color:'#000000',
+        margin:5
+
+
+    },
+    text4:{
+        width:"75%",
+        color:'#000000',
+        margin:5
 
     }
     

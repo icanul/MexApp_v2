@@ -10,7 +10,7 @@ class EventList extends Component{
     
 
     keyExtractor = item => item.id
-    renderEmtpy=()=><Empty text="no se encontraron infografias"></Empty>
+    renderEmtpy=()=><Empty text="NO SE ENCONTRARON INFOGRAFIAS"></Empty>
     itemseparator=()=><Separator  color='#eaeaea' ></Separator>
     renderItem=({item})=>{
         return(

@@ -4,27 +4,35 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Api from '../api/intranet'
 import { WebView } from 'react-native-webview';
 import InphograpicsList from '../containers/inphograpicsList'
+import NetInfo from "@react-native-community/netinfo";
+
 
 
 
 var arrayimage = [];
 
-function HomeScreen (){
+function HomeScreen (props){
   
   const [items, setItems] = useState([]);
   const [Inphograpics_list,setInphograpics]= useState([])
   const webViewRef = useRef();
+  const [isConnected, setIsConnected] = useState(false);
   const [refreshing, setRefreshing] = React.useState(false);
   const [sizes, setsize]=React.useState('28%')
   const [count,setcount]=React.useState(0)
+  
 
     useEffect(() => {
+      const unsubscribe = NetInfo.addEventListener(state => {
+        setIsConnected(state.isConnected);
+      });
 
           getData()
           setTimeout(() => {
             getInfographics()
           }, 5000);
        return () =>{
+        unsubscribe();
           setInphograpics([])
           setItems([])    
         } 
@@ -130,43 +138,90 @@ function HomeScreen (){
       const wait = (timeout) => {
         return new Promise(resolve => setTimeout(resolve, timeout));
       }
+
+
+      if(isConnected){
+        return(
+          <ScrollView 
+          style={{backgroundColor:'#c0c0c0'}}
+          contentContainerStyle={{ flexGrow: 1,width:'100%',height:'100%' }}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+            />
+          }>
+            <View style={{width:'100%',height:sizes, backgroundColor:'#ffffff', marginTop:5}}>
+            <InphograpicsList infografias={Inphograpics_list}/>
+    
+            </View>
+            <Pressable onPress={dimist} style={{width:'100%',height:16,alignContent:'center',alignItems:'center', backgroundColor:'#fff',marginBottom:5,}}>
+            <Image
+              style={{ width:15,
+                height:15,
+                alignItems:'center',
+                resizeMode:'contain',}}
+              source={require('../drawables/rayas.png')}/>
+    
+    
+            </Pressable>
+    
+                 <WebView 
+                 ref={(ref) => webViewRef.current = ref}
+                 nestedScrollEnabled
+             
+                 source={{ uri: 'https://sites.google.com/logsys.com.mx/mexapp-avisos/p%C3%A1gina-principal' }} 
+                 javaScriptEnabled={true}
+                 />
+          
+    
+          </ScrollView>
+     )
+
+      }else{
+        return(
+          <ScrollView 
+          style={{backgroundColor:'#c0c0c0'}}
+          contentContainerStyle={{ flexGrow: 1,width:'100%',height:'100%' }}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+            />
+          }>
+            <View style={{width:'100%',height:sizes, backgroundColor:'#ffffff', marginTop:5}}>
+            <InphograpicsList infografias={Inphograpics_list}/>
+    
+            </View>
+            <Pressable onPress={dimist} style={{width:'100%',height:16,alignContent:'center',alignItems:'center', backgroundColor:'#fff',marginBottom:5,}}>
+            <Image
+              style={{ width:15,
+                height:15,
+                alignItems:'center',
+                resizeMode:'contain',}}
+              source={require('../drawables/rayas.png')}/>
+    
+    
+            </Pressable>
+            <View style={{backgroundColor:'#ffffff'}}>
+              <Text>Estas en el modo offline; ya que este momento no cuentas con conexion a internet pero puedes seguir usan MexApp </Text>
+            <Image
+              style={{ width:'100%',
+              
+                alignItems:'center',
+                resizeMode:'contain',}}
+              source={require('../drawables/logo.png')}/>
+            </View>
+    
+          
+    
+          </ScrollView>
+     )
+
+
+      }
    
-    return(
-      <ScrollView 
-      style={{backgroundColor:'#c0c0c0'}}
-      contentContainerStyle={{ flexGrow: 1,width:'100%',height:'100%' }}
-      refreshControl={
-        <RefreshControl
-          refreshing={refreshing}
-          onRefresh={onRefresh}
-        />
-      }>
-        <View style={{width:'100%',height:sizes, backgroundColor:'#ffffff', marginTop:5}}>
-        <InphograpicsList infografias={Inphograpics_list}/>
-
-        </View>
-        <Pressable onPress={dimist} style={{width:'100%',height:16,alignContent:'center',alignItems:'center', backgroundColor:'#fff',marginBottom:5,}}>
-        <Image
-          style={{ width:15,
-            height:15,
-            alignItems:'center',
-            resizeMode:'contain',}}
-          source={require('../drawables/rayas.png')}/>
-
-
-        </Pressable>
-
-             <WebView 
-             ref={(ref) => webViewRef.current = ref}
-             nestedScrollEnabled
-         
-             source={{ uri: 'https://sites.google.com/logsys.com.mx/mexapp-avisos/p%C3%A1gina-principal' }} 
-             javaScriptEnabled={true}
-             />
-      
-
-      </ScrollView>
- )
+ 
 
 };
 export default HomeScreen;

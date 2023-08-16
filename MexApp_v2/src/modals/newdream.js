@@ -30,6 +30,7 @@ function NewDream (props){
 
           const dreams=await Api.New_Dream(init,end)
           Alert.alert(dreams)
+          context.onRefresh()
           context.setModalVisible(false)
           
       } catch (error) {

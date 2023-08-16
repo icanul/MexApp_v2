@@ -7,11 +7,13 @@ import SetDreams from '../modals/setDream'
 import DinamicImage from '../componets/dinamicImage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ScrollView } from 'react-native-gesture-handler';
+import NetInfo from "@react-native-community/netinfo";
 
 function DreamsScreen (props){
   const context=props
+  const [isConnected, setIsConnected] = useState(false);
   const [refreshing, setRefreshing] = React.useState(false);
-    const [bandera,setBandera]=useState('#ffffff')
+    const [bandera,setBandera]=useState('#eaeaea')
     const [banderadreams, setBanderadrems]=useState(0)
     const [banderabutton, setBanderabutton]=useState('#008f39')
     const [stateDream, setStateDream]=useState('iniciar sueño')
@@ -24,16 +26,26 @@ function DreamsScreen (props){
     const [savebandera,setSavebandera]=useState('')
 
     useEffect(() => {
-    
-        const interval = setInterval(() => {
+      // Suscribirse a los cambios en la conexión a Internet         setIsConnected(state.isConnected);
+
+      const unsubscribe = NetInfo.addEventListener(state => {
+        setIsConnected(state.isConnected);
+        var stade_conection=state.isConnected
+        if(stade_conection==true){
           getDreams()
-        validate()
-        }, 2000);
-        return () =>{
-          clearInterval(interval);
-        } 
-        
-    })
+
+        }else{
+          dataOffline()
+         
+        }
+      });
+  
+      // Desuscribirse cuando el componente se desmonte
+      return () => {
+        unsubscribe();
+      };
+    }, []);
+
 
     const onRefresh = React.useCallback(() => {
       setRefreshing(true);
@@ -45,33 +57,26 @@ function DreamsScreen (props){
       return new Promise(resolve => setTimeout(resolve, timeout));
     }
 
-    const validate=async()=>{
-      var semaphore=data.semaphore_24
-      var activity_id=data.activity_id
-      if(semaphore==3){
-          setBandera('#e62e1b')
 
-      }else if(semaphore==2){
-          setBandera('#fce903')
 
-      }else if(semaphore==1){
-          setBandera('#008f39')
-          
-      }
+    const validate_dream_off =async()=>{
+     
+
   var recovery = await getsaveDreamas()
   if(recovery!= null){
 
     if(recovery.end==''&&recovery.start!=''){
       setStateDream('Terminar Sueño')
       setBanderabutton('#e62e1b')
-      setBanderadrems(0)
+      setBanderadrems(1)
      
       
 
     }else{
       setStateDream('Iniciar Sueño 7')
+      Alert.alert("finalizado sin conexion")
       setBanderabutton('#008f39')
-      setBanderadrems(1)
+      setBanderadrems(2)
     
 
       if(recovery.startStatus==false&&recovery.endStatus==false){ 
@@ -82,7 +87,8 @@ function DreamsScreen (props){
           console.log(dreams)
           Alert.alert("se agrego unsueño sin conexion")
           await AsyncStorage.removeItem("@dreams_current");     
-          
+          onRefresh()
+
         } catch (error) {
           console.log(error)
         }
@@ -90,11 +96,12 @@ function DreamsScreen (props){
       }else if(recovery.startStatus=true&& recovery.endStatus==false){
         try {
           console.log("se agregara al servicio normal")
-          const stardream=await Api. setDream("",recovery.snd,"0","finalizar MexApp2",false)
+          const stardream=await Api. setDream("",recovery.snd,recovery.id,"finalizar MexApp2",false)
           console.log(stardream)
           Alert.alert("se agrego unsueño sin conexion")
           await AsyncStorage.removeItem("@dreams_current");
-          
+          onRefresh()
+
         } catch (error) {
           console.log(error)
           
@@ -102,70 +109,41 @@ function DreamsScreen (props){
       }
     }
 
-  }else{
-
-    if(activity_id==1){
-      setStateDream('Terminar Sueño')
-      setBanderabutton('#e62e1b')
-      setBanderadrems(0)
-
-  }else if(activity_id==2){
-      setStateDream('Iniciar Sueño')
-      setBanderabutton('#008f39')
-      setBanderadrems(1)
-
-
-  }else if(activity_id==3){
-      setStateDream('Iniciar Sueño')
-      setBanderabutton('#008f39')
-      setBanderadrems(1)
-
-
-  }else if(activity_id==4){
-      setStateDream('Iniciar Sueño')
-      setBanderabutton('#008f39')
-      setBanderadrems(1)
-
-  }
-   
-    
-     /*/    if(save.start==""||save.terminated==true){/*/
-
-     
-      
-
-
-      }
-
-   /*/  }else{
-      setStateDream('Terminar Sueño')
-      setBanderabutton('#e62e1b')
-      setBanderadrems(0)
-      setSavestart(save.start)
-     
-
-     }/*/
-     
-     
-      
-      
-
-
-  }
+  }}
 
 
 
     async function getDreams(){
-    
-        id_operador =global.id_operador
+       var id_operador =global.id_operador
 
         try {
 
             const dreams=await Api.get_current_dream(id_operador)
+            console.log(dreams)
+            setBanderadrems(dreams.activity_id)
             setData(dreams)
             storeData(dreams)
-            setIsoffline('')
-            validate()
+            var semaphore=dreams.semaphore_24
+      var activity_id=dreams.activity_id
+      if(activity_id==1){
+        setStateDream('Terminar Sueño')
+        setBanderabutton('#e62e1b')
+
+      }else{
+        setStateDream('Iniciar Sueño')
+        setBanderabutton('#008f39')
+
+      }
+      if(semaphore==3){
+          setBandera('#e62e1b')
+
+      }else if(semaphore==2){
+          setBandera('#fce903')
+
+      }else if(semaphore==1){
+          setBandera('#008f39')         
+      }
+          validate_dream_off()
            
             
         } catch (error) {
@@ -186,9 +164,35 @@ function DreamsScreen (props){
   
         try {
           const jsonValue = await AsyncStorage.getItem('@dreams_storage')
-          var convert=JSON.parse(jsonValue)
-          setData(convert)
-          setIsoffline('no hay conexion a internet')
+          if(jsonValue!=null){
+            var convert=JSON.parse(jsonValue)
+            setData(convert)
+            var activity_id=convert.activity_id
+            var semaphore=convert.semaphore_24
+            setBanderadrems(convert.activity_id)
+
+            if(activity_id==1){
+              setStateDream('Terminar Sueño')
+              setBanderabutton('#e62e1b')
+      
+            }else{
+              setStateDream('Iniciar Sueño')
+              setBanderabutton('#008f39')
+      
+            }
+            if(semaphore==3){
+                setBandera('#e62e1b')
+      
+            }else if(semaphore==2){
+                setBandera('#fce903')
+      
+            }else if(semaphore==1){
+                setBandera('#008f39')         
+            }
+
+          }
+          validate_dream_off()
+         
       
         } catch(e) {
             
@@ -221,7 +225,7 @@ function DreamsScreen (props){
             onRefresh={onRefresh}
           />
         }>
-            <Text>{isOffline}</Text>
+        
             <View style={style.horizontal}>
             <Modal
         animationType="slide"
@@ -254,6 +258,7 @@ function DreamsScreen (props){
           save_end={save_end}
           savebandera={savebandera}
           onRefresh={onRefresh}
+          id_dream={data.id}
           banderadreams={banderadreams}/>
 
 

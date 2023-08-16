@@ -3,8 +3,8 @@ import { Image, View,StyleSheet } from "react-native";
 
 function DinamicImage (props){
     const bandera=props.banderadreams
-    if(bandera==0){
-        return(
+    if(bandera==1){
+        return( 
         <View>
         
           <Image  source={require('../drawables/sleeping_2.gif')}  style={style.image}/>

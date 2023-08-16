@@ -148,7 +148,7 @@ const mapa=(props)=>{
     showsUserLocation={true}
     followsUserLocation={true}
     showsMyLocationButton={true}
-    
+    showsTraffic={true}  
     initialRegion={{
       latitude: milatitusd,
       longitude: milongitud,
@@ -190,7 +190,7 @@ const mapa=(props)=>{
      </Marker>
      <Polyline
      coordinates={points}
-              strokeColor="#000"
+              strokeColor="#0000ff"
               strokeColors={['#7F0000']}
               strokeWidth={3}
              />

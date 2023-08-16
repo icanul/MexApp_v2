@@ -51,6 +51,7 @@ function Confirmated (props){
     async function Confirmar(){
       try {
         const validate=await TMS.validatereports(props.data.id,true)
+        context.setModalVisible(false)
 
       } catch (error) {
         
@@ -64,6 +65,7 @@ function Confirmated (props){
       try {
       setModalVisible(true)
        const validate=await TMS.validatereports(props.data.id,false)
+       context.setModalVisible(false)
        console.log(validate)
 
        Alert.alert('crear reporte',
@@ -82,7 +84,7 @@ function Confirmated (props){
 
         
       } catch (error) {
-       // context.setModalVisible(false)
+       context.setModalVisible(false)
 
         
       }

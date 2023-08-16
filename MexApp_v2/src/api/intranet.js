@@ -146,7 +146,7 @@ class Api{
 
   async setDream(fecha_inicio,fecha_fin,id,coments,completed){
   var user =global.id_operador
-  const response = await fetch(restAPI+'/dreams/insert_current_dream', {
+  const response = await fetch(restAPI+'/dreams/insert_current_dream_mexapp', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',

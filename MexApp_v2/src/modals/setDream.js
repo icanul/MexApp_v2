@@ -20,7 +20,7 @@ function SetDreams (props){
         setDatehora(dt)
         const bandera=props.bandera
       
-        if(bandera==0){
+        if(bandera==1){
             setType('El sueño se finalizara a las:'+fecha.getHours()+':'+fecha.getMinutes())
         }else{
             setType('El sueño se Iniciara a las:'+fecha.getHours()+':'+fecha.getMinutes())
@@ -46,26 +46,28 @@ function SetDreams (props){
     
                     const dreams=await Api.New_Dream(convert.start,datehora)
                     Alert.alert(dreams)
-                    await AsyncStorage.removeItem("@dreams_current");     
+                    await AsyncStorage.removeItem("@dreams_current"); 
+                    context.onRefresh()    
                     context.setModalVisible1(false)
                     
                 } catch (error) {
-                    if(bandera==0){
+                    if(bandera==1){
               
                         Alert.alert('se sinserto sin conexion')
                         const jsonValue = await AsyncStorage.getItem('@dreams_current')
                         var convert=JSON.parse(jsonValue)
                         var init=convert.start
                         var initbandera=convert.startStatus
-                        saveStoreDream(init,initbandera,datehora,false)
+                        saveStoreDream(init,initbandera,datehora,false,context.id_dream)
                         
         
                     }else{
                         Alert.alert('Se inserto sin conexion')
-                        saveStoreDream(datehora,false,'',false)
+                        saveStoreDream(datehora,false,'',false,context.id_dream)
                         console.log("insertado con conexion 500")
                     }
                     console.log(error)
+                    context.onRefresh()   
                     context.setModalVisible1(false)
                 }
                 }
@@ -78,6 +80,7 @@ function SetDreams (props){
         }
 
     async function setDream(){
+        console.log(context.id_dream)
         serLoad(true)
         const bandera=props.banderadreams
         const fecha = new Date();
@@ -85,10 +88,10 @@ function SetDreams (props){
 
         try{
 
-            if(bandera==0){
+            if(bandera==1){
              
 
-                const stardream=await Api. setDream("",datehora,"0","finalizar MexApp2",false)
+                const stardream=await Api. setDream("",datehora,context.id_dream,"finalizar MexApp2",false)
                 var status=stardream.status
                 const jsonValue = await AsyncStorage.getItem('@dreams_current')
                 var convert=JSON.parse(jsonValue)
@@ -108,63 +111,67 @@ function SetDreams (props){
                     Alert.alert(message)
                     if(message!='1001: Debe esperar unos minutos para terminar un evento de sueño'){
                         console.log('no debe cambaira carita')
-                        saveStoreDream(init,initbandera,datehora,true)
+                        saveStoreDream(init,initbandera,datehora,true,context.id_dream)
                     }
                     
                     await AsyncStorage.removeItem("@dreams_current");
 
                 }else{
                     Alert.alert('Sueño insertado sin conexión')
-                    saveStoreDream(init,initbandera,datehora,false)
+                    saveStoreDream(init,initbandera,datehora,false,context.id_dream)
 
                 }
+                context.onRefresh()
                 context.setModalVisible1(false)
             }
             else {
-                const stardream=await Api.setDream(datehora,"","-1","Iniciando MexApp2",false)
+                const stardream=await Api.setDream(datehora,"",context.id_dream,"Iniciando MexApp2",false)
                 var status=stardream.status
                 if(status==200){
                     var message=await stardream.text()
                    
                     Alert.alert(message)
-                    saveStoreDream(datehora,true,'',false)
+                    saveStoreDream(datehora,true,'',false,context.id_dream)
                     console.log("insertado con conexion ")
 
                 }else{
-                    saveStoreDream(datehora,false,'',false)
+                    saveStoreDream(datehora,false,'',false,context.id_dream)
                     console.log("insertado con conexion 200")
 
                 }
+                context.onRefresh()
                 context.setModalVisible1(false)
             }
 
         }catch(error){
-            if(bandera==0){
+            if(bandera==1){
               
                 Alert.alert('se sinserto sin conexion')
                 const jsonValue = await AsyncStorage.getItem('@dreams_current')
                 var convert=JSON.parse(jsonValue)
                 var init=convert.start
                 var initbandera=convert.startStatus
-                saveStoreDream(init,initbandera,datehora,false)
+                saveStoreDream(init,initbandera,datehora,false,context.id_dream)
                 
 
             }else{
                 Alert.alert('Se inserto sin conexion')
-                saveStoreDream(datehora,false,'',false)
+                saveStoreDream(datehora,false,'',false,context.id_dream)
                 console.log("insertado con conexion 500")
             }
             console.log(error)
+            context.onRefresh()
             context.setModalVisible1(false)
         }
     }
 
-    const saveStoreDream = async (init,startStatus,end,endStatus) => {
+    const saveStoreDream = async (init,startStatus,end,endStatus,id) => {
         var savedream={
             start:init,
             startStatus:startStatus,
             end:end,
             endStatus:endStatus,
+            id:id
             
         }
         try {

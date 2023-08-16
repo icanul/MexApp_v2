@@ -29,7 +29,7 @@ function ReporterScreen (){
     }
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
-      getGastos()
+      getData()
         wait(2000).then(() => setRefreshing(false));
       }, []);
 
@@ -66,18 +66,31 @@ function ReporterScreen (){
 }  
    
     return(
-      <View style={{width:'100%',height:'100%' }}>
+      <View  style={{width:'100%',height:'100%' }}>
+      <ScrollView 
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+        />
+      }>
             <Modal
                 animationType="slide"
                 transparent={true}
                 visible={helpmodal1}>
-                <Maintenance setHelpmodal1={setHelpmodal1}/>
+                <Maintenance 
+                onRefresh={onRefresh}
+                setHelpmodal1={setHelpmodal1}/>
             </Modal>
         <ReporterList data={items}/>
-        <View style={style.horizontal} >
+     
+    </ScrollView>
+    <View style={style.horizontal} >
             <Pressable onPress={openmodal}>
-            <Image style={{width:50,height:50}} source={require('../drawables/mas.png')}/>
-                <Text style={{marginBottom:20}}>Agregar</Text>
+
+                <Image style={{width:50,height:50}} source={require('../drawables/mas.png')}/>
+                <Text style={{marginBottom:20,color:'#000000'}}>Agregar</Text>
+
             </Pressable>
         </View>
     </View>

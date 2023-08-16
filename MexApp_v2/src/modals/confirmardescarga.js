@@ -93,14 +93,14 @@ function Cdelivery (props){
         console.log(fecha+' '+observacion+' '+context.solicitud)
 
         try {
-           /*/ const confirmated=await Api.confirmar(context.solicitud,3,observacion)
-            //console.log( confirmated.status)
+           const confirmated=await Api.confirmar(context.solicitud,3,observacion)
+          console.log( confirmated.status)
             if( confirmated.status==200|| confirmated.status==202){
                 Alert.alert("Se confirmo correctamente, llama a tu lider de flota")
             }else{
 
 
-            }/*/
+            }
            
            // Alert.alert()
            /*/ if(id_causa!=0){

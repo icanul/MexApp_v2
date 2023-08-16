@@ -9,9 +9,10 @@
 import React,{useState,useEffect} from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import {Image,Text,StyleSheet, Modal, Pressable}from 'react-native'
+import {Image,Text,StyleSheet, Modal, Pressable, Alert}from 'react-native'
 import messaging from '@react-native-firebase/messaging';
 import {useNetInfo} from "@react-native-community/netinfo";
+import NetInfo from "@react-native-community/netinfo";
 import TravelDetails from './src/screens/travelDetails';
 import LoginScreen from './src/screens/loginscreen';
 import TopMenu from './src/componets/topmenu'
@@ -51,13 +52,15 @@ import Reporter from './src/componets/reporter';
 const Stack = createNativeStackNavigator();
 
 const App  =()=> {
-  const netInfo = useNetInfo();
+  //const netInfo = useNetInfo();
   const[is_logged, setLogget]=useState(0)
+  const [isConnected, setIsConnected] = useState(false);
+
   const[is_conected,setConected]=useState(require('./src/drawables/online.png'))
   const [modalVisible, setModalVisible] = useState(false);
 
 
-  useEffect(() => {
+  /*/useEffect(() => {
      requestUserPermission()
     global.version = '1.0.4'//DeviceInfo.getVersion();
     checkToken();
@@ -74,7 +77,36 @@ if(s){
 
 }  
    
-})
+})/*/
+
+
+useEffect(() => {
+  // Suscribirse a los cambios en la conexión a Internet         setIsConnected(state.isConnected);
+  requestUserPermission()
+  global.version = '1.0.4'//DeviceInfo.getVersion();
+  checkToken();
+  getData()
+
+  const unsubscribe = NetInfo.addEventListener(state => {
+    setIsConnected(state.isConnected);
+    var stade_conection=state.isConnected
+    if(stade_conection==true){
+      getevidence()
+      setConected(require('./src/drawables/online.png'))
+
+
+    }else{
+      Alert.alert('Estas en modo offline')
+      setConected(require('./src/drawables/offline2.png'))
+
+    }
+  });
+
+  // Desuscribirse cuando el componente se desmonte
+  return () => {
+    unsubscribe();
+  };
+}, []);
 
 async function requestUserPermission() {
   const authStatus = await messaging().requestPermission();
@@ -203,7 +235,7 @@ const checkToken = async () => {
           source={is_conected}/>
         ),
         title: '' }}>
-     {props => <TopMenu {...props} setLogget={setLogget} setConected={setConected}/>}
+     {props => <TopMenu {...props} setLogget={setLogget} isConnected={isConnected} setConected={setConected}/>}
      </Stack.Screen>
 
      <Stack.Screen 
