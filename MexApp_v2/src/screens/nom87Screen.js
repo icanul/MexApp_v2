@@ -24,23 +24,21 @@ function Nom87 (){
     useEffect(() => {
      
 
-        const interval = setInterval(() => {
+       
           
             const fecha = new Date();
             var datehora=fecha.getDate()+'-'+(fecha.getMonth()+1)+'-'+fecha.getFullYear()+' '+fecha.getHours()+':'+fecha.getMinutes()
             setday(datehora)
     
             getNom87()
-          }, 2000);
+       
           return () =>{
-            clearInterval(interval);
           } 
 
-    })
+    },[])
 
 
     const getNom87=async()=>{
-        var Events=data.listDreams;
         status=[]
         fecha_ini=[]
         fecha_fin=[]
@@ -51,14 +49,13 @@ function Nom87 (){
 
             const nom87=await Api.getNom87(global.id_operador)
             setData(nom87)
-            setItems(data.listDreams)
-            console.log(data.listDreams)
-            for(var i=0; i<Events.length;i++){
-           
+            console.log(nom87)
+            for(var i=0; i<nom87.listDreams.length;i++){
+                console.log('agregando i'+i)
                 status.push('Inactivo')
                 status.push('Activo')
-                fecha_ini.push(Events[i].fecha_inicio)
-                fecha_ini.push(Events[i].fecha_fin)
+                fecha_ini.push(nom87.listDreams[i].fecha_inicio)
+                fecha_ini.push(nom87.listDreams[i].fecha_fin)
             }
             for(var j=1;j<fecha_ini.length;j++){
                
@@ -74,6 +71,7 @@ function Nom87 (){
                     fecha_fin:fecha_fin[y],
                     
                 }
+                console.log('agregando'+y)
                 new_event.push(event)
             }
             setItems(new_event)

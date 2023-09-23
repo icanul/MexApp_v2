@@ -2,9 +2,12 @@ import React, { useState } from "react";
 import { View ,Text,TouchableOpacity,Modal} from "react-native";
 import Styles from '../styles/styles'
 import Ot_validationModal from '../modals/ot_validationModal'
+import { useNavigation } from '@react-navigation/native';
+
 
 
 function Reporter(props){
+  const navigation = useNavigation();
   const[isModalvisible, setModalVisible]=useState(false)
 
   const openmodal=()=>{
@@ -42,6 +45,10 @@ function Reporter(props){
         }
     
        }
+       const opendetail=()=>{
+        navigation.navigate('reporterdetail',{ id:props.id})
+
+       }
 
     return(
         <TouchableOpacity style={Styles.contencard} onPress={openmodal}>
@@ -73,6 +80,10 @@ function Reporter(props){
             <Text style={Styles.titletext}>orden de trabajo:</Text>
             <Text style={Styles.simpletext}>{props.ot}:</Text>
             </View>
+            <TouchableOpacity onPress={opendetail}  style={Styles.horizontal}>
+            <Text style={Styles.titletext}>Observaciones</Text>
+            <Text style={Styles.simpletext}>{props.last_observation}:</Text>
+            </TouchableOpacity>
             
             
           

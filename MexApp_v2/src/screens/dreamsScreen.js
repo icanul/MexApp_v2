@@ -8,6 +8,8 @@ import DinamicImage from '../componets/dinamicImage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ScrollView } from 'react-native-gesture-handler';
 import NetInfo from "@react-native-community/netinfo";
+import Style from '../styles/styles';
+import DreamLIist from '../containers/deams_list';
 
 function DreamsScreen (props){
   const context=props
@@ -24,6 +26,25 @@ function DreamsScreen (props){
     const [savestart, setSavestart]=useState('')
     const [save_end,setSave_end]=useState('')
     const [savebandera,setSavebandera]=useState('')
+
+    const datatest=[
+    {'id':1,'event':'SUEÑO','fhi':'12/02/2023 12:00','fhf':'12/02/2023 12:00'},
+    {'id':2,'event':'SUEÑO','fhi':'12/02/2023 12:00','fhf':'12/02/2023 12:00'},
+    {'id':3,'event':'SUEÑO','fhi':'12/02/2023 12:00','fhf':'12/02/2023 12:00'},
+    {'id':4,'event':'SUEÑO','fhi':'12/02/2023 12:00','fhf':'12/02/2023 12:00'},
+    {'id':5,'event':'SUEÑO','fhi':'12/02/2023 12:00','fhf':'12/02/2023 12:00'},
+    {'id':6,'event':'SUEÑO','fhi':'12/02/2023 12:00','fhf':'12/02/2023 12:00'},
+    {'id':7,'event':'SUEÑO','fhi':'12/02/2023 12:00','fhf':'12/02/2023 12:00'},
+    {'id':8,'event':'SUEÑO','fhi':'12/02/2023 12:00','fhf':'12/02/2023 12:00'},
+    {'id':9,'event':'SUEÑO','fhi':'12/02/2023 12:00','fhf':'12/02/2023 12:00'},
+    {'id':10,'event':'SUEÑO','fhi':'12/02/2023 12:00','fhf':'12/02/2023 12:00'},
+    {'id':11,'event':'SUEÑO','fhi':'12/02/2023 12:00','fhf':'12/02/2023 12:00'},
+    {'id':13,'event':'SUEÑO','fhi':'12/02/2023 12:00','fhf':'12/02/2023 12:00'},
+    {'id':14,'event':'SUEÑO','fhi':'12/02/2023 12:00','fhf':'12/02/2023 12:00'},
+    {'id':15,'event':'SUEÑO','fhi':'12/02/2023 12:00','fhf':'12/02/2023 12:00'},
+    {'id':16,'event':'SUEÑO','fhi':'12/02/2023 12:00','fhf':'12/02/2023 12:00'},
+    {'id':17,'event':'SUEÑO','fhi':'12/02/2023 12:00','fhf':'12/02/2023 12:00'},
+    ]
 
     useEffect(() => {
       // Suscribirse a los cambios en la conexión a Internet         setIsConnected(state.isConnected);
@@ -219,6 +240,7 @@ function DreamsScreen (props){
         
         
         <ScrollView 
+        style={{width:'100%', height:'100%'}}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -269,18 +291,24 @@ function DreamsScreen (props){
 
 
             </View>
-            <View style={{backgroundColor:bandera,marginTop:18,margin:10}}>
+            <View style={{backgroundColor:bandera,marginTop:5,margin:10}}>
                 <Text style={[{backgroundColor:bandera},style.textbutton]}>Tienes que dormir antes del {data.dream_24}</Text>
             </View>
-
-            <Pressable style={{backgroundColor:banderabutton,marginLeft:100,marginRight:100,borderRadius:60,marginTop:10,elevation: 5,}}
+            <View style={Style.hcentrar}>
+            <Pressable style={{backgroundColor:banderabutton,borderRadius:60,marginTop:10,marginRight:5, elevation: 5,}}
             onPress={() => setModalVisible1(true)}>
                 <Text style={{color:'#ffffff',textAlign: 'center',margin:10, letterSpacing: 0.25,}}>{stateDream}</Text>
             </Pressable>
-            <Pressable style={{backgroundColor:'blue',marginLeft:100,marginRight:100,borderRadius:60,marginTop:10,elevation: 5}}
+            <Pressable style={{backgroundColor:'blue',borderRadius:60,marginTop:10,elevation: 5}}
               onPress={() => setModalVisible(true)}>
                 <Text style={{color:'#ffffff',textAlign: 'center',margin:10}}a>Agregar sueño</Text>
             </Pressable>
+
+            </View>
+            <Text style={{fontWeight:'bold', marginLeft:10, marginTop:10 }}>Ultimos sueños</Text>
+           
+            <DreamLIist style={{marginTop:20}} items={datatest}/>
+
            
         </ScrollView>
 

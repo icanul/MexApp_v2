@@ -22,10 +22,10 @@ function DinamicImage (props){
 
 const style= StyleSheet.create({
     image:{
-        width:150,
-        height:150,
+        width:140,
+        height:140,
         borderRadius: 360,
-        marginTop:10,
+     
     },
 
 

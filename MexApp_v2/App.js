@@ -43,6 +43,7 @@ import LogScreen from './src/screens/logScreen';
 import Voicemodal from './src/modals/voicemodal'
 import ReporterScreen from './src/componets/mto_tabs';
 import Reporter from './src/componets/reporter';
+import MtoDetail from './src/screens/mto_report';
 
 
 
@@ -549,7 +550,20 @@ const checkToken = async () => {
           title:"Reportes de mantenimiento"}}
       name='reporter'
       component={ReporterScreen} />
-
+         <Stack.Screen 
+        options={{
+          unmountOnBlur: true,
+          headerShown: true,
+          headerRight :() => (
+            <Image
+            style={style.logo}
+            source={require('./src/drawables/logo.png')}/>
+          ),
+          gesturesEnabled: false,  
+          title:"Reportes de mantenimiento"}}
+      name='reporterdetail'
+      component={MtoDetail} />
+      
         </>
     )}
 

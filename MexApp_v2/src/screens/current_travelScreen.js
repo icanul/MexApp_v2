@@ -271,6 +271,7 @@ function TravelsScreen (props){
                 lno={travel_current.lon_origin}
                 ltd={travel_current.lat_destiny}
                 lnd={travel_current.lon_destiny}
+                waypoints_destiny={travel_current.waypoints_destiny}
                 origen={origen}
                 destino={travel_current.destiny}
                 solicitud={travel_current.id}

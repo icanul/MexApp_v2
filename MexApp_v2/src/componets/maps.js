@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState ,useRef } from 'react';
 import MapView ,{Polyline,Marker}from 'react-native-maps';
 import { View,Text ,Image,Alert,Pressable,} from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
 import { PermissionsAndroid, } from 'react-native';
+import Operations from '../utils/operations'
 import Api from '../api/intranet'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Linking } from 'react-native';
+
 
 
 
@@ -20,6 +23,10 @@ function Maps (props){
   const [fullScreen,onchangerScreen]= useState('45%')
   const [top,onchangertop]= useState('85%')
   const [count,setcount]=useState(1)
+  const mapRef = useRef(null);
+  const [mapRotation, setMapRotation] = useState(0);
+
+
 
 
   useEffect(() => {
@@ -39,6 +46,20 @@ function Maps (props){
     return () => clearInterval(interval);
   }, []);
 
+  const moveToNewRegion = (latitud,longitud) => {
+    const newRegion = {
+      latitude: latitud,
+      longitude: longitud,
+      latitudeDelta: 0.0002,
+      longitudeDelta: 0.0021,
+      bearing: 180, 
+
+    };
+
+    if (mapRef.current) {    
+      mapRef.current.animateToRegion(newRegion, 1000); // Animación en 1000ms
+    }
+  };
 async function getruta(){
  // console.log('buscando'+props.solicitud)
  var arraypoint=[]
@@ -93,8 +114,92 @@ const fullScreenchanger=()=> {
   }
 }
 const getBestPoint=()=>{
-  console.log(points[17])
-  console.log(milatitusd)
+  var latitudeO=parseFloat(props.lto)
+  var longitudeO=parseFloat(props.lno)
+  var latitudeD=parseFloat(props.ltd)
+  var longitudeD=parseFloat(props.lnd)
+  var waypointlistt=[]
+  const arraydistance=[]
+  const arraydistance2
+  =[]
+
+  var miubication={
+    latitude:milatitusd,
+    longitude:milongitud
+  }
+  for (let i = 0; i <= points.length-1; i++) {
+    let distance=Operations.calculateDistance(miubication,points[i])
+    arraydistance.push(distance)
+  }
+
+  const minValue = Math.min(...arraydistance);
+  const posicion = arraydistance.indexOf(minValue);
+  var bestpoin=points[posicion]
+  console.log(bestpoin)
+  var waypoints_destiny=props.waypoints_destiny.replace("waypoints=","")
+  var arraywaypoint=waypoints_destiny.split("%7C");
+  console.log(arraywaypoint)
+  for(let i=0;i<=arraywaypoint.length;i++)
+  {
+    try {
+      let partir=arraywaypoint[i].split(',')
+      var coordinate={"latitude": partir[0], "longitude": partir[1]}
+      waypointlistt.push(coordinate)
+      
+    } catch (error) {
+      
+    }
+
+  }
+  for (let i = 0; i <= waypointlistt.length; i++) {
+    try {
+      let distance=Operations.calculateDistance(miubication,waypointlistt[i])
+      arraydistance2.push(distance)
+      
+    } catch (error) {
+      
+    }
+   
+  }
+  console.log(arraydistance2)
+  const minValue2 = Math.min(...arraydistance2);
+  const posicion2 = arraydistance2.indexOf(minValue2);
+  console.log(posicion2)
+  console.log(waypointlistt[posicion2])
+
+
+
+
+  const concate=[]
+  concate.push(milatitusd+','+milongitud)
+  for (let i = posicion2; i <= waypointlistt.length-1; i++) {
+    //            nueva.add(waypoints.getLatitud()+","+waypoints.getLongitud()+"/");
+    concate.push(waypointlistt[i].latitude.toString()+','+waypointlistt[i].longitude.toString())
+ 
+  }
+  concate.push(latitudeD+','+longitudeD)
+ 
+  var r1=concate.join("/")
+  console.log(r1)
+ 
+  var origendestino='?api=1&origin='+milatitusd +','+milongitud+'&destination='+latitudeD+','+longitudeD+'/'
+  var url='https://www.google.com/maps/dir/'+r1
+  console.log(url)
+
+  Linking.openURL(url)
+  .then((result) => {
+    if (result) {
+      console.log('Se abrió Google Maps correctamente.');
+    } else {
+      console.error('No se pudo abrir Google Maps.');
+    }
+  })
+  .catch((error) => {
+    console.error('Error al abrir Google Maps: ', error);
+  });
+
+  
+
 
 }
 
@@ -129,21 +234,20 @@ const mapa=(props)=>{
   var longitudeO=parseFloat(props.lno)
   var latitudeD=parseFloat(props.ltd)
   var longitudeD=parseFloat(props.lnd)
-  var cnt_lat=(latitudeO+latitudeD )/2
-  var cnt_long=(longitudeO+longitudeD )/2
+
   
   //console.log("points")
 
 
 
   return(
-    <View     style={{with:'100%',height:fullScreen}}>
+    <View     style={{with:'100%',height:fullScreen, }}>
 
     
     
     <MapView
         style={{with:'100%',height:"100%"}}
-
+        ref={mapRef}
     userLocationCalloutEnabled={true}
     showsUserLocation={true}
     followsUserLocation={true}
@@ -154,7 +258,11 @@ const mapa=(props)=>{
       longitude: milongitud,
       latitudeDelta: 1,
       longitudeDelta:1,
-    }}>
+      
+    }}
+    rotateEnabled={true} // Permite rotar el mapa con gestos
+ 
+    >
 
      <Marker
       
@@ -188,6 +296,18 @@ const mapa=(props)=>{
       description={props.destino} >
          <Image source={require('../drawables/marker_green.png')} style={{height: 30, width:40,resizeMode:'contain' }} />
      </Marker>
+
+   { /* <Marker
+      
+      coordinate={{
+        latitude: 19.708380000000002,
+        longitude: -99.20257000000001,
+      }}
+      title={"no mames cabron"}
+      description={props.destino} >
+         <Image source={require('../drawables/camera.png')} style={{height: 30, width:40,resizeMode:'contain' }} />
+     </Marker>*/ }
+   
      <Polyline
      coordinates={points}
               strokeColor="#0000ff"
@@ -257,12 +377,13 @@ const geolocation=()=>{
           var Region ={
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
-            latitudeDelta: 2,
-            longitudeDelta: 2,
+            latitudeDelta: 0.1,
+            longitudeDelta: 0.1,
           }
           setRegion(Region)
           setMilatitud(position.coords.latitude)
           setMilongitud(position.coords.longitude)
+       // moveToNewRegion(position.coords.latitude,position.coords.longitude)
 
         },
         (error) => {

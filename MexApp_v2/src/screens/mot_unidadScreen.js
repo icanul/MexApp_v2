@@ -44,7 +44,7 @@ function ReporterScreen (){
       try {
         const getreports= await tms.getreports(global.vehicle_id,token)
         setItems(getreports)
-       console.log(getreports[0])
+     //  console.log(getreports)
 
       } catch (error) {
         
@@ -54,16 +54,7 @@ function ReporterScreen (){
     }
   
 
-    function GetSortOrder(prop) {    
-    return function(a, b) {    
-        if (a[prop] > b[prop]) {    
-            return 1;    
-        } else if (a[prop] < b[prop]) {    
-            return -1;    
-        }    
-        return 0;    
-    }    
-}  
+  
    
     return(
       <View  style={{width:'100%',height:'100%' }}>

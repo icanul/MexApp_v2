@@ -223,12 +223,12 @@ class Api{
       }
       async setreportM(body){
 
-        console.log('el token:'+global.token)
-        const query= await fetch(tmsapi+'api/reports',{
+        console.log('enviando foto:::')
+        try {
+           const query= await fetch(tmsapi+'api/reports',{
           method: 'POST',
           headers: {   
-            'Content-Type': 'application/json',
-          'Accept': 'application/json',
+            
           'Content-Type': 'multipart/form-data',
           Authorization : ' Bearer '+global.token,  
 
@@ -236,9 +236,15 @@ class Api{
 
            body: body,
         });
-        console.log(query)      
-        return query;
-      }
+                return query;
+
+
+        } catch (error) {
+          console.log(error)
+          return error
+          
+        }
+             }
    
 
    
@@ -252,6 +258,21 @@ class Api{
         
         };
         var url = tmsapi+'api/reports?vehicle='+vehicle_id
+        const query = await fetch(url,options);
+        const data = await query.json();
+       // console.log(query)
+        return data;   
+      }
+      async getdetailreport(id,token , options = {}){
+        options.headers = 
+        {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+          Authorization : ' Bearer '+token,
+          'sort':'-time'
+        
+        };
+        var url = tmsapi+'api/reports/'+id
         const query = await fetch(url,options);
         const data = await query.json();
        // console.log(query)

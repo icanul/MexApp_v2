@@ -33,6 +33,15 @@ const Style=StyleSheet.create({
         marginRight:5
 
     },
+    hcentrar:{
+        flexDirection:'row',
+        alignItems:'center', 
+        alignContent:'center',
+        justifyContent:'center',
+        marginLeft:5,
+        marginRight:5
+
+    },
     contencard:{
         flex: 1,
         margin:5,
@@ -41,6 +50,14 @@ const Style=StyleSheet.create({
         backgroundColor:'#ffffffcc',
         justifyContent: 'center',
 
+    },
+    contencard1:{
+        flex: 1,
+        margin:5,
+        borderRadius: 4,
+        elevation: 3,
+        backgroundColor:'#ffffffcc',
+        justifyContent:'space-between'
     }
     
    

@@ -16,7 +16,7 @@ var arrayurls=[]
 function Maintenance(props){
     const [milatitusd,setMilatitud]=useState(0.0)
     const [milongitud,setMilongitud]=useState(0.0)
-    const [names,setNames]=useState([])
+    const [names,setNames]=useState()
     const [urls,setUrl]=useState([])
     const [count, setCount] = useState(0);
     const [text, setText] = useState('');
@@ -103,10 +103,11 @@ function Maintenance(props){
         formData.append('time',time2)
 
 
-        if(urls.length>0){
-            console.log(urls[0])
-            for (var i = 0; i < urls.length; i++) {
-                var imagen=urls[0]
+        if(arrayurls.length>0){
+            console.log(arrayurls)
+            
+            for (var i = 0; i < arrayurls.length; i++) {
+                var imagen=arrayurls[i]
                 const data = {uri:imagen, type:"image/jpeg", name:'profile.jpg', filename:'afiletest'};
                 formData.append('', data)
                
@@ -114,7 +115,6 @@ function Maintenance(props){
 
         }
         console.log(formData)
-        console.log(text)
         try {
           // const setNotifications= await TMS.setreportM(formData,token)
            //var res_status=setNotifications.status 
@@ -167,6 +167,7 @@ function Maintenance(props){
 
 
     const takephoto=()=>{
+        setUrl(arrayurls)
         const options={
             title: 'tomar foto',
             storageOption:{
@@ -192,8 +193,9 @@ function Maintenance(props){
                 else if(response.assets){
                     var name=response.assets[0].fileName
                     var url=response.assets[0].uri
-                    setUrl([urls,url])
-                    setNames([names,name]); 
+                    arrayurls.push(url)
+                   // setUrl([urls,url])
+                  setNames([names,'\n'+name]); 
 
                     // Imprimir el resultado
                 
@@ -229,7 +231,7 @@ function Maintenance(props){
                 style={{color:'#000000',width:260}}
                 setSelected={setSelected1}
                 data={types}
-                defaultOption={{key:'1', value:'UNIDAD MOTRIZ'}}
+               // defaultOption={{key:'1', value:'UNIDAD MOTRIZ'}}
                 dropdownTextStyles	={{color:'#000000'} }
                 inputStyles={{color:'#000000'} }
                 save="value"/>
