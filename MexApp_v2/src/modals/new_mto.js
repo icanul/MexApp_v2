@@ -1,5 +1,5 @@
 import React ,{ useState,useEffect }from "react";
-import { View,Text,Pressable,TextInput ,Image, Alert,PermissionsAndroid} from "react-native";
+import { View,Text,Pressable,TextInput ,Image, Alert,PermissionsAndroid,TouchableOpacity} from "react-native";
 import { SelectList } from 'react-native-dropdown-select-list'
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import storageData from '../utils/storageData';
@@ -25,7 +25,6 @@ function Maintenance(props){
 
     useEffect(() => {
         geolocation()
-        console.log(global.token)
          
       }, [])
     const typedefault=[]
@@ -116,10 +115,11 @@ function Maintenance(props){
         }
         console.log(formData)
         try {
-          // const setNotifications= await TMS.setreportM(formData,token)
-           //var res_status=setNotifications.status 
-           // close()
-          //  console.log(res_status)
+             const setNotifications= await TMS.setreportM(formData,token)
+             var res_status=setNotifications.status 
+             close()
+             console.log(res_status)
+             console.log(setNotifications)
             
         } catch (error) {
             Alert.alert(error)
@@ -167,7 +167,7 @@ function Maintenance(props){
 
 
     const takephoto=()=>{
-        setUrl(arrayurls)
+
         const options={
             title: 'tomar foto',
             storageOption:{
@@ -271,16 +271,16 @@ function Maintenance(props){
             <Text style={ModalStyle.texto}>{names} </Text>
            
             <View style={ModalStyle.horizontal}>
-            <Pressable 
+            <TouchableOpacity 
             onPress={close}
             style={ModalStyle.button1}>
                 <Text style={ModalStyle.textbutton}>Cerrar</Text>
-            </Pressable>
-            <Pressable 
+            </TouchableOpacity>
+            <TouchableOpacity 
             onPress={send_Report}
             style={ModalStyle.button}>
                 <Text style={ModalStyle.textbutton}>Enviar</Text>
-            </Pressable>
+            </TouchableOpacity>
             </View>
         </View>
     </View>
