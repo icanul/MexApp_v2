@@ -59,7 +59,7 @@ function HomeScreen (props){
         console.log('executev infographics')
           const infographics= await Api.getInfographics(global.solicitud)
         
-            console.log(infographics)
+           // console.log(infographics)
             var imagenes=[]
           
            var count=0;

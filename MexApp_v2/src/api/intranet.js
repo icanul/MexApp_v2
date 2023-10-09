@@ -2,6 +2,8 @@ import RNFS from 'react-native-fs';
 import moment from 'moment/moment';
 
 const restAPI='https://intranet.mexamerik.com'
+const restAPI_dev='192.168.0.8:8080'
+
 const rutaArchivo = RNFS.DocumentDirectoryPath + '/log.txt';
 const hora = moment().format('YYYY-MM-DDTHH:MM:SS')
 
@@ -120,8 +122,12 @@ class Api{
       'Content-Type': 'application/json',
       Accept: 'application/json', 
     };
+    
     var url=restAPI+"/dreams/get_current_dream/"+id_operador
-    const query = await fetch(url);
+    var url_test='http://192.168.0.8:8000/dreams/get_current_dream/'+id_operador
+    console.log(url_test)
+
+    const query = await fetch(url_test);
       
     const data = await query.json();
     

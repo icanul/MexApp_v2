@@ -11,7 +11,6 @@ function Help(props){
     const salir=()=>{
         props.setHelpmodal(false)
 
-
     }
  
     const openlog=()=>{
@@ -26,7 +25,7 @@ function Help(props){
             <View style={style.modal} >
                <Text  style={style.title}>Acerca de MexApp</Text>
               
-                <Text>MexApp 1.0.3</Text>
+                <Text>MexApp 1.0.42</Text>
          
                 <View style={style.horizontal}>
               

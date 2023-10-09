@@ -42,6 +42,7 @@ function ReporterScreen (){
       var token=gettoken.token 
       global.token=token
       try {
+        console.log('unidad tiene el id:'+global.vehicle_id)
         const getreports= await tms.getreports(global.vehicle_id,token)
         setItems(getreports)
      //  console.log(getreports)

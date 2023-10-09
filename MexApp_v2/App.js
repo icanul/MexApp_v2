@@ -44,6 +44,7 @@ import Voicemodal from './src/modals/voicemodal'
 import ReporterScreen from './src/componets/mto_tabs';
 import Reporter from './src/componets/reporter';
 import MtoDetail from './src/screens/mto_report';
+import Pandape from './src/screens/pandape';
 
 
 
@@ -563,6 +564,19 @@ const checkToken = async () => {
           title:"Reportes de mantenimiento"}}
       name='reporterdetail'
       component={MtoDetail} />
+           <Stack.Screen 
+        options={{
+          unmountOnBlur: true,
+          headerShown: false,
+          headerRight :() => (
+            <Image
+            style={style.logo}
+            source={require('./src/drawables/logo.png')}/>
+          ),
+          gesturesEnabled: false,  
+          title:"pandape"}}
+      name='pandape'
+      component={Pandape} />
       
         </>
     )}

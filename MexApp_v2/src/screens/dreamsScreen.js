@@ -26,6 +26,7 @@ function DreamsScreen (props){
     const [savestart, setSavestart]=useState('')
     const [save_end,setSave_end]=useState('')
     const [savebandera,setSavebandera]=useState('')
+    const [listdreams,setdreams]=useState([]);
 
     const datatest=[
     {'id':1,'event':'SUEÑO','fhi':'12/02/2023 12:00','fhf':'12/02/2023 12:00'},
@@ -136,10 +137,15 @@ function DreamsScreen (props){
 
     async function getDreams(){
        var id_operador =global.id_operador
+       console.log(' servicio'+id_operador)
+
 
         try {
 
             const dreams=await Api.get_current_dream(id_operador)
+            setdreams(dreams.listevents)
+            console.log(' servicio')
+
             console.log(dreams)
             setBanderadrems(dreams.activity_id)
             setData(dreams)
@@ -305,9 +311,10 @@ function DreamsScreen (props){
             </Pressable>
 
             </View>
-            <Text style={{fontWeight:'bold', marginLeft:10, marginTop:10 }}>Ultimos sueños</Text>
+           <Text style={{fontWeight:'bold', marginLeft:10, marginTop:20,marginBottom:15,justifyContent:'center',textAlign:'center' }}>Ultimos sueños</Text>
+           <DreamLIist style={{marginTop:20}} items={listdreams}/>
+
            
-            <DreamLIist style={{marginTop:20}} items={datatest}/>
 
            
         </ScrollView>

@@ -82,6 +82,11 @@ function Detailscreen (props){
         navigation.navigate('reporter')
         
     }
+    const pandape=()=>{
+        // setHelpmodal1(true)
+          navigation.navigate('pandape')
+          
+      }
     return(
         <ScrollView style={{backgroundColor:'#eaeaea'}}>
             <Modal
@@ -163,15 +168,24 @@ function Detailscreen (props){
                 </Pressable>
 
                 <Pressable style={style.menuitems}
-                 onPress={help}>
-                    <Image source={require('../drawables/help.png')} style={style.menuicon} />
-                    <Text style={style.menutext}>ACERCA DE</Text>
-                </Pressable>
-                <Pressable style={style.menuitems}
                  onPress={maintenance}>
                     <Image source={require('../drawables/mante.png')} style={style.menuicon} />
                     <Text style={style.menutext}>REPORTES MTO</Text>
                 </Pressable>
+
+                <Pressable style={style.menuitems}
+                 onPress={pandape}>
+                    <Image source={require('../drawables/logo.png')} style={style.menuicon} />
+                    <Text style={style.menutext}>PANDAPE</Text>
+                </Pressable>
+
+                <Pressable style={style.menuitems}
+                 onPress={help}>
+                    <Image source={require('../drawables/help.png')} style={style.menuicon} />
+                    <Text style={style.menutext}>ACERCA DE MEXAPP</Text>
+                </Pressable>
+               
+            
               
                 <Pressable style={style.menuitems}
                  onPress={loginpress}>

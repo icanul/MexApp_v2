@@ -36,6 +36,31 @@ class Operations{
         return distance
 
     }
+    convert_utc_local(fechaOriginal){
+      const fechaFormateada = moment(fechaOriginal).format('YYYY-MM-DD HH:mm');
+      console.log(`Fecha formateada: ${fechaFormateada}`);
+      return fechaFormateada
+    }
+
+    dif_hour(fechaInicio,fechaFin){
+
+
+// Parsea las fechas utilizando moment
+const inicio = moment(fechaInicio, 'YYYY-MM-DD HH:mm:ss');
+const fin = moment(fechaFin, 'YYYY-MM-DD HH:mm:ss');
+
+// Calcula la diferencia en horas y minutos
+const diferencia = fin.diff(inicio);
+
+// Convierte la diferencia en horas y minutos
+const duracion = moment.duration(diferencia);
+
+// Obtiene las horas y minutos
+const horas = duracion.hours();
+const minutos = duracion.minutes();
+return horas+' hrs con '+minutos+' min'
+
+    }
    
   
 }
