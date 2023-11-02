@@ -1,6 +1,6 @@
 {
   "name": "mexapp_v2",
-  "version": "0.0.1",
+  "version": "1.0.50",
   "private": true,
   "scripts": {
     "android": "react-native run-android",

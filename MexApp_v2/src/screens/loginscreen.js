@@ -11,7 +11,7 @@ function LoginScreen (props){
     async function login(){
       serLoad(true)   
         try {
-            const user=await Api.login( number,global.version)
+            const user=await Api.login( number,global.version, global.fcmToken)
             console.log(user)
             user.driver_image=''
             console.log(user)

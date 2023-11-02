@@ -1,8 +1,10 @@
 import React, { useEffect,useState } from 'react'
 import { Alert } from 'react-native';
 import { View,Text ,StyleSheet,Image,Linking,ScrollView,RefreshControl} from 'react-native';
+import NetInfo from "@react-native-community/netinfo";
 import Api from'../api/intranet'
 import Maps from '../componets/maps';
+import messaging from '@react-native-firebase/messaging';
 import ConfirmatedImage from '../componets/conformadImage';
 import CPicked from '../modals/confirmarcarga';
 import Cdelivery from '../modals/confirmardescarga'
@@ -30,18 +32,33 @@ function TravelsScreen (props){
     const [bandera_c1,setBandera_c1]=useState(false)
     const [bandera_c2,setBandera_c2]=useState(false)
     const [bandera_c3,setBandera_c3]=useState(false)
-
+    const [isConnected, setIsConnected] = useState(false);
 
 
     useEffect(() => {
+        
+        const unsubscribe = NetInfo.addEventListener(state => {
+            var stade_conection=state.isConnected  
+            var isInternetReachable=state.isInternetReachable
+            var strength=state.details.strength
+            if(stade_conection==true&&isInternetReachable==true){
+                console.log('buscando viaje con conexion a internet')
+              setIsConnected(true);
+              gettravel()
+            }
+            else{
+                console.log('buscando viaje sin estable conexion a internet')
+                dataOffline()
+                setIsConnected(false);
+            }
+        })
      
-            gettravel()
-     
-          return () =>{
-       
+          return () =>{    
+            unsubscribe();
             set_travel_current([])
           } 
     }, [])
+
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
         gettravel()
@@ -61,10 +78,8 @@ function TravelsScreen (props){
             var convert=JSON.parse(convert)
             setBandera_c1(true)
             setConfimated(false)
-
             setSolicitudcolor('#ffffffcc')
-
-
+            Alert.alert('Confirmacion de solicitud','Se ha confirmado tu solicitud guardada')
 
         }
         const jsonValue2 = await AsyncStorage.getItem('@confirmarcarga')
@@ -74,8 +89,7 @@ function TravelsScreen (props){
             Confirmar(convert)
             bandera_c2(true)
             setCargacolor('#ffffffcc')
-
-
+            Alert.alert('Confirmación de carga','Se ha confirmado tu carga guardada')
 
         }
         const jsonValue3 = await AsyncStorage.getItem('@confirmardescarga')
@@ -85,10 +99,13 @@ function TravelsScreen (props){
             Confirmar(convert)
             setBandera_c3(true)
             setDescargacolor('#9b9b9bcc') 
-
+            Alert.alert('Confirmación de descarga','Se ha confirmado tu descarga guardada')
         }
-
-
+        const tmsreport = await AsyncStorage.getItem('tmsnotification')
+        if(tmsreport != null){
+            console.log(tmsreport)
+           // Alert.alert('Confirmación de descarga','Se ha confirmado tu descarga guardada')
+        }
     }
     const getCP=()=>{
         console.log('carta porte'+travel_current.cfdi)
@@ -111,18 +128,27 @@ function TravelsScreen (props){
         console.log('buscando viaje actual')
         id_operador =global.id_operador
         try {
+            console.log(id_operador)
             const travel=await Api.getCurrentravel(id_operador)
             var currenttravel=travel[0]
-            //console.log(currenttravel)
             storeData(currenttravel)
             setIsoffline('')
-
             global.vehicle_id=currenttravel.vehicle_id
             global.origen=currenttravel.origin
             global.destino=currenttravel.destiny
             global.solicitud=currenttravel.id
             global.vehicle_carga=currenttravel.vehicle_carga
             global.id_remolque=currenttravel.id_remolque
+            try {
+                console.log('surcribiendo a topic::::::::::')
+                messaging()
+                .subscribeToTopic(currenttravel.id+"")
+                .then(() => console.log('Subscribed to topic!'+currenttravel.id));  
+                
+            } catch (error) {
+                console.log('Error::::::::::'+error)
+                
+            }
 
             if(currenttravel.travel_confirmed==false){
                 setConfimated(true)
@@ -220,29 +246,71 @@ function TravelsScreen (props){
          //console.log(e)
         }
       }
+      const openconfirmation=()=>{
+        var validate=travel_current.travel_confirmed
+        if(validate){
+            Alert.alert('Ya ha sido confirmada')
+
+        }else{
+            
+            setConfimated(true)
+
+        }
+
+    }
+    const openconfirmation2=()=>{
+        var validate=travel_current.pickup_confirmed
+        if(validate){
+            Alert.alert('Ya ha sido confirmada')
+
+        }else{
+            
+            setMpicked(true)
+
+        }
+
+    }
+    const openconfirmation3=()=>{
+        var validate=travel_current.delivery_confirmed
+        if(validate){
+            Alert.alert('Ya ha sido confirmada')
+
+        }else{
+            
+            setMdeliveri(true)
+
+        }
+
+    }
 
     if(isload==1){
         return(
+            <ScrollView style={{margin:4}} refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={onRefresh}
+                />
+              }>
             <View style={{flex:1,justifyContent: "center",alignItems: "center"}}> 
                 <Text style={Styles.simpletext}>{message}</Text>
 
             </View>
+            </ScrollView>
         )
 
     }
     else{
         return(
-            <View style={{flex:1,}} >
-          
+            <View style={{flex:1,}} >         
                 <Modal
                 animationType="slide"
                 transparent={true}
                 visible={modalVpicked}
                 onRequestClose={() => {
                 Alert.alert("Modal has been closed.");
-                setModalVisible(!modalVpicked);
+                setConfimated(!modalVpicked);
                }}>
-                <CPicked solicitud= {travel_current.id} modalVisible={modalVpicked}  setModalVisible={setMpicked}  onRefresh={onRefresh}/>
+                <CPicked solicitud= {travel_current.id} modalVisible={modalVpicked}  setModalVisible={setMpicked}  onRefresh={onRefresh} isConnected={isConnected}/>
                 </Modal>
                 <Modal
                 animationType="slide"
@@ -250,9 +318,9 @@ function TravelsScreen (props){
                 visible={modalconfirmated}
                 onRequestClose={() => {
                 Alert.alert("Modal has been closed.");
-                setModalVisible(!modalconfirmated);
+                setMpicked(!modalconfirmated);
                }}>
-                <Confirmated solicitud= {travel_current.id} modalVisible={modalconfirmated} setModalVisible={setConfimated} onRefresh={onRefresh}/>
+                <Confirmated solicitud= {travel_current.id} modalVisible={modalconfirmated} setModalVisible={setConfimated} onRefresh={onRefresh} isConnected={isConnected}/>
                 </Modal>
 
                 <Modal
@@ -261,9 +329,9 @@ function TravelsScreen (props){
                 visible={modaldelivery}
                 onRequestClose={() => {
                 Alert.alert("Modal has been closed.");
-                setModalVisible(!modaldelivery);
+                setMdeliveri(!modaldelivery);
                }}>
-                <Cdelivery solicitud= {travel_current.id} modalVisible={modaldelivery} setModalVisible={setMdeliveri}  onRefresh={onRefresh}/>
+                <Cdelivery solicitud= {travel_current.id} modalVisible={modaldelivery} setModalVisible={setMdeliveri}  onRefresh={onRefresh} isConnected={isConnected}/>
                 </Modal> 
             
                 < Maps  
@@ -278,11 +346,11 @@ function TravelsScreen (props){
                 points={travel_current.waypoints_origin}/>
                
     
-                <ScrollView style={{margin:4}} refreshControl={
+                <ScrollView style={{margin:4}} 
+                refreshControl={
                 <RefreshControl
                   refreshing={refreshing}
-                  onRefresh={onRefresh}
-                />
+                  onRefresh={onRefresh}/>
               }>
              
                         <Text style={style.textbutton}> {travel_current.agreement}</Text>
@@ -302,27 +370,21 @@ function TravelsScreen (props){
                         </View>
                         <View  style={[style.horizontal,{backgroundColor:solicitudcolor}]}>
                            <Text  style={Styles.titletext}>Cliente: </Text>
-                           <Text  style={Styles.simpletext}>{travel_current.client} </Text>
-                           <Text  style={Styles.titletext}>Solicitud: </Text>
-                           <Text  style={Styles.simpletext}>{travel_current.id}  </Text>   
-                        </View>
-    
-    
+                           <Text  style={Styles.simpletext}>{travel_current.client} </Text>                     
+                        </View>  
                         <Text style={style.textbutton}> Asignacion de solicitud</Text>
                         <Pressable 
-                            onPress={() => setConfimated(true)} style={[style.button,{backgroundColor:solicitudcolor}]}>
+                            onPress={openconfirmation} style={[style.button,{backgroundColor:solicitudcolor}]}>
                             <Text style={Styles.simpletext}>Confirmacion de solicitud</Text>
                             <ConfirmatedImage confirmated={bandera_c1} />
                         </Pressable>
                         <View  style={[style.horizontal,{backgroundColor:solicitudcolor}]}>
                             <Text style={style.text3}>Direccion origen:  </Text>
                             <Text style={style.text4}>{travel_current.origin_address} </Text>
-    
                         </View>
                         <View  style={[style.horizontal,{backgroundColor:solicitudcolor}]}>
                             <Text style={style.text3}>Cita de carga:  </Text>
-                            <Text style={style.text4}> {travel_current.pickup_datetime} </Text>
-    
+                            <Text style={style.text4}> {travel_current.pickup_datetime} </Text> 
                         </View>
                         <Pressable 
                             onPress={inst} style={[style.button,{backgroundColor:solicitudcolor}]}>
@@ -337,7 +399,7 @@ function TravelsScreen (props){
                             <Image source={require('../drawables/pdfattt.png')} style={style.logotel} />
                         </Pressable>
                         <Pressable 
-                        onPress={() => setMpicked(true)}
+                        onPress={openconfirmation2}
                         style={[style.button,{backgroundColor:cargacolor}]}>
                             <Text style={Styles.simpletext}>confirmar carga  </Text>
                             <ConfirmatedImage confirmated={bandera_c2} />
@@ -354,7 +416,7 @@ function TravelsScreen (props){
                         </View>
                         <Text style={style.textbutton}>Llegada Destino{travel_current.destiny} </Text>
                         <Pressable
-                        onPress={() => setMdeliveri(true)}  
+                        onPress={openconfirmation3}  
                         style={[style.button,{backgroundColor:cargacolor}]}>
                             <Text style={Styles.simpletext}>confirmar Descarga  </Text>
                             <ConfirmatedImage confirmated={bandera_c3} />
@@ -364,8 +426,6 @@ function TravelsScreen (props){
                          onPress={() => Linking.openURL('tel:+52'+global.phone)}>
                             <Text style={Styles.simpletext}>Llamar lider de flota  </Text>
                             <Image source={require('../drawables/call.png')} style={style.logotel} />
-    
-    
                         </Pressable>
                    
     

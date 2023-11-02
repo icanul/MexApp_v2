@@ -2,6 +2,7 @@ import React from "react";
 import { View,Text,Pressable,StyleSheet } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import { version } from '../../package.json';
+import packageJson from  '../../package.json'; 
 
 
 
@@ -25,19 +26,19 @@ function Help(props){
             <View style={style.modal} >
                <Text  style={style.title}>Acerca de MexApp</Text>
               
-                <Text>MexApp 1.0.42</Text>
+                <Text>Version: {packageJson.version}</Text>
          
                 <View style={style.horizontal}>
               
               <Pressable 
             onPress={openlog}
               style={style.button}>
-                  <Text style={style.textbutton}>Log</Text>
+                  <Text style={style.textbutton}>VER Log</Text>
               </Pressable>
               <Pressable 
               onPress={salir}
               style={style.button1}>
-                  <Text style={style.textbutton}>salir</Text>
+                  <Text style={style.textbutton}>Cerrar</Text>
               </Pressable>
               </View>
             </View>

@@ -34,50 +34,59 @@ const context=props;
 
 
       }}>
-            <Tab.Screen 
-         options={{
-          tabBarShowLabel:false,
-            tabBarIcon:({ tintColor,focused }) => {
-              let iconName;
-              iconName = focused
-              //<img src="https://img.icons8.com/glyph-neue/64/undefined/present.png"/>
-              ? 'https://img.icons8.com/glyph-neue/50/CBA052/home.png'
+
+         <Tab.Screen 
+          options={{
+            tabBarShowLabel:false,
+              tabBarIcon:({ tintColor,focused }) => {
+                let iconName;
+                iconName = focused
+                //<img src="https://img.icons8.com/glyph-neue/64/undefined/present.png"/>
+                ? 'https://img.icons8.com/glyph-neue/50/CBA052/home.png'
               : 'https://img.icons8.com/glyph-neue/64/9c9c9c/home.png';  
-              
-              return <Image
-              
-              source={{uri:iconName}}
-              resizeMode="contain"
-              style={{ width: 25, height: 25, tintColor: tintColor }}
-            /> 
+                
+                return <Image
+                
+                source={{uri:iconName}}
+                resizeMode="contain"
+                style={{ width: 25, height: 25, tintColor: tintColor }}
+              /> 
+      
+              },
     
-            },
-  
-            }}
-      name="Home" 
-      component={HomeScreen} />
-      <Tab.Screen 
-         options={{
-          tabBarShowLabel:false,
-            tabBarIcon:({ tintColor,focused }) => {
-              let iconName;
-              iconName = focused
-              //<img src="https://img.icons8.com/glyph-neue/64/undefined/present.png"/>
-              ? 'https://img.icons8.com/glyph-neue/50/CBA052/truck.png'
-              : 'https://img.icons8.com/glyph-neue/64/9c9c9c/truck.png';  
-              
-              return <Image
-              
-              source={{uri:iconName}}
-              resizeMode="contain"
-              style={{ width: 25, height: 25, tintColor: tintColor }}
-            /> 
+              }}
     
-            },
+      name="Home" >
+         {props => <HomeScreen {...props} setversion={context.setversion} isConnected={context.isConnected}setConected={context.setConected}/>}
+         </Tab.Screen>
+
+         <Tab.Screen 
+          options={{
+            tabBarShowLabel:false,
+              tabBarIcon:({ tintColor,focused }) => {
+                let iconName;
+                iconName = focused
+                //<img src="https://img.icons8.com/glyph-neue/64/undefined/present.png"/>
+                ? 'https://img.icons8.com/glyph-neue/50/CBA052/truck.png'
+                : 'https://img.icons8.com/glyph-neue/64/9c9c9c/truck.png';  
+                
+                return <Image
+                
+                source={{uri:iconName}}
+                resizeMode="contain"
+                style={{ width: 25, height: 25, tintColor: tintColor }}
+              /> 
+      
+              },
+    
+              }}
+    
+      name="travels" >
+         {props => <TravelsTabs {...props} setversion={context.setversion} isConnected={context.isConnected}setConected={context.setConected}/>}
+         </Tab.Screen>
+
+
   
-            }}
-      name="travels" 
-      component={TravelsTabs} />
        <Tab.Screen 
          options={{
           tabBarShowLabel:false,

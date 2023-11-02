@@ -35,16 +35,11 @@ function Dream(props){
             <View style={Style.horizontal}>
                 <Text style={Style.titletext}>Insertado por:</Text>
                 <Text style={Style.simpletext}>{props.comments_insert}</Text>
-                <Text style={Style.titletext}>duracion:</Text>
+                <Text style={Style.titletext}>Duracion:</Text>
                 <Text style={Style.simpletext}>{duration}</Text>
 
             </View>
-            <View style={Style.horizontal}>
-                <Text style={Style.titletext}>Comentario:</Text>
-                <Text style={Style.simpletext}>{props.comments}</Text>
-          
-
-            </View>
+    
         </View>
     )
 

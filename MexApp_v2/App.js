@@ -11,7 +11,6 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import {Image,Text,StyleSheet, Modal, Pressable, Alert}from 'react-native'
 import messaging from '@react-native-firebase/messaging';
-import {useNetInfo} from "@react-native-community/netinfo";
 import NetInfo from "@react-native-community/netinfo";
 import TravelDetails from './src/screens/travelDetails';
 import LoginScreen from './src/screens/loginscreen';
@@ -45,6 +44,9 @@ import ReporterScreen from './src/componets/mto_tabs';
 import Reporter from './src/componets/reporter';
 import MtoDetail from './src/screens/mto_report';
 import Pandape from './src/screens/pandape';
+import packageJson from  './package.json'; // Asegúrate de ajustar la ruta según la ubicación de tu package.json
+import { LogBox } from 'react-native';
+LogBox.ignoreLogs(['new NativeEventEmitter']); 
 
 
 
@@ -57,48 +59,37 @@ const App  =()=> {
   //const netInfo = useNetInfo();
   const[is_logged, setLogget]=useState(0)
   const [isConnected, setIsConnected] = useState(false);
-
+  const [actual_version, setversion] = useState('')
   const[is_conected,setConected]=useState(require('./src/drawables/online.png'))
   const [modalVisible, setModalVisible] = useState(false);
 
-
-  /*/useEffect(() => {
-     requestUserPermission()
-    global.version = '1.0.4'//DeviceInfo.getVersion();
-    checkToken();
-   getData()
-var s=netInfo.isConnected
-console.log(s)
-if(s){
-  getevidence()
-  setConected(require('./src/drawables/online.png'))
-
-
-}else{
-  setConected(require('./src/drawables/offline2.png'))
-
-}  
-   
-})/*/
 
 
 useEffect(() => {
   // Suscribirse a los cambios en la conexión a Internet         setIsConnected(state.isConnected);
   requestUserPermission()
-  global.version = '1.0.4'//DeviceInfo.getVersion();
-  checkToken();
+  global.version = packageJson.version//
   getData()
+  messaging().onMessage(async remoteMessage => {
+    Alert.alert(remoteMessage.notification.title, remoteMessage.notification.body);
+    console.log(remoteMessage.data)
+  });
 
   const unsubscribe = NetInfo.addEventListener(state => {
-    setIsConnected(state.isConnected);
+
     var stade_conection=state.isConnected
-    if(stade_conection==true){
+    var isInternetReachable=state.isInternetReachable
+    var strength=state.details.strength
+    if(stade_conection==true&&isInternetReachable==true){
+      setIsConnected(true);
+
       getevidence()
       setConected(require('./src/drawables/online.png'))
 
 
     }else{
-      Alert.alert('Estas en modo offline')
+      setIsConnected(false)
+      Alert.alert('no hay coneccion a INTENET')
       setConected(require('./src/drawables/offline2.png'))
 
     }
@@ -117,17 +108,17 @@ async function requestUserPermission() {
     authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
   if (enabled) {
-    //console.log(' yes Authorization status:', authStatus);
+    console.log(' yes Authorization status:', authStatus);
   }else{
-    //console.log(' no Authorization status:', authStatus);
+    console.log(' no Authorization status:', authStatus);
 
   }
 }
 const getevidence= async () => {
   const evidence= await storageData.consultData('@evidenciagasto')
-  if(evidence!= null){
 
-    console.log('evidence')
+  console.log(evidence)
+  if(evidence!= null){
     var convert=JSON.parse(evidence)
     var id=convert.id
     console.log('id:'+id)
@@ -154,7 +145,6 @@ const getData = async () => {
     const user=await storageData.consultData('@user_storage')
     if(user!= null)
     var convert=JSON.parse(user)
-    console.log(convert)
     global.id_operador=convert.id
     global.nombre = convert.nombre;
     global.alias= convert.unidad;
@@ -173,7 +163,8 @@ const getData = async () => {
 const checkToken = async () => {
   const fcmToken = await messaging().getToken();
   if (fcmToken) {
- // console.log(fcmToken);
+    global.fcmToken=fcmToken
+  console.log(fcmToken);
   } 
  }
 
@@ -222,13 +213,15 @@ const checkToken = async () => {
         gesturesEnabled: false,
         headerLeft :() => (
           <Pressable
+          style={{ flexDirection:'row',}}
          /*/ onPress={() => setModalVisible(true)}/*/
           >
 
-         
+        
           <Image
           style={style.logo}
           source={require('./src/drawables/mexapp.png')}/>
+          <Text style={{color:'#ce2517',justifyContent:'center',marginTop:10,fontWeight:'bold'}}>{actual_version}</Text>
            </Pressable>
         ),
         headerRight :() => (
@@ -237,7 +230,7 @@ const checkToken = async () => {
           source={is_conected}/>
         ),
         title: '' }}>
-     {props => <TopMenu {...props} setLogget={setLogget} isConnected={isConnected} setConected={setConected}/>}
+     {props => <TopMenu {...props} setLogget={setLogget} isConnected={isConnected} setversion={setversion} setConected={setConected}/>}
      </Stack.Screen>
 
      <Stack.Screen 

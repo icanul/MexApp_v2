@@ -8,6 +8,7 @@ function Confirmated (props){
     const [isload,serLoad]= useState(false);
 
     useEffect(() => {
+      console.log(isConnected)
       const interval = setInterval(() => {
         validate_offline()
     
@@ -26,27 +27,20 @@ function Confirmated (props){
   }
 
     async function Confirmar(){
+      if(props.isConnected==true){
         serLoad(true)
-
         const fecha = new Date();
-        var datetime=fecha.getDate()+'-'+(fecha.getMonth()+1)+'-'+fecha.getFullYear()+' '+fecha.getHours()+':'+fecha.getMinutes()
-        
+        var datetime=fecha.getDate()+'-'+(fecha.getMonth()+1)+'-'+fecha.getFullYear()+' '+fecha.getHours()+':'+fecha.getMinutes()        
         try {
-            const confirmated=await Api.confirmar(context.solicitud,1,"",datetime)
-            console.log(confirmated)
-            if( confirmated.status==200|| confirmated.status==202){
+          const confirmated=await Api.confirmar(context.solicitud,1,"",datetime)
+          if( confirmated.status==200|| confirmated.status==202)
+          {
               Alert.alert("Se confirmo correctamente")
-
-
-
-          }else{
-
-
           }
-          
-            send()
+          send()
 
-        } catch (error) {
+        } catch (error) 
+        {
             var confirmation={
                 id:1,
                 solicitud:context.solicitud,
@@ -54,11 +48,42 @@ function Confirmated (props){
                 datetime:datetime
             }
             confirmationStore(confirmation)
-
-            //console.log(error)
-            send()
-            
+            send()        
         }
+      }
+      else
+      {
+        const fecha1 = new Date();
+        var datetime=fecha1.getDate()+'-'+(fecha.getMonth()+1)+'-'+fecha.getFullYear()+' '+fecha.getHours()+':'+fecha.getMinutes() 
+        Alert.alert
+        (
+          'MexApp',
+          'NO hay conexión desea guardar la confirmacion',
+          [
+            {
+              text: 'si',
+              onPress: () => {
+                var confirmation={
+                  id:1,
+                  solicitud:context.solicitud,
+                  observation:'',
+                  datetime:datetime
+              }
+              confirmationStore(confirmation)
+              send()
+
+              },
+            },
+           
+            {
+              text: 'Cancelar',
+              onPress:()=>{
+                send()
+              }
+            },
+          ]
+        )
+      }    
     }
     const confirmationStore = async (value) => {
         try {

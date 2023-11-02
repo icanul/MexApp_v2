@@ -9,21 +9,22 @@ import TmsReports from './reporttms';
 
 
 function Cdelivery (props){
-    const context=props;
-    const [reporter,setreporter]=useState(false)
-    const [isChecked, setIsChecked] = useState(false);
-    const [isChecked1, setIsChecked1] = useState(false);
-    const [isChecked2, setIsChecked2] = useState(false);
-    const [isChecked3, setIsChecked3] = useState(false);
-    const [isChecked4, setIsChecked4] = useState(false);
-    const [isChecked5, setIsChecked5] = useState(false);
-    const [text, setText] = useState('');
-    const [observacion,setObservacion]= useState('Sin problemas')
-    const [id_causa,setCausa]= useState(0)
-    const [id_notification,setIdNotification]=useState(0)
-    const [isload,serLoad]= useState(false);
-    const [modalVisible1,setModalVisible1]=useState(false)
-    const [modalVisible,setModalVisible]=useState(false)
+
+  const context=props;
+  const [reporter,setreporter]=useState(false)
+  const [isChecked, setIsChecked] = useState(false);
+  const [isChecked1, setIsChecked1] = useState(false);
+  const [isChecked2, setIsChecked2] = useState(false);
+  const [isChecked3, setIsChecked3] = useState(false);
+  const [isChecked4, setIsChecked4] = useState(false);
+  const [isChecked5, setIsChecked5] = useState(false);
+  const [text, setText] = useState('');
+  const [observacion,setObservacion]= useState('Sin problemas')
+  const [id_causa,setCausa]= useState(0)
+  const [id_notification,setIdNotification]=useState(0)
+  const [isload,serLoad]= useState(false);
+  const [modalVisible1,setModalVisible1]=useState(false)
+  const [modalVisible,setModalVisible]=useState(false)
 
 
       const handleCheck1 = () => {
@@ -87,41 +88,65 @@ function Cdelivery (props){
         setModalVisible(true)
     }
     async function Confirmar(){
+      const fecha = new Date();
+      var datetime=fecha.getDate()+'-'+(fecha.getMonth()+1)+'-'+fecha.getFullYear()+' '+fecha.getHours()+':'+fecha.getMinutes()
+      if(props.isConnected==true){
+        console.log('si estoy aqui es un maldito error')
         serLoad(true)
-        const fecha = new Date();
-        var datetime=fecha.getDate()+'-'+(fecha.getMonth()+1)+'-'+fecha.getFullYear()+' '+fecha.getHours()+':'+fecha.getMinutes()
-        console.log(fecha+' '+observacion+' '+context.solicitud)
-
         try {
            const confirmated=await Api.confirmar(context.solicitud,3,observacion)
           console.log( confirmated.status)
             if( confirmated.status==200|| confirmated.status==202){
                 Alert.alert("Se confirmo correctamente, llama a tu lider de flota")
-            }else{
-
-
-            }
-           
-           // Alert.alert()
-           /*/ if(id_causa!=0){
-                setReporter()
-            }/*/
-            
+            }      
             send()
           
         } catch (error) {
-            var confirmation={
-                id:2,
-                solicitud:context.solicitud,
-                observation:'',
-                datetime:datetime
-            }
-            confirmationStore(confirmation)
-
-            console.log(error)
-            send()
-            
+          var confirmation={
+            id:2,
+            solicitud:context.solicitud,
+            observation:'',
+            datetime:datetime
         }
+        confirmationStore(confirmation)
+             
+        }
+
+      }else
+      {
+        const fecha1 = new Date();
+        var datetime=fecha1.getDate()+'-'+(fecha.getMonth()+1)+'-'+fecha.getFullYear()+' '+fecha.getHours()+':'+fecha.getMinutes() 
+        Alert.alert
+        (
+          'MexApp',
+          'NO hay conexión desea guardar la confirmacion',
+          [
+            {
+              text: 'si',
+              onPress: () => {
+                var confirmation={
+                  id:2,
+                  solicitud:context.solicitud,
+                  observation:'',
+                  datetime:datetime
+              }
+              confirmationStore(confirmation)
+              send()
+
+              },
+            },
+           
+            {
+              text: 'Cancelar',
+              onPress:()=>{
+                send()
+              }
+            },
+          ]
+
+        )
+      }
+   
     }
 
     const confirmationStore = async (value) => {
@@ -129,8 +154,8 @@ function Cdelivery (props){
           const jsonValue = JSON.stringify(value)
           await AsyncStorage.setItem('@confirmardescarga', jsonValue)
           Alert.alert(
-            "No se pudo enviar",
-            "confirmación de descarga guardada. se enviara cuando tengas conexión a internet",
+            "Datos guardados",
+            "Se ha guardado la confirmación, esta se enviara cuando tengas conexión internet",
             [
            
               { text: "OK", onPress: () => console.log("OK Pressed") }
@@ -162,7 +187,7 @@ function Cdelivery (props){
     }else{
 
 
-      if(reporter==false){
+      if(reporter==false){ 
         return(
             <View style={style.content}>
                   <View style={style.modal} >
@@ -184,9 +209,7 @@ function Cdelivery (props){
         
                     </View>
                   </View>
-
         )
-
      }
      else{
     return(
@@ -196,6 +219,7 @@ function Cdelivery (props){
             transparent={true}
             visible={modalVisible}>
                 <TmsReports  
+                isConnected={props.isConnected}
                 solicitud={context.solicitud} 
                 setModalVisible={setModalVisible}
                  id_causa={id_causa} 
@@ -279,9 +303,7 @@ function Cdelivery (props){
                    <Text style={{color:'#000000'}}>Rechazo total</Text>
 
                 </View>
-                </View>
-              
-    
+                </View>  
                 <View style={style.horizontal}>
                 <Pressable 
                 onPress={Confirmar}
@@ -293,8 +315,7 @@ function Cdelivery (props){
                 style={style.button1}>
                     <Text style={style.textbutton}>no</Text>
                 </Pressable>
-                </View>
-    
+                </View>  
                 </View>
               </View>
      

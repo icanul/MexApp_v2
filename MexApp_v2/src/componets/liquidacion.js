@@ -65,7 +65,7 @@ function Liquidacion (props){
   <View style={Styles.horizontal}>
     <Text style={Styles.titletext}>NO liquidación.</Text>
     <Text style={Styles.simpletext}>{props.id}</Text>
-    <Text style={Styles.titletext}>Importe.</Text>
+    <Text style={Styles.titletext}>Balance total.</Text>
     <Text style={Styles.simpletext}>${props.total_balance}</Text>
     
   </View>
@@ -74,18 +74,11 @@ function Liquidacion (props){
   <Text style={Styles.simpletext}>{fecha}</Text>
   </View>
   <View style={Styles.horizontal}>
-  <Text style={Styles.titletext}>No Preliq.</Text>
-    <Text style={Styles.simpletext}>{props.preliquidation_id}</Text>
+
     <Text style={Styles.titletext}>Unidad</Text>
     <Text style={Styles.simpletext}>{props.preliquidation_vehicle}</Text>
   </View>
-  <View style={Styles.horizontal}>
-    
-    <Text style={Styles.titletext}>Del </Text>
-    <Text style={Styles.simpletext}>{fechainit}</Text>
-    <Text style={Styles.titletext}>Al:</Text>
-    <Text style={Styles.simpletext}>{fechafin}</Text>
-  </View>
+
 
 
 </Pressable>

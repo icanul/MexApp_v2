@@ -11,6 +11,7 @@ function TravelsScreen (){
 
 
     useEffect(() => {
+        console.log('buscando props')
         gettravel()
        
     }, [])

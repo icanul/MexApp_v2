@@ -37,11 +37,11 @@ class StoreData{
             if(jsonValue != null){
                 return jsonValue
             }
-                return "error"
+                return null
             
         } catch (error) {
             console.log(error)
-            return "error"
+            return null
             
         }
     }

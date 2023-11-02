@@ -1,10 +1,13 @@
 import React, { useEffect, useState,useRef } from 'react';
-import { View,Image,ScrollView,Text,RefreshControl, Pressable } from 'react-native';
+import { View,Image,ScrollView,Text,RefreshControl, Pressable, Alert } from 'react-native';
+import messaging from '@react-native-firebase/messaging';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Api from '../api/intranet'
 import { WebView } from 'react-native-webview';
 import InphograpicsList from '../containers/inphograpicsList'
 import NetInfo from "@react-native-community/netinfo";
+import packageJson from  '../../package.json'; // Asegúrate de ajustar la ruta según la ubicación de tu package.json
+
 
 
 
@@ -20,17 +23,29 @@ function HomeScreen (props){
   const [refreshing, setRefreshing] = React.useState(false);
   const [sizes, setsize]=React.useState('28%')
   const [count,setcount]=React.useState(0)
+  const appVersion = packageJson.version;
+
+  
   
 
     useEffect(() => {
       const unsubscribe = NetInfo.addEventListener(state => {
-        setIsConnected(state.isConnected);
+        if(state.isConnected==true&&state.isInternetReachable==true){
+          setIsConnected(true);
+
+
+        }
       });
 
           getData()
+          messaging().onMessage(async remoteMessage => {
+            if(remoteMessage.data.id_screen==1){
+              onRefresh()
+            }
+          });
           setTimeout(() => {
             getInfographics()
-          }, 5000);
+          }, 8000);
        return () =>{
         unsubscribe();
           setInphograpics([])
@@ -57,12 +72,14 @@ function HomeScreen (props){
     
       try {       
         console.log('executev infographics')
-          const infographics= await Api.getInfographics(global.solicitud)
-        
-           // console.log(infographics)
+          const getinfographics= await Api.getInfographics(global.solicitud)
+          var infographics=getinfographics.infographics_list
+          var version=appVersion
             var imagenes=[]
           
            var count=0;
+           console.log('buscando infographics')
+
            for(var i=0;i<infographics.length;i++){
           
             var document_url=infographics[i]['document_url']
@@ -79,14 +96,22 @@ function HomeScreen (props){
             }
   
            }
+           if(getinfographics.version==version){
+          }
+          else{
+            props.setversion('No actualizada')
+            Alert.alert('MexApp no esta Actualizada!!')
+
+          } 
            storeData(imagenes)
            setInphograpics(imagenes)
        //  console.log(Inphograpics_list)
    
       } catch (error) {
+        console.log(error)        
+
       
         getsave()
-       // console.log(error)        rt
       }
 
     }

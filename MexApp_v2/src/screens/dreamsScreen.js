@@ -1,15 +1,16 @@
 import { set } from 'immer/dist/internal';
 import React, { useState,useEffect } from 'react';
-import { View,Text,Pressable,StyleSheet,RefreshControl,Modal,Alert} from 'react-native';
+import { View,Text,Pressable,StyleSheet,RefreshControl,Modal,Alert,ScrollView} from 'react-native';
 import Api from '../api/intranet'
 import NewDream from '../modals/newdream';
 import SetDreams from '../modals/setDream'
 import DinamicImage from '../componets/dinamicImage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ScrollView } from 'react-native-gesture-handler';
 import NetInfo from "@react-native-community/netinfo";
 import Style from '../styles/styles';
 import DreamLIist from '../containers/deams_list';
+import { LogBox } from 'react-native';
+
 
 function DreamsScreen (props){
   const context=props
@@ -28,32 +29,15 @@ function DreamsScreen (props){
     const [savebandera,setSavebandera]=useState('')
     const [listdreams,setdreams]=useState([]);
 
-    const datatest=[
-    {'id':1,'event':'SUEÑO','fhi':'12/02/2023 12:00','fhf':'12/02/2023 12:00'},
-    {'id':2,'event':'SUEÑO','fhi':'12/02/2023 12:00','fhf':'12/02/2023 12:00'},
-    {'id':3,'event':'SUEÑO','fhi':'12/02/2023 12:00','fhf':'12/02/2023 12:00'},
-    {'id':4,'event':'SUEÑO','fhi':'12/02/2023 12:00','fhf':'12/02/2023 12:00'},
-    {'id':5,'event':'SUEÑO','fhi':'12/02/2023 12:00','fhf':'12/02/2023 12:00'},
-    {'id':6,'event':'SUEÑO','fhi':'12/02/2023 12:00','fhf':'12/02/2023 12:00'},
-    {'id':7,'event':'SUEÑO','fhi':'12/02/2023 12:00','fhf':'12/02/2023 12:00'},
-    {'id':8,'event':'SUEÑO','fhi':'12/02/2023 12:00','fhf':'12/02/2023 12:00'},
-    {'id':9,'event':'SUEÑO','fhi':'12/02/2023 12:00','fhf':'12/02/2023 12:00'},
-    {'id':10,'event':'SUEÑO','fhi':'12/02/2023 12:00','fhf':'12/02/2023 12:00'},
-    {'id':11,'event':'SUEÑO','fhi':'12/02/2023 12:00','fhf':'12/02/2023 12:00'},
-    {'id':13,'event':'SUEÑO','fhi':'12/02/2023 12:00','fhf':'12/02/2023 12:00'},
-    {'id':14,'event':'SUEÑO','fhi':'12/02/2023 12:00','fhf':'12/02/2023 12:00'},
-    {'id':15,'event':'SUEÑO','fhi':'12/02/2023 12:00','fhf':'12/02/2023 12:00'},
-    {'id':16,'event':'SUEÑO','fhi':'12/02/2023 12:00','fhf':'12/02/2023 12:00'},
-    {'id':17,'event':'SUEÑO','fhi':'12/02/2023 12:00','fhf':'12/02/2023 12:00'},
-    ]
 
     useEffect(() => {
-      // Suscribirse a los cambios en la conexión a Internet         setIsConnected(state.isConnected);
-
+      LogBox.ignoreLogs(["VirtualizedLists should never be nested"])
       const unsubscribe = NetInfo.addEventListener(state => {
-        setIsConnected(state.isConnected);
         var stade_conection=state.isConnected
-        if(stade_conection==true){
+        var isInternetReachable=state.isInternetReachable
+        if(stade_conection==true&&isInternetReachable==true){
+          setIsConnected(true);
+
           getDreams()
 
         }else{
@@ -103,7 +87,7 @@ function DreamsScreen (props){
 
       if(recovery.startStatus==false&&recovery.endStatus==false){ 
         try {
-          console.log("se agregara al servicio posterior")
+        //  console.log("se agregara al servicio posterior")
 
           const dreams=await Api.New_Dream(recovery.start,recovery.end)
           console.log(dreams)
@@ -117,9 +101,9 @@ function DreamsScreen (props){
      
       }else if(recovery.startStatus=true&& recovery.endStatus==false){
         try {
-          console.log("se agregara al servicio normal")
+          //console.log("se agregara al servicio normal")
           const stardream=await Api. setDream("",recovery.snd,recovery.id,"finalizar MexApp2",false)
-          console.log(stardream)
+          //console.log(stardream)
           Alert.alert("se agrego unsueño sin conexion")
           await AsyncStorage.removeItem("@dreams_current");
           onRefresh()
@@ -137,16 +121,16 @@ function DreamsScreen (props){
 
     async function getDreams(){
        var id_operador =global.id_operador
-       console.log(' servicio'+id_operador)
+       //console.log(' servicio'+id_operador)
 
 
         try {
 
             const dreams=await Api.get_current_dream(id_operador)
             setdreams(dreams.listevents)
-            console.log(' servicio')
+           // console.log(' servicio')
 
-            console.log(dreams)
+           // console.log(dreams)
             setBanderadrems(dreams.activity_id)
             setData(dreams)
             storeData(dreams)
@@ -184,7 +168,7 @@ function DreamsScreen (props){
           const jsonValue = JSON.stringify(value)
           await AsyncStorage.setItem('@dreams_storage', jsonValue)
         } catch (e) {
-          console.log(e)
+         // console.log(e)
         }
       }
       const dataOffline = async () => {
@@ -224,7 +208,7 @@ function DreamsScreen (props){
         } catch(e) {
             
            
-         console.log(e)
+       //  console.log(e)
         }
       }
       const getsaveDreamas = async () => {
@@ -267,6 +251,7 @@ function DreamsScreen (props){
      <NewDream 
      modalVisible={modalVisible} 
      onRefresh={onRefresh}
+     isConnected={isConnected}
      setModalVisible={setModalVisible}/>
 
       </Modal>
@@ -287,6 +272,7 @@ function DreamsScreen (props){
           savebandera={savebandera}
           onRefresh={onRefresh}
           id_dream={data.id}
+          isConnected={isConnected}
           banderadreams={banderadreams}/>
 
 

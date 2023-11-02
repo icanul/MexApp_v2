@@ -20,7 +20,8 @@ function LiquidacionesScreen (){
         var totime=inicio+':00.000Z'
         try {
 
-            const liquidaciones=await TmsAPI.getliquidations(id_operador,fromtime,totime)
+            const data=await TmsAPI.getliquidations(id_operador,fromtime,totime)
+            var liquidaciones=data.filter(data=> data.is_consolidated_row==false )
            // console.log(liquidaciones)
           
             setItems(liquidaciones)

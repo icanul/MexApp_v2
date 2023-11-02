@@ -39,37 +39,64 @@ function CPicked (props){
     
      }
      async function Confirmar(){
-        serLoad(true)
-
-        const fecha = new Date();
-        var datetime=fecha.getDate()+'-'+(fecha.getMonth()+1)+'-'+fecha.getFullYear()+' '+fecha.getHours()+':'+fecha.getMinutes()
-
-        try {
-            const confirmated=await Api.confirmar(context.solicitud,2,"",datetime)
-            console.log(confirmated)
-            if( confirmated.status==200|| confirmated.status==202){
-                Alert.alert("Se confirmo correctamente")
-
-
-            }else{
-
-
+        if(props.isConnected){
+            serLoad(true)
+            const fecha = new Date();
+            var datetime=fecha.getDate()+'-'+(fecha.getMonth()+1)+'-'+fecha.getFullYear()+' '+fecha.getHours()+':'+fecha.getMinutes() 
+            try {
+                const confirmated=await Api.confirmar(context.solicitud,2,"",datetime)
+                if( confirmated.status==200|| confirmated.status==202){
+                    Alert.alert("Se confirmo correctamente")
+                }
+                send()
+            } catch (error) {
+                var confirmation={
+                    id:2,
+                    solicitud:context.solicitud,
+                    observation:'',
+                    datetime:datetime
+                }
+                confirmationStore(confirmation)
+                console.log(error)
+                send()
+                
             }
-            send()
-        } catch (error) {
 
-            var confirmation={
-                id:2,
-                solicitud:context.solicitud,
-                observation:'',
-                datetime:datetime
-            }
-            confirmationStore(confirmation)
-
-            console.log(error)
-            send()
-            
         }
+        else{
+            const fecha1 = new Date();
+            var datetime=fecha1.getDate()+'-'+(fecha.getMonth()+1)+'-'+fecha.getFullYear()+' '+fecha.getHours()+':'+fecha.getMinutes() 
+            Alert.alert
+            (
+              'MexApp',
+              'NO hay conexión desea guardar la confirmacion',
+              [
+                {
+                  text: 'si',
+                  onPress: () => {
+                    var confirmation={
+                      id:2,
+                      solicitud:context.solicitud,
+                      observation:'',
+                      datetime:datetime
+                  }
+                  confirmationStore(confirmation)
+                  send()
+    
+                  },
+                },
+               
+                {
+                  text: 'Cancelar',
+                  onPress:()=>{
+                    send()
+                  }
+                },
+              ]
+            )
+
+        }        
+   
     }
     const confirmationStore = async (value) => {
         try {
@@ -87,8 +114,6 @@ function CPicked (props){
           // saving error
         }
       }
-
-    
 
     async function noConfirmar(){
         const fecha = new Date();

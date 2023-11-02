@@ -41,6 +41,8 @@ class Api{
     async login(number,versionapp,token){
   
         var url=restAPI+'/dreams/loginv2/'+number+'/'+token+'/'+versionapp
+        //var url='http://192.168.0.8:8000/dreams/loginv2/'+number+'/'+token+'/'+versionapp
+
         const query = await fetch(url);
         const responseSize = query.headers.get('content-length') || '0';
         const line=hora+' '+url+' '+responseSize+'b'
@@ -70,13 +72,26 @@ class Api{
     }
 
     async getInfographics(solicitud){
-      var url=restAPI+"/infographics/get_infographics/"+solicitud
-      const query = await fetch(url);
-      const responseSize = query.headers.get('content-length') || '0';
+      var url=restAPI+"/infographics/get_infographics2/"+solicitud
+      var urlt='http://192.168.0.8:8000/infographics/get_infographics2/5636082/'
+      console.log(url)
+      try {
+        const query = await fetch(url);
+        const data = await query.json();
+        return data;
+        
+      } catch (error) {
+        console.log('error::::::::'+error)
+        return 'error';
+        
+      }
+    
+     /*/ const responseSize = query.headers.get('content-length') || '0';
       const line=hora+' '+url+' '+responseSize+'b'
       writeline(line)  
-      const data = await query.json();
-      return data;
+      console.log(query)/*/
+     /// const data = await query.json();
+      
     }
    
     async gettravels(id_operador, options = {}){
@@ -123,11 +138,11 @@ class Api{
       Accept: 'application/json', 
     };
     
-    var url=restAPI+"/dreams/get_current_dream/"+id_operador
-    var url_test='http://192.168.0.8:8000/dreams/get_current_dream/'+id_operador
-    console.log(url_test)
+      var url=restAPI+"/dreams/get_current_dream/"+id_operador
+     // var url='http://192.168.0.8:8000/dreams/get_current_dream/'+id_operador
+    console.log(url)
 
-    const query = await fetch(url_test);
+    const query = await fetch(url);
       
     const data = await query.json();
     

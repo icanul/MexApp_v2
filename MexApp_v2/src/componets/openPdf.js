@@ -10,7 +10,6 @@ import {
 import RNFetchBlob from 'rn-fetch-blob'
 import { useNavigation } from '@react-navigation/native';
 
-
 function OpenPdf(props) {
   const navigation = useNavigation();
   const BASE_API = 'tms.logsys.com.mx';

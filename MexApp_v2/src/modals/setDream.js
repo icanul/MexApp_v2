@@ -81,7 +81,7 @@ function SetDreams (props){
 
     async function setDream(){
         console.log(context.id_dream)
-        serLoad(true)
+      
         const bandera=props.banderadreams
         const fecha = new Date();
         var datehora=fecha.getDate()+'-'+(fecha.getMonth()+1)+'-'+fecha.getFullYear()+' '+fecha.getHours()+':'+fecha.getMinutes()
@@ -89,58 +89,76 @@ function SetDreams (props){
         try{
 
             if(bandera==1){
-             
-
-                const stardream=await Api. setDream("",datehora,context.id_dream,"finalizar MexApp2",false)
-                var status=stardream.status
+                serLoad(true)
                 const jsonValue = await AsyncStorage.getItem('@dreams_current')
                 var convert=JSON.parse(jsonValue)
-                if(convert==null){
+                if(context.isConnected){
+                    const stardream=await Api. setDream("",datehora,context.id_dream,"finalizar MexApp2",false)
+                    var status=stardream.status
+                    
+                    if(convert==null){
+    
+                    }else{
+                        var init=convert.start
+                        var initbandera=convert.startStatus
+    
+                    }
+                   
+                    console.log(convert)
+                    if(status==200){
+                        var message=await stardream.text()
+                        console.log(message)
+                       
+                        Alert.alert(message)
+                        if(message!='1001: Debe esperar unos minutos para terminar un evento de sueño'){
+                            saveStoreDream(init,initbandera,datehora,true,context.id_dream)
+                        }
+                        
+                        await AsyncStorage.removeItem("@dreams_current");
+    
+                    }else{
+                        Alert.alert('Sueño insertado sin conexión')
+                        saveStoreDream(init,initbandera,datehora,false,context.id_dream)
+    
+                    }
+                    context.onRefresh()
+                    context.setModalVisible1(false)
 
-                }else{
+                }
+                else{
                     var init=convert.start
                     var initbandera=convert.startStatus
-
+                    Alert.alert('Sueño Finalizado sin conexión')
+                    saveStoreDream(init,initbandera,datehora,false,context.id_dream)            
                 }
-               
-                console.log(convert)
-                if(status==200){
-                    var message=await stardream.text()
-                    console.log(message)
-                   
-                    Alert.alert(message)
-                    if(message!='1001: Debe esperar unos minutos para terminar un evento de sueño'){
-                        console.log('no debe cambaira carita')
-                        saveStoreDream(init,initbandera,datehora,true,context.id_dream)
-                    }
-                    
-                    await AsyncStorage.removeItem("@dreams_current");
-
-                }else{
-                    Alert.alert('Sueño insertado sin conexión')
-                    saveStoreDream(init,initbandera,datehora,false,context.id_dream)
-
-                }
-                context.onRefresh()
-                context.setModalVisible1(false)
+             
             }
             else {
-                const stardream=await Api.setDream(datehora,"",context.id_dream,"Iniciando MexApp2",false)
-                var status=stardream.status
-                if(status==200){
-                    var message=await stardream.text()
-                   
-                    Alert.alert(message)
-                    saveStoreDream(datehora,true,'',false,context.id_dream)
-                    console.log("insertado con conexion ")
+                if(context.isConnected){//validamos conexion a internet
+                    serLoad(true)
+                    const stardream=await Api.setDream(datehora,"",context.id_dream,"Iniciando MexApp2",false)
+                    var status=stardream.status
+                    if(status==200){
+                        var message=await stardream.text()
+                       
+                        Alert.alert(message)
+                        saveStoreDream(datehora,true,'',false,context.id_dream)
+                        console.log("insertado con conexion ")
+    
+                    }else{
+                        saveStoreDream(datehora,false,'',false,context.id_dream)
+                        console.log("insertado sin conexion 200")
+    
+                    }
+                    context.onRefresh()
+                    context.setModalVisible1(false)
 
                 }else{
                     saveStoreDream(datehora,false,'',false,context.id_dream)
-                    console.log("insertado con conexion 200")
-
+                    Alert.alert('se inicio sueño sin conexión')
+                    console.log("insertado sin conexion 200")
                 }
-                context.onRefresh()
-                context.setModalVisible1(false)
+            
             }
 
         }catch(error){
