@@ -7,14 +7,16 @@ import Operations from '../utils/operations'
 import Api from '../api/intranet'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Linking } from 'react-native';
-
-
-
+import MapViewDirections from 'react-native-maps-directions';
+import { useNavigation } from '@react-navigation/native';
 
 
 
 
 function Maps (props){
+  const navigation = useNavigation();
+  const GOOGLE_MAPS_APIKEY = 'AIzaSyARkfKeDaxTgw9J5A50Aq48gNaA6rcVLRo';
+  const [coordinates, setCoordinates] = useState([]);
   const [bandera,setbandera]=useState(1)
   const [milatitusd,setMilatitud]=useState(19.3910038)
   const [milongitud,setMilongitud]=useState(-99.2837003)
@@ -25,11 +27,16 @@ function Maps (props){
   const [count,setcount]=useState(1)
   const mapRef = useRef(null);
   const [mapRotation, setMapRotation] = useState(0);
-
-
+  const origin = { latitude: 37.7749, longitude: -122.4194 }; // San Francisco, CA
+  const destination = { latitude: 34.0522, longitude: -118.2437 }; 
+  const [beslatitud,setbestlatitud]=useState(0.0)
+  const [beslongitud,sebestlongitud]=useState(0.0)
 
 
   useEffect(() => {
+    setbestlatitud(milatitusd)
+    sebestlongitud(milatitusd)
+
     getruta()
 
     console.log("solo una vez")
@@ -46,20 +53,11 @@ function Maps (props){
     return () => clearInterval(interval);
   }, []);
 
-  const moveToNewRegion = (latitud,longitud) => {
-    const newRegion = {
-      latitude: latitud,
-      longitude: longitud,
-      latitudeDelta: 0.0002,
-      longitudeDelta: 0.0021,
-      bearing: 180, 
 
-    };
+  const openMap=()=>{
+   // navigation.navigate('mapscreen',{data:props,points:points})
 
-    if (mapRef.current) {    
-      mapRef.current.animateToRegion(newRegion, 1000); // Animación en 1000ms
-    }
-  };
+  }
 async function getruta(){
  // console.log('buscando'+props.solicitud)
  var arraypoint=[]
@@ -135,7 +133,9 @@ const getBestPoint=()=>{
   const minValue = Math.min(...arraydistance);
   const posicion = arraydistance.indexOf(minValue);
   var bestpoin=points[posicion]
-  console.log(bestpoin)
+  console.log('chupame un webo'+bestpoin.latitude)
+  setbestlatitud(bestpoin.latitude)
+  sebestlongitud(bestpoin.longitude)
   var waypoints_destiny=props.waypoints_destiny.replace("waypoints=","")
   var arraywaypoint=waypoints_destiny.split("%7C");
   console.log(arraywaypoint)
@@ -252,7 +252,7 @@ const mapa=(props)=>{
     showsUserLocation={true}
     followsUserLocation={true}
     showsMyLocationButton={true}
-    showsTraffic={true}  
+    showsTraffic={false}  
     initialRegion={{
       latitude: milatitusd,
       longitude: milongitud,
@@ -260,6 +260,7 @@ const mapa=(props)=>{
       longitudeDelta:1,
       
     }}
+
     rotateEnabled={true} // Permite rotar el mapa con gestos
  
     >
@@ -270,7 +271,7 @@ const mapa=(props)=>{
         latitude: milatitusd,
         longitude: milongitud,
       }}
-      onPress={getBestPoint}
+      onPress={openMap}
       title={"Mi ubicación"}
       description="unidad localizada">
          <Image source={require('../drawables/camion2.png')} style={{height: 30, width:40,resizeMode:'contain' }} />
@@ -310,10 +311,10 @@ const mapa=(props)=>{
    
      <Polyline
      coordinates={points}
-              strokeColor="#0000ff"
-              strokeColors={['#7F0000']}
-              strokeWidth={3}
+              strokeColor="#000"
+              strokeWidth={4}
              />
+  
     </MapView>
 
     <View

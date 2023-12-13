@@ -99,8 +99,8 @@ function HomeScreen (props){
            if(getinfographics.version==version){
           }
           else{
-            props.setversion('No actualizada')
-            Alert.alert('MexApp no esta Actualizada!!')
+            props.setversion(getinfographics.description)
+            Alert.alert(getinfographics.description)
 
           } 
            storeData(imagenes)

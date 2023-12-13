@@ -41,10 +41,15 @@ function CPicked (props){
      async function Confirmar(){
         if(props.isConnected){
             serLoad(true)
-            const fecha = new Date();
-            var datetime=fecha.getDate()+'-'+(fecha.getMonth()+1)+'-'+fecha.getFullYear()+' '+fecha.getHours()+':'+fecha.getMinutes() 
+            const now = new Date();
+            const utcString = now.toISOString(); 
+            console.log('hora utc de mexico:'+utcString)
+
+            /*/const fecha = new Date();
+            var datetime=fecha.getDate()+'-'+(fecha.getMonth()+1)+'-'+fecha.getFullYear()+' '+fecha.getHours()+':'+fecha.getMinutes() /*/
+           
             try {
-                const confirmated=await Api.confirmar(context.solicitud,2,"",datetime)
+                const confirmated=await Api.confirmar(context.solicitud,2,"",utcString)
                 if( confirmated.status==200|| confirmated.status==202){
                     Alert.alert("Se confirmo correctamente")
                 }

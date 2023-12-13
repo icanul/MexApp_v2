@@ -21,9 +21,10 @@ const context=props;
     initialRouteName="Home"
     
     screenOptions={{
-        tabBarActiveTintColor: '#CBA052',
-        tabBarIndicatorStyle:{
-          backgroundColor:'#CB333B'
+      swipeEnabled:false,
+      tabBarActiveTintColor: '#CBA052',
+      tabBarIndicatorStyle:{
+      backgroundColor:'#CB333B'
 
         },
         tabBarInactiveTintColor: 'gray',

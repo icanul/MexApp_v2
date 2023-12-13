@@ -73,7 +73,7 @@ class Api{
 
     async getInfographics(solicitud){
       var url=restAPI+"/infographics/get_infographics2/"+solicitud
-      var urlt='http://192.168.0.8:8000/infographics/get_infographics2/5636082/'
+      //var url='http://192.168.0.8:8000/infographics/get_infographics2/5636082/'
       console.log(url)
       try {
         const query = await fetch(url);
@@ -138,8 +138,8 @@ class Api{
       Accept: 'application/json', 
     };
     
-      var url=restAPI+"/dreams/get_current_dream/"+id_operador
-     // var url='http://192.168.0.8:8000/dreams/get_current_dream/'+id_operador
+     var url=restAPI+"/dreams/get_current_dream/"+id_operador
+     //var url='http://192.168.0.8:8000/dreams/get_current_dream/'+id_operador
     console.log(url)
 
     const query = await fetch(url);

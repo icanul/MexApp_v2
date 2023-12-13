@@ -88,8 +88,12 @@ function Cdelivery (props){
         setModalVisible(true)
     }
     async function Confirmar(){
-      const fecha = new Date();
-      var datetime=fecha.getDate()+'-'+(fecha.getMonth()+1)+'-'+fecha.getFullYear()+' '+fecha.getHours()+':'+fecha.getMinutes()
+      const now = new Date();
+      const utcString = now.toISOString(); 
+      console.log('hora utc de mexico:'+utcString)
+
+      /*/const fecha = new Date();
+      var datetime=fecha.getDate()+'-'+(fecha.getMonth()+1)+'-'+fecha.getFullYear()+' '+fecha.getHours()+':'+fecha.getMinutes()/*/
       if(props.isConnected==true){
         console.log('si estoy aqui es un maldito error')
         serLoad(true)

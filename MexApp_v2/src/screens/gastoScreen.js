@@ -15,13 +15,26 @@ function DepositosScreen (){
 
 
     useEffect(() => {
-        getGastos()
+      gettoken()
        
     }, [])
 
+    async function gettoken(){
+      try {
+          const token= await Api.get_token_liq()
+          console.log(token.token)
+          global.liqtoken=token
+          getGastos(token.token)
+          
+      } catch (error) {
+          
+      }
+
+  }
+
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
-      getGastos()
+        gettoken()
         wait(2000).then(() => setRefreshing(false));
       }, []);
 
@@ -29,14 +42,14 @@ function DepositosScreen (){
         return new Promise(resolve => setTimeout(resolve, timeout));
       }
 
-    async function getGastos(){
+    async function getGastos(token){
       var inicio=moment().add(6,'h').format('YYYY-MM-DDTHH:MM')
       var fin=moment().subtract(100, 'd').format('YYYY-MM-DDTHH:MM')
       var fromtime=fin+':00.000Z'
       var totime=inicio+':00.000Z'
         try {
 
-            const getdepositos=await Api.getgasto(id_operador,fromtime,totime)
+            const getdepositos=await Api.getgasto(id_operador,fromtime,totime,token)
           //  console.log(getdepositos)
          
           let convert=getdepositos.filter(getdepositos=> getdepositos.is_consolidated_row==false )

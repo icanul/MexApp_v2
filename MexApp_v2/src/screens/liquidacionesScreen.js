@@ -8,11 +8,24 @@ function LiquidacionesScreen (){
 
 
     useEffect(() => {
-        getLiq()
+        gettoken()
        
     }, [])
 
-    async function getLiq(){
+    async function gettoken(){
+        try {
+            const token= await TmsAPI.get_token_liq()
+            console.log(token.token)
+            global.liqtoken=token
+            getLiq(token.token)
+            
+        } catch (error) {
+            
+        }
+
+    }
+
+    async function getLiq(token){
         id_operador =global.id_operador
         var inicio=moment().add(6,'h').format('YYYY-MM-DDTHH:MM')
         var fin=moment().subtract(100, 'd').format('YYYY-MM-DDTHH:MM')
@@ -20,7 +33,7 @@ function LiquidacionesScreen (){
         var totime=inicio+':00.000Z'
         try {
 
-            const data=await TmsAPI.getliquidations(id_operador,fromtime,totime)
+            const data=await TmsAPI.getliquidations(id_operador,fromtime,totime,token)
             var liquidaciones=data.filter(data=> data.is_consolidated_row==false )
            // console.log(liquidaciones)
           

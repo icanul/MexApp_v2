@@ -3,6 +3,7 @@ import axios from "axios";
 const BASE_API='https://tms.logsys.com.mx/tms/v1/'
 const rest_v2='https://app.mexamerik.com/tms/api/v2.0'
 const tmsapi='https://tms.logsys.com.mx/maintenance/'
+const tmsliqap='https://tms.logsys.com.mx/liquidations.api/api/'
 
 class Api{
      
@@ -62,12 +63,14 @@ class Api{
         });
         return query;
       }
-      async setevidencegasto(image,id ){
+      async setevidencegasto(image,id){
+        var token=liqtoken
         const query= await fetch("https://tms.logsys.com.mx/liquidations.api/api/outgoings/"+id+"/to-check-evidence",{
           method: 'PATCH',
           headers: {   
             'Content-Type': 'application/json',
           'Accept': 'application/json',
+          Authorization : ' Bearer '+token,  
           'Content-Type': 'multipart/form-data',
            },
 
@@ -76,12 +79,14 @@ class Api{
       
         return query;
       }
-      async setObsgasto(comment,id ){
+      async setObsgasto(comment,id){
+        var token=liqtoken
         const query= await fetch("https://tms.logsys.com.mx/liquidations.api/api/outgoings/"+id+"/to-check-evidence/attach-obs",{
           method: 'PATCH',
           headers: {   
             'Content-Type': 'application/json',
           'Accept': 'application/json',
+          Authorization : ' Bearer '+token,  
      
            },
 
@@ -91,16 +96,16 @@ class Api{
        
         return query;
       }
-      async getliquidations(id_Operador,from_time, to_time, options = {}){
+      async getliquidations(id_Operador,from_time, to_time, token ,options = {}){
         options.headers = 
         {
           'Content-Type': 'application/json',
           Accept: 'application/json',
-          Authorization : ' Basic '+'YWRtaW46bTN4NG0zcjFr',
+          Authorization : ' Bearer '+token,  
           'sort': '-id'
         };
         //https://tms.logsys.com.mx/liquidations.api
-        var url='https://tms.logsys.com.mx/liquidations.api/api/liquidations?start=0&end=1000&driver_id='+id_Operador+'&from_time='+from_time+"&to_time="+to_time
+        var url=tmsliqap+'liquidations?start=0&end=1000&driver_id='+id_Operador+'&from_time='+from_time+"&to_time="+to_time
         console.log(url)
         const query = await fetch(url,options);
         const data = await query.json();
@@ -110,30 +115,29 @@ class Api{
       
 
       }
-      async getliqdet(id, options = {}){
+      async getliqdet(id,token,options = {}){
         options.headers = 
         {
           'Content-Type': 'application/json',
           Accept: 'application/json',
-          Authorization : ' Basic '+'YWRtaW46bTN4NG0zcjFr',
+          Authorization : ' Bearer '+token,
         };
         //
-        var url='https://tms.logsys.com.mx/liquidations.api/api/liquidations/'+id
+        var url=tmsliqap+'liquidations/'+id
         const query = await fetch(url,options);
         const data = await query.json(); 
         return data;
       
-
       }
-      async getgasto(id_Operador,from_time, to_time, options = {}){
+      async getgasto(id_Operador,from_time, to_time,token ,options = {}){
         options.headers = 
         {
           'Content-Type': 'application/json',
           Accept: 'application/json',
-          Authorization : ' Basic '+'YWRtaW46bTN4NG0zcjFr',
+          Authorization : 'Bearer'+token,
           'sort': '-created_on'
         };
-        var url='https://tms.logsys.com.mx/liquidations.api/api/outgoings?start=0&end=1000&driver_id='+id_Operador+'&from_time='+from_time+"&to_time="+to_time
+        var url=tmsliqap+'outgoings?start=0&end=1000&driver_id='+id_Operador+'&from_time='+from_time+"&to_time="+to_time
         console.log(url)
         const query = await fetch(url,options);
         const data = await query.json();
@@ -142,12 +146,12 @@ class Api{
       
 
       }
-      async getdepositos(id_Operador,from_time, to_time, options = {}){
+      async getdepositos(id_Operador,from_time, to_time,token, options = {}){
         options.headers = 
         {
           'Content-Type': 'application/json',
           Accept: 'application/json',
-          Authorization : ' Basic '+'YWRtaW46bTN4NG0zcjFr',
+          Authorization : ' Bearer '+token,
           'sort': '-created_on'
         };
         var url='https://tms.logsys.com.mx/liquidations.api/api/deposits?start=0&end=1000&driver_id='+id_Operador+'&from_time='+from_time+"&to_time="+to_time
@@ -208,6 +212,23 @@ class Api{
 
       async gettoken(){
         const query= await fetch(tmsapi+"api/auth/login",{
+          method: 'POST',
+          headers: {   
+            'Content-Type': 'application/json',
+          'Accept': 'application/json',
+           },
+           body: JSON.stringify({
+            "username":'MexApp',
+            "password":'M3x4pp&*',
+           }),
+        });
+        var data= await query.json();
+        return data;
+      }
+      async get_token_liq(){
+        console.log('generando api')
+        //https://tms.logsys.com.mx/liquidations.api/api/CredentialsAuthentication/authenticate
+        const query= await fetch(tmsliqap+'CredentialsAuthentication/authenticate',{
           method: 'POST',
           headers: {   
             'Content-Type': 'application/json',

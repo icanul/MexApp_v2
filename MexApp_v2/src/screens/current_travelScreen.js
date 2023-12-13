@@ -342,8 +342,7 @@ function TravelsScreen (props){
                 waypoints_destiny={travel_current.waypoints_destiny}
                 origen={origen}
                 destino={travel_current.destiny}
-                solicitud={travel_current.id}
-                points={travel_current.waypoints_origin}/>
+                solicitud={travel_current.id}/>
                
     
                 <ScrollView style={{margin:4}} 

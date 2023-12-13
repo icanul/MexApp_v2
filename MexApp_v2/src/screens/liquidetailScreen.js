@@ -6,6 +6,7 @@ import Api from'../api/tms'
 import { useNavigation } from '@react-navigation/native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import LiqdeailList from '../containers/liqdetlist'
+import Styles from '../styles/styles';
 
 function LiqdetailsScreen (props){
   const navigation = useNavigation();
@@ -20,23 +21,34 @@ function LiqdetailsScreen (props){
        getconceptos()
     }, [])
 
-     const createPDF=()=>{
-   
+     const createPDF=()=>
+     {  
         navigation.navigate('liqpdf',{ id:context.id})
-     
-  }
+    }
 
+   const totales=(array)=>{
+    if(array.length>0){
+      for(var i=0;i<array,length;i++){
+        console.log(array[i].amount)
+      }
+    }
 
+   }
     async function getconceptos(){
         id_operador =global.id_operador
         try {
 
             const conceptos=await Api.getliqdet(context.id)
-        
+          
+            
+                
+
             let d=conceptos.deposits
             let g=conceptos.outgoings
             let cd=conceptos.charges_deductions
             let p= conceptos.perceptions
+          //  totales(p)
+       
              setDepositos(d)
              setPercepciones(p)
              setdeducciones(cd)     
@@ -52,13 +64,30 @@ function LiqdetailsScreen (props){
 
     }
 
-    
+    /*/
+        <View style={Styles.horizontal}>
+            <Text>Total depositos:</Text>
+
+          </View>
+          <View style={Styles.horizontal}>
+          <Text>Total percepciones:</Text>
+
+          </View>
+          <View style={Styles.horizontal}>
+          <Text>Total Gastos:</Text>
+            
+            </View>
+            <View style={Styles.horizontal}>
+            <Text>Total Cargos:</Text>
+            
+            </View>/*/
    
     return(
       <View style={{ flex: 1,
         width:'100%',
         height:'100%'
         }}>
+      
           
     <Tab.Navigator 
     screenOptions={{

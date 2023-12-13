@@ -1,6 +1,6 @@
 import React, {useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { View,Image,Text ,PermissionsAndroid,StyleSheet} from 'react-native';
+import { View,Image,Text ,PermissionsAndroid,StyleSheet,Alert} from 'react-native';
 import RNFetchBlob from 'rn-fetch-blob'
 
 
@@ -41,9 +41,8 @@ function LiquidacionPdf (props){
   }
 
     const downloadFile = async () => {
-
-
-        const { config, fs } = RNFetchBlob;
+      const token =global.liqtoken
+      const { config, fs } = RNFetchBlob;
   const downloadsDir = fs.dirs.DownloadDir;
   const url = 'https://tms.logsys.com.mx/liquidations.api/api/liquidations/'+id+'/print'; // Reemplaza con la URL del archivo a descargar
   const fileName = id +'.pdf'; // Reemplaza con el nombre que deseas para el archivo
@@ -59,15 +58,12 @@ function LiquidacionPdf (props){
             path: filePath,
             mediaScannable: true,
           },
-    }).fetch('GET', url);
+    }).fetch('GET',url,{  'Authorization ': ' Bearer '+token, });
 
-    if (response.info().status === 200) {
+      Alert.alert("",`Archivo descargado con éxito en ${filePath}`)
       console.log(`Archivo descargado con éxito en ${filePath}`);
       navigator.goBack()
-    } else {
-      console.log('Error al descargar el archivo.');
-      navigator.goBack()
-    }
+  
   } catch (error) {
     console.error('Error al descargar el archivo:'+ error);
     navigator.goBack()

@@ -24,14 +24,20 @@ function NewDream (props){
       serLoad(true)
       var init =date.getDate()+"-"+(date.getMonth()+1)+"-"+date.getFullYear()+' '+time.getHours()+":"+time.getMinutes()
       var end =date1.getDate()+"-"+(date1.getMonth()+1)+"-"+date1.getFullYear()+' '+time1.getHours()+":"+time1.getMinutes()
-      console.log('fecha inicio: '+init+' '+'fecha fin: '+end)
+      console.log('fecha inicio: '+init+' '+'Fecha fin: '+end)
 
       try {
-
+        if(props.isConnected){
           const dreams=await Api.New_Dream(init,end)
-          Alert.alert(dreams)
+          Alert.alert("",dreams)
           context.onRefresh()
           context.setModalVisible(false)
+
+        }else{
+          Alert.alert("",'Sin conexión a internet','Intentalo mas tarde')
+        }
+
+        
           
       } catch (error) {
           console.log(error)

@@ -14,11 +14,22 @@ function DepositosScreen (){
 
 
     useEffect(() => {
-        gettravel()
+        gettoken()
         
     }, [])
+    async function gettoken(){
+        try {
+            const token= await Api.get_token_liq()
+            console.log(token.token)
+            Get_depositos(token.token)
+            
+        } catch (error) {
+            
+        }
 
-    async function gettravel(){
+    }
+
+    async function Get_depositos(token){
         var inicio=moment().add(6,'h').format('YYYY-MM-DDTHH:MM')
         var fin=moment().subtract(100, 'd').format('YYYY-MM-DDTHH:MM')
         var fromtime=fin+':00.000Z'
@@ -26,7 +37,7 @@ function DepositosScreen (){
 
         try {
 
-            const getdepositos=await Api.getdepositos(id_operador,fromtime,totime)
+            const getdepositos=await Api.getdepositos(id_operador,fromtime,totime,token)
           let convert=getdepositos.filter(getdepositos=> getdepositos.is_consolidated_row==false )
 
            

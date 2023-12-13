@@ -44,6 +44,7 @@ import ReporterScreen from './src/componets/mto_tabs';
 import Reporter from './src/componets/reporter';
 import MtoDetail from './src/screens/mto_report';
 import Pandape from './src/screens/pandape';
+import MapScreen from './src/screens/MapScreen';
 import packageJson from  './package.json'; // Asegúrate de ajustar la ruta según la ubicación de tu package.json
 import { LogBox } from 'react-native';
 LogBox.ignoreLogs(['new NativeEventEmitter']); 
@@ -570,6 +571,16 @@ const checkToken = async () => {
           title:"pandape"}}
       name='pandape'
       component={Pandape} />
+
+      <Stack.Screen 
+        options={{
+          unmountOnBlur: true,
+          headerShown: true,
+      
+          gesturesEnabled: false,  
+          title:"Modo de navegacion"}}
+      name='mapscreen'
+      component={MapScreen} />
       
         </>
     )}

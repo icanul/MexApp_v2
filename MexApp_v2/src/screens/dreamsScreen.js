@@ -32,6 +32,8 @@ function DreamsScreen (props){
 
     useEffect(() => {
       LogBox.ignoreLogs(["VirtualizedLists should never be nested"])
+     
+
       const unsubscribe = NetInfo.addEventListener(state => {
         var stade_conection=state.isConnected
         var isInternetReachable=state.isInternetReachable
@@ -80,7 +82,7 @@ function DreamsScreen (props){
 
     }else{
       setStateDream('Iniciar Sueño 7')
-      Alert.alert("finalizado sin conexion")
+      Alert.alert("","finalizado sin conexion")
       setBanderabutton('#008f39')
       setBanderadrems(2)
     
@@ -90,8 +92,9 @@ function DreamsScreen (props){
         //  console.log("se agregara al servicio posterior")
 
           const dreams=await Api.New_Dream(recovery.start,recovery.end)
+          
           console.log(dreams)
-          Alert.alert("se agrego unsueño sin conexion")
+          Alert.alert("","se agrego unsueño sin conexion")
           await AsyncStorage.removeItem("@dreams_current");     
           onRefresh()
 
@@ -102,9 +105,9 @@ function DreamsScreen (props){
       }else if(recovery.startStatus=true&& recovery.endStatus==false){
         try {
           //console.log("se agregara al servicio normal")
-          const stardream=await Api. setDream("",recovery.snd,recovery.id,"finalizar MexApp2",false)
+          const stardream=await Api. setDream("",recovery.end,recovery.id,"finalizar MexApp2",false)
           //console.log(stardream)
-          Alert.alert("se agrego unsueño sin conexion")
+          Alert.alert("","se agrego unsueño sin conexion")
           await AsyncStorage.removeItem("@dreams_current");
           onRefresh()
 
@@ -122,43 +125,42 @@ function DreamsScreen (props){
     async function getDreams(){
        var id_operador =global.id_operador
        //console.log(' servicio'+id_operador)
+       try {
+        const dreams=await Api.get_current_dream(id_operador)
+        setdreams(dreams.listevents)
+        props.setConected(require('../drawables/online.png'))
+        setBanderadrems(dreams.activity_id)
+        setData(dreams)
+        storeData(dreams)
+        var semaphore=dreams.semaphore_24
+        var activity_id=dreams.activity_id
+        if(activity_id==1)
+        {
+          setStateDream('Terminar Sueño')
+          setBanderabutton('#e62e1b')
 
+        }
+        else{
+          setStateDream('Iniciar Sueño')
+          setBanderabutton('#008f39')
 
-        try {
+        }
+        if(semaphore==3){
+            setBandera('#e62e1b')
 
-            const dreams=await Api.get_current_dream(id_operador)
-            setdreams(dreams.listevents)
-           // console.log(' servicio')
+        }else if(semaphore==2){
+            setBandera('#fce903')
 
-           // console.log(dreams)
-            setBanderadrems(dreams.activity_id)
-            setData(dreams)
-            storeData(dreams)
-            var semaphore=dreams.semaphore_24
-      var activity_id=dreams.activity_id
-      if(activity_id==1){
-        setStateDream('Terminar Sueño')
-        setBanderabutton('#e62e1b')
-
-      }else{
-        setStateDream('Iniciar Sueño')
-        setBanderabutton('#008f39')
-
-      }
-      if(semaphore==3){
-          setBandera('#e62e1b')
-
-      }else if(semaphore==2){
-          setBandera('#fce903')
-
-      }else if(semaphore==1){
-          setBandera('#008f39')         
-      }
-          validate_dream_off()
+        }else if(semaphore==1){
+            setBandera('#008f39')         
+        }
+            validate_dream_off()
            
             
-        } catch (error) {
-            dataOffline()
+      } catch (error) {
+        Alert.alert("",'Error al conectarse al servidor','MexApp guardara toda la información mientras se restablece la conexión')
+          props.setConected(require('../drawables/offline2.png'))
+          dataOffline()
         }
 
     }
@@ -244,7 +246,7 @@ function DreamsScreen (props){
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
+          Alert.alert("","Operación cancelada");
           setModalVisible(!modalVisible);
         }}
       >

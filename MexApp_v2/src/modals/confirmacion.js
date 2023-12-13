@@ -8,7 +8,6 @@ function Confirmated (props){
     const [isload,serLoad]= useState(false);
 
     useEffect(() => {
-      console.log(isConnected)
       const interval = setInterval(() => {
         validate_offline()
     
@@ -29,8 +28,13 @@ function Confirmated (props){
     async function Confirmar(){
       if(props.isConnected==true){
         serLoad(true)
+        const now = new Date();
+        const utcString = now.toISOString(); 
+        console.log('hora utc de mexico:'+utcString)
+
         const fecha = new Date();
         var datetime=fecha.getDate()+'-'+(fecha.getMonth()+1)+'-'+fecha.getFullYear()+' '+fecha.getHours()+':'+fecha.getMinutes()        
+     
         try {
           const confirmated=await Api.confirmar(context.solicitud,1,"",datetime)
           if( confirmated.status==200|| confirmated.status==202)
