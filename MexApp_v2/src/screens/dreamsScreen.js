@@ -11,8 +11,6 @@ import Style from '../styles/styles';
 import DreamLIist from '../containers/deams_list';
 import { LogBox } from 'react-native';
 
-
-
 function DreamsScreen (props){
   const context=props
   const [isConnected, setIsConnected] = useState(false);
