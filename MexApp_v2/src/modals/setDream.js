@@ -60,7 +60,6 @@ function SetDreams (props){
                         var initbandera=convert.startStatus
                         saveStoreDream(init,initbandera,datehora,false,context.id_dream)
                         
-        
                     }else{
                         Alert.alert("",'Se inserto sin conexion')
                         saveStoreDream(datehora,false,'',false,context.id_dream)
@@ -92,7 +91,8 @@ function SetDreams (props){
                 serLoad(true)
                 const jsonValue = await AsyncStorage.getItem('@dreams_current')
                 var convert=JSON.parse(jsonValue)
-                if(context.isConnected){
+                if(context.isConnected)
+                {
                     const stardream=await Api. setDream("",datehora,context.id_dream,"finalizar MexApp2",false)
                     var status=stardream.status
                     
@@ -126,7 +126,7 @@ function SetDreams (props){
 
                 }
                 else{
-                    var init=convert.start
+                    var init=convert.startfffffggg
                     var initbandera=convert.startStatus
                     Alert.alert("",'Sueño Finalizado sin conexión')
                     saveStoreDream(init,initbandera,datehora,false,context.id_dream)            

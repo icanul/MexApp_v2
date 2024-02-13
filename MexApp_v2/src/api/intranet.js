@@ -208,12 +208,10 @@ return response
        
       }),
     });
-    console.log(query.body)
     const responseSize = query.headers.get('content-length') || '0';
     const line=hora+' '+query.url+' '+responseSize+'b'
     writeline(line)  
     const data = await query.text()
-    console.log(data)
     return data
 
   }
@@ -234,17 +232,25 @@ return response
        }),
 
     });
-    console.log(query)
-    const data = await query.text()
-
-    console.log(data)
+    console.log(query.body)
     const responseSize = query.headers.get('content-length') || '0';
     const line=hora+' '+query.url+' '+responseSize+'b'
     writeline(line)  
+    try {
+      
+      const data = await query.text()
+      return data
+      
+    } catch (error) {
+      return query
+      
+    }
+
+   
 
   
     
-    return query
+    
 
   }
   async setReport(solicitud,id_causa,observation){

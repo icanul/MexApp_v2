@@ -1,17 +1,29 @@
 import React , { useEffect, useState }from 'react';
-import { Text,ScrollView, View} from 'react-native';
+import { Text,ScrollView, RefreshControl} from 'react-native';
 import tms from '../api/tms';
 import FuelList from '../containers/fuelsList'
 
 function FuelScreen (props){
  
   const [items, setItems] = useState([])
+  const [refreshing, setRefreshing] = React.useState(false);
+
 
   useEffect(() => {
     getfuels()
 
 
   },[])
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    getfuels()
+    wait(2000).then(() => setRefreshing(false));
+  }, []);
+
+  const wait = (timeout) => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+  }
 
   const getfuels = async () => {
     const fuels= await tms.getfuel(global.id_operador)
@@ -26,7 +38,18 @@ function FuelScreen (props){
   }
  
   return(
-  <FuelList items={items}/>
+    <ScrollView 
+        
+    style={{flex:1, width:'100%',height:'100%'}}
+    refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+        />
+      }
+    >
+        <FuelList  onRefresh={onRefresh} items={items}/>
+ </ScrollView>
 
    )
 

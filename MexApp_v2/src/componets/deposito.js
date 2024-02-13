@@ -6,7 +6,7 @@ import {
 }from 'react-native';
 import Styles from '../styles/styles'
 import Pressable from 'react-native/Libraries/Components/Pressable/Pressable';
-
+import operations from '../utils/operations';
 function Empty (props){
 
 
@@ -108,7 +108,7 @@ function Empty (props){
     <Text style={Styles.titletext}>Importe.</Text>
     <Text style={Styles.simpletext}>{props.amount} $</Text>
     <Text style={Styles.titletext}>Fecha:</Text>
-    <Text style={Styles.simpletext}>{fecha}</Text>
+    <Text style={Styles.simpletext}>{operations.fechaFormateada(props.requested_on)}</Text>
   </View>
   <View style={Styles.horizontal}>
     <Text style={Styles.titletext}>Comentario</Text>
@@ -116,12 +116,12 @@ function Empty (props){
   </View>
   <View style={Styles.horizontal}>
     <Text style={Styles.titletext}>Autorizado</Text>
-    <Text style={Styles.simpletext}>{fechainit}</Text>
+    <Text style={Styles.simpletext}>{operations.fechaFormateada(props.approved_on)}</Text>
   </View>
   <Text style={Styles.simpletextm}>{props.approved_by}</Text>
   <View style={Styles.horizontal}>
     <Text style={Styles.titletext}>Aplicado</Text>
-    <Text style={Styles.simpletext}>{fechafin}</Text>
+    <Text style={Styles.simpletext}>{operations.fechaFormateada(props.realized_on)}</Text>
   </View>
   <Text style={[Styles.simpletextm,{marginBottom:10,}]}>{props.realized_by}</Text>
 

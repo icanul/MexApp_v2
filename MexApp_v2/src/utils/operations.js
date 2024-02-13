@@ -12,6 +12,16 @@ class Operations{
     deg2rad = (deg) => {
         return deg * (Math.PI / 180);
       };
+
+      fechaFormateada (fecha){
+        try {
+            return moment(fecha).format('DD/MM/YYYY  HH:mm');
+            
+        } catch (error) {
+            return error
+        }
+      }//
+
     calculateDistance(point1, point2){
         const R = 6371; // Radio de la Tierra en kilómetros
         const lat1 = point1.latitude;
@@ -38,7 +48,6 @@ class Operations{
     }
     convert_utc_local(fechaOriginal){
       const fechaFormateada = moment(fechaOriginal).format('YYYY-MM-DD HH:mm');
-      console.log(`Fecha formateada: ${fechaFormateada}`);
       return fechaFormateada
     }
 

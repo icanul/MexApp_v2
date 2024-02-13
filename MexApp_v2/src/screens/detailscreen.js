@@ -87,6 +87,11 @@ function Detailscreen (props){
           navigation.navigate('pandape')
           
       }
+      const mexatrueke=()=>{
+        // setHelpmodal1(true)
+          navigation.navigate('mexatrueke')
+          
+      }
     return(
         <ScrollView style={{backgroundColor:'#eaeaea'}}>
             <Modal
@@ -109,7 +114,7 @@ function Detailscreen (props){
               
                 <View style={style.vertical}>
                     <Text style={style.name}>{ global.nombre}</Text>
-                    <Text style={style.name}>{ global.celula}</Text>
+                    <Text style={style.name}>CEOP { global.celula}</Text>
                   
                 </View>
              
@@ -177,6 +182,11 @@ function Detailscreen (props){
                  onPress={pandape}>
                     <Image source={require('../drawables/logo.png')} style={style.menuicon} />
                     <Text style={style.menutext}>PANDAPE</Text>
+                </Pressable>
+                <Pressable style={style.menuitems}
+                 onPress={mexatrueke}>
+                    <Image source={require('../drawables/mexatrueke.png')} style={style.menuicon} />
+                    <Text style={style.menutext}>MEXA TRUEKE</Text>
                 </Pressable>
 
                 <Pressable style={style.menuitems}

@@ -10,9 +10,9 @@ import Styles from '../styles/styles'
 
 
 function Fuel (props){
+  console.log(props)
   const navigation = useNavigation();
-
-
+  const [statusname,setstatusname]=useState('')
 
   const utctolocal =(fecha)=> {
     try {
@@ -27,17 +27,31 @@ function Fuel (props){
     }
   }
   function confirmar(){
+    console.log(props.status)
 
-    if(props.vendor_type==3&&props.status){
+    if(props.vendor_type==3&&props.status==1){
       navigation.navigate('cameradiesel',{ id:props.assigmentnumber})
-
-
     }
    
-
   }
   
-  
+  const getstatus=(status)=>{
+    switch(status){
+      case 1:
+        return 'Sin confirmar'
+        break;
+      case 2:
+        return 'Confirmada'
+        break;
+      case 3:
+        return 'por validar'
+        break;
+      case 4:
+        return 'Cancelada'
+        break
+    }
+
+  }
   
   const getprovedorname=(type)=>{
     switch(type){
@@ -82,6 +96,7 @@ function Fuel (props){
         return '#ffdf00';
         break;
       case 4:
+     
         return '#d72000';
         break;
       default :
@@ -89,9 +104,7 @@ function Fuel (props){
       
     }
   }
-  const geticon=()=>{
 
-  }
 
     return(
       <Pressable style={{ borderWidth: 3,
@@ -104,6 +117,8 @@ function Fuel (props){
     <Text style={Styles.simpletext}>{props.assigmentnumber}</Text>
     <View style={{justifyContent: 'flex-end',
     alignItems: 'flex-end',flex:1}}> 
+        <Text style={{justifyContent: 'flex-end',color:getcolor(props.status,)}}>{getstatus(props.status)}</Text>
+
     <Image source={require('../drawables/logo.png')} style={{width: 50, height:30,resizeMode:'contain'}}/>
     </View>
   </View>

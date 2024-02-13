@@ -69,8 +69,8 @@ function CPicked (props){
 
         }
         else{
-            const fecha1 = new Date();
-            var datetime=fecha1.getDate()+'-'+(fecha.getMonth()+1)+'-'+fecha.getFullYear()+' '+fecha.getHours()+':'+fecha.getMinutes() 
+            const now = new Date();
+            const utcString = now.toISOString(); 
             Alert.alert
             (
               'MexApp',
@@ -83,7 +83,7 @@ function CPicked (props){
                       id:2,
                       solicitud:context.solicitud,
                       observation:'',
-                      datetime:datetime
+                      datetime:utcString
                   }
                   confirmationStore(confirmation)
                   send()

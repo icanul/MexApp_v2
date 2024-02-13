@@ -6,6 +6,7 @@ import {
 }from 'react-native';
 import Styles from '../styles/styles'
 import { useNavigation } from '@react-navigation/native';
+import operations from '../utils/operations';
 
 
 function Liquidacion (props){
@@ -66,12 +67,12 @@ function Liquidacion (props){
     <Text style={Styles.titletext}>NO liquidación.</Text>
     <Text style={Styles.simpletext}>{props.id}</Text>
     <Text style={Styles.titletext}>Balance total.</Text>
-    <Text style={Styles.simpletext}>${props.total_balance}</Text>
+    <Text style={Styles.simpletext}>${props.total_balance.toLocaleString()}</Text>
     
   </View>
   <View style={Styles.horizontal}>
   <Text style={Styles.titletext}>Fecha:</Text>
-  <Text style={Styles.simpletext}>{fecha}</Text>
+  <Text style={Styles.simpletext}>{operations.fechaFormateada(props.time)}</Text>
   </View>
   <View style={Styles.horizontal}>
 

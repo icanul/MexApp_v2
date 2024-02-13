@@ -2,6 +2,9 @@ import React, {useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { View,Image,Text ,PermissionsAndroid,StyleSheet,Alert} from 'react-native';
 import RNFetchBlob from 'rn-fetch-blob'
+import Share from 'react-native-share';
+
+
 
 
 function LiquidacionPdf (props){
@@ -47,6 +50,11 @@ function LiquidacionPdf (props){
   const url = 'https://tms.logsys.com.mx/liquidations.api/api/liquidations/'+id+'/print'; // Reemplaza con la URL del archivo a descargar
   const fileName = id +'.pdf'; // Reemplaza con el nombre que deseas para el archivo
   const filePath = `${downloadsDir}/${fileName}`;
+  const openOptions = {
+    type: 'application/pdf',
+    url: `file://${filePath}`,
+    filename: fileName,
+  };
 
   try {
     const response = await RNFetchBlob.config({
@@ -59,8 +67,16 @@ function LiquidacionPdf (props){
             mediaScannable: true,
           },
     }).fetch('GET',url,{  'Authorization ': ' Bearer '+token, });
+ 
+    try {
+     await Share.open(openOptions);
+      
+    } catch (error) {
+      console.log(error)
 
-      Alert.alert("",`Archivo descargado con éxito en ${filePath}`)
+    }
+      
+      Alert.alert("","Archivo descargado con éxito en carpeta de Descargas")
       console.log(`Archivo descargado con éxito en ${filePath}`);
       navigator.goBack()
   

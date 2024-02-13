@@ -9,13 +9,15 @@ import Empty from '../componets/empty'
 
 
 class FuelList extends Component{
+    
+ 
 
     keyExtractor = item => item.id.toString()
     renderEmtpy=()=><Empty text="No hay asignacionees disponibles"></Empty>
     itemseparator=()=><Separator  color='#eaeaea' ></Separator>
     renderItem=({item})=>{
         return(
-<Fuel {...item}></Fuel>
+<Fuel {...item}   onRefresh={this.props.onRefresh} ></Fuel>
         )
     }
     render(){

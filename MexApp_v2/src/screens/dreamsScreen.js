@@ -12,6 +12,7 @@ import DreamLIist from '../containers/deams_list';
 import { LogBox } from 'react-native';
 
 
+
 function DreamsScreen (props){
   const context=props
   const [isConnected, setIsConnected] = useState(false);
@@ -28,6 +29,7 @@ function DreamsScreen (props){
     const [save_end,setSave_end]=useState('')
     const [savebandera,setSavebandera]=useState('')
     const [listdreams,setdreams]=useState([]);
+    const [dreams_off,setDreamOff]=useState('')
 
 
     useEffect(() => {
@@ -57,7 +59,12 @@ function DreamsScreen (props){
 
     const onRefresh = React.useCallback(() => {
       setRefreshing(true);
-      getDreams()
+      if(isConnected){
+        getDreams()
+
+      }else{
+        dataOffline()
+      }
 
       wait(2000).then(() => setRefreshing(false));
     }, []);
@@ -72,53 +79,67 @@ function DreamsScreen (props){
 
   var recovery = await getsaveDreamas()
   if(recovery!= null){
-
+    console.log('hay un sueño pendientes ')
+   
     if(recovery.end==''&&recovery.start!=''){
       setStateDream('Terminar Sueño')
+      setDreamOff('Iniciaste un sueño sin conexion se enviara cuando se lo finalices')
       setBanderabutton('#e62e1b')
       setBanderadrems(1)
      
       
 
     }else{
-      setStateDream('Iniciar Sueño 7')
-      Alert.alert("","finalizado sin conexion")
+      setStateDream('Iniciar Sueño')
+      setDreamOff('Tienes un sueño pendiente por enviar se enviara cuando tengas conexion')
       setBanderabutton('#008f39')
       setBanderadrems(2)
+      if(isConnected){
+        if(recovery.startStatus==false&&recovery.endStatus==false){ 
+          try {
+         console.log("se agregara al servicio posterior")
+  
+            const dreams=await Api.New_Dream(recovery.start,recovery.end)
+            console.log(dreams)
+            Alert.alert("","Se agrego Un sueño sin conexion")
+            await AsyncStorage.removeItem("@dreams_current"); 
+            setDreamOff('')    
+            onRefresh()
+  
+          } catch (error) {
+            console.log(error)
+            setDreamOff('')    
+            onRefresh()
+          }
+       
+        }else if(recovery.startStatus=true&& recovery.endStatus==false){
+          try {
+            console.log("se agregara al servicio normal no mmes")
+            const stardream=await Api. setDream("",recovery.end,recovery.id,"finalizar MexApp2",false)
+            //console.log(stardream)
+            setDreamOff('')
+            Alert.alert("",stardream)
+            await AsyncStorage.removeItem("@dreams_current");
+            onRefresh()
+  
+          } catch (error) {
+            console.log(error)
+            onRefresh()
+            
+          }
+        }
+
+      }
     
 
-      if(recovery.startStatus==false&&recovery.endStatus==false){ 
-        try {
-        //  console.log("se agregara al servicio posterior")
-
-          const dreams=await Api.New_Dream(recovery.start,recovery.end)
-          
-          console.log(dreams)
-          Alert.alert("","se agrego unsueño sin conexion")
-          await AsyncStorage.removeItem("@dreams_current");     
-          onRefresh()
-
-        } catch (error) {
-          console.log(error)
-        }
-     
-      }else if(recovery.startStatus=true&& recovery.endStatus==false){
-        try {
-          //console.log("se agregara al servicio normal")
-          const stardream=await Api. setDream("",recovery.end,recovery.id,"finalizar MexApp2",false)
-          //console.log(stardream)
-          Alert.alert("","se agrego unsueño sin conexion")
-          await AsyncStorage.removeItem("@dreams_current");
-          onRefresh()
-
-        } catch (error) {
-          console.log(error)
-          
-        }
-      }
+      
     }
 
-  }}
+  }else{
+    console.log('no hay sueño guardado')
+    setDreamOff('')
+  }
+}
 
 
 
@@ -164,6 +185,7 @@ function DreamsScreen (props){
         }
 
     }
+
     const storeData = async (value) => {
         try {
            
@@ -285,9 +307,12 @@ function DreamsScreen (props){
 
 
             </View>
+            <Text style={{fontWeight:'bold', marginLeft:10, marginTop:5,marginBottom:5,justifyContent:'center',textAlign:'center' }}> {dreams_off}</Text>
+
             <View style={{backgroundColor:bandera,marginTop:5,margin:10}}>
                 <Text style={[{backgroundColor:bandera},style.textbutton]}>Tienes que dormir antes del {data.dream_24}</Text>
             </View>
+            
             <View style={Style.hcentrar}>
             <Pressable style={{backgroundColor:banderabutton,borderRadius:60,marginTop:10,marginRight:5, elevation: 5,}}
             onPress={() => setModalVisible1(true)}>

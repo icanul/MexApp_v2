@@ -29,14 +29,12 @@ function Confirmated (props){
       if(props.isConnected==true){
         serLoad(true)
         const now = new Date();
+        
         const utcString = now.toISOString(); 
-        console.log('hora utc de mexico:'+utcString)
-
-        const fecha = new Date();
-        var datetime=fecha.getDate()+'-'+(fecha.getMonth()+1)+'-'+fecha.getFullYear()+' '+fecha.getHours()+':'+fecha.getMinutes()        
+        console.log('hora utc de mexico:'+utcString)     
      
         try {
-          const confirmated=await Api.confirmar(context.solicitud,1,"",datetime)
+          const confirmated=await Api.confirmar(context.solicitud,1,"",utcString)
           if( confirmated.status==200|| confirmated.status==202)
           {
               Alert.alert("Se confirmo correctamente")
@@ -49,7 +47,7 @@ function Confirmated (props){
                 id:1,
                 solicitud:context.solicitud,
                 observation:'',
-                datetime:datetime
+                datetime:utcString
             }
             confirmationStore(confirmation)
             send()        
@@ -57,8 +55,8 @@ function Confirmated (props){
       }
       else
       {
-        const fecha1 = new Date();
-        var datetime=fecha1.getDate()+'-'+(fecha.getMonth()+1)+'-'+fecha.getFullYear()+' '+fecha.getHours()+':'+fecha.getMinutes() 
+        const now = new Date();  
+        const utcString = now.toISOString(); 
         Alert.alert
         (
           'MexApp',
@@ -71,7 +69,7 @@ function Confirmated (props){
                   id:1,
                   solicitud:context.solicitud,
                   observation:'',
-                  datetime:datetime
+                  datetime:utcString
               }
               confirmationStore(confirmation)
               send()

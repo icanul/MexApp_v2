@@ -44,9 +44,11 @@ import ReporterScreen from './src/componets/mto_tabs';
 import Reporter from './src/componets/reporter';
 import MtoDetail from './src/screens/mto_report';
 import Pandape from './src/screens/pandape';
+import Mexatrueke  from './src/screens/mexatrueke';
 import MapScreen from './src/screens/MapScreen';
 import packageJson from  './package.json'; // Asegúrate de ajustar la ruta según la ubicación de tu package.json
 import { LogBox } from 'react-native';
+
 LogBox.ignoreLogs(['new NativeEventEmitter']); 
 
 
@@ -90,7 +92,7 @@ useEffect(() => {
 
     }else{
       setIsConnected(false)
-      Alert.alert('no hay coneccion a INTENET')
+      Alert.alert('No hay Conexión a INTERNET')
       setConected(require('./src/drawables/offline2.png'))
 
     }
@@ -144,15 +146,20 @@ const getevidence= async () => {
 const getData = async () => {
   try {
     const user=await storageData.consultData('@user_storage')
-    if(user!= null)
-    var convert=JSON.parse(user)
-    global.id_operador=convert.id
-    global.nombre = convert.nombre;
-    global.alias= convert.unidad;
-    messaging()
-    .subscribeToTopic(convert.id+"")
-    .then(() => console.log('Subscribed to topic!'));  
-    setLogget(1)
+    if(user!= null){
+      var convert=JSON.parse(user)
+      console.log(convert.cell_data[0].phone)
+        global.id_operador=convert.id
+        global.phone=convert.cell_data[0].phone
+        global.nombre = convert.nombre;
+        global.alias= convert.unidad;
+        messaging()
+        .subscribeToTopic(convert.id+"")
+        .then(() => console.log('Subscribed to topic!'));  
+        setLogget(1)
+      
+    }
+   
   } catch (error) {
     console.log("no hay usuario guardardo")
       setLogget(0)
@@ -558,6 +565,7 @@ const checkToken = async () => {
           title:"Reportes de mantenimiento"}}
       name='reporterdetail'
       component={MtoDetail} />
+
            <Stack.Screen 
         options={{
           unmountOnBlur: true,
@@ -571,6 +579,21 @@ const checkToken = async () => {
           title:"pandape"}}
       name='pandape'
       component={Pandape} />
+
+        <Stack.Screen 
+        options={{
+          unmountOnBlur: true,
+          headerShown: false,
+          headerRight :() => (
+            <Image
+            style={style.logo}
+            source={require('./src/drawables/logo.png')}/>
+          ),
+          gesturesEnabled: false,  
+          title:"Mexatrueke"}}
+      name='mexatrueke'
+      component={Mexatrueke} />
+
 
       <Stack.Screen 
         options={{

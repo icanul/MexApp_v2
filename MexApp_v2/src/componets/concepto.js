@@ -6,6 +6,7 @@ import {
    
 }from 'react-native';
 import Styles from '../styles/styles'
+import operations from '../utils/operations';
 
 function Empty (props){
 
@@ -38,9 +39,9 @@ function Empty (props){
 <View style={Styles.contencard}>
   <View style={Styles.horizontal}>
     <Text style={Styles.titletext}>Importe:</Text>
-    <Text style={Styles.simpletext}>{props.amount}</Text>
+    <Text style={Styles.simpletext}>{props.amount.toLocaleString()}</Text>
     <Text style={Styles.titletext}>Fecha:</Text>
-    <Text style={Styles.simpletext}>{unixtolocal(props.liquidated_on)}</Text>
+    <Text style={Styles.simpletext}>{operations.fechaFormateada(props.liquidated_on)}</Text>
   </View>
   <View style={Styles.horizontal}>
     <Text style={Styles.titletext}>registro:</Text>

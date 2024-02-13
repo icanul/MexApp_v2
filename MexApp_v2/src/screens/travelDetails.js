@@ -3,6 +3,7 @@ import { View,Text,Button,StyleSheet} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { ScrollView } from 'react-native';
 import { color } from 'react-native-reanimated';
+import operations from '../utils/operations';
 
 
 
@@ -43,7 +44,7 @@ function TravelDetails (props){
             </View>
             <View style={style.horizontal}>
                 <Text style={style.text1}>Cita carga: </Text>
-                <Text style={style.text2}>{travel.pickup_datetime}</Text>
+                <Text style={style.text2}>{operations.fechaFormateada(travel.pickup_datetime)}</Text>
 
             </View>
             <View style={style.horizontal}>
@@ -58,7 +59,7 @@ function TravelDetails (props){
             </View>
             <View style={style.horizontal}>
                 <Text style={style.text1}>Cita Descarga: </Text>
-                <Text style={style.text2}>{travel.delivery_datetime}</Text>
+                <Text style={style.text2}>{operations.fechaFormateada(travel.delivery_datetime)}</Text>
 
             </View>
            

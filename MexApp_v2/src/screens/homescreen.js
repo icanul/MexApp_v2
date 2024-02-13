@@ -1,5 +1,5 @@
 import React, { useEffect, useState,useRef } from 'react';
-import { View,Image,ScrollView,Text,RefreshControl, Pressable, Alert } from 'react-native';
+import { View,Image,ScrollView,Text,RefreshControl, Pressable, Alert ,Modal} from 'react-native';
 import messaging from '@react-native-firebase/messaging';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Api from '../api/intranet'
@@ -7,7 +7,7 @@ import { WebView } from 'react-native-webview';
 import InphograpicsList from '../containers/inphograpicsList'
 import NetInfo from "@react-native-community/netinfo";
 import packageJson from  '../../package.json'; // Asegúrate de ajustar la ruta según la ubicación de tu package.json
-
+import WelcomeHome from './welcomehomeScreen';
 
 
 
@@ -23,7 +23,10 @@ function HomeScreen (props){
   const [refreshing, setRefreshing] = React.useState(false);
   const [sizes, setsize]=React.useState('28%')
   const [count,setcount]=React.useState(0)
+  const [modalVisible,setModalVisible]=useState(true)
   const appVersion = packageJson.version;
+  const [url, setUrl] = useState('https://sites.google.com/logsys.com.mx/mexapp-avisos/p%C3%A1gina-principal');
+
 
   
   
@@ -53,6 +56,12 @@ function HomeScreen (props){
         } 
     }, [])
 
+    const handleNavigate = () => {
+      if (url) {
+        setUrl(url);
+      }
+    };
+
     const dimist=()=>{
       console.log('presss')
       if(count==0){
@@ -66,7 +75,26 @@ function HomeScreen (props){
       }
 
     }
-    
+    const onMessage = (event) => {
+      // Event.data contiene la información enviada desde el WebView
+      const selectedUrl = event.nativeEvent.data;
+      setUrl(selectedUrl)
+      console.log('URL seleccionado:', selectedUrl);
+      // Puedes hacer lo que quieras con la URL seleccionada aquí
+    };
+    const injectJavaScript = `
+    // Sobrescribe el comportamiento de clic para enviar el URL seleccionado a React Native
+    document.addEventListener('click', function(e) {
+      var target = e.target;
+      while (target && target.tagName !== 'A') {
+        target = target.parentElement;
+      }
+      if (target) {
+        window.ReactNativeWebView.postMessage(target.href);
+        e.preventDefault();
+      }
+    });
+  `;
  
     const getInfographics= async()=> {
     
@@ -176,6 +204,17 @@ function HomeScreen (props){
               onRefresh={onRefresh}
             />
           }>
+              <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                Alert.alert("Modal has been closed.");
+               }}>
+                <WelcomeHome setModalVisible={setModalVisible}/>
+
+
+                </Modal>
             <View style={{width:'100%',height:sizes, backgroundColor:'#ffffff', marginTop:5}}>
             <InphograpicsList infografias={Inphograpics_list}/>
     
@@ -194,8 +233,9 @@ function HomeScreen (props){
                  <WebView 
                  ref={(ref) => webViewRef.current = ref}
                  nestedScrollEnabled
-             
-                 source={{ uri: 'https://sites.google.com/logsys.com.mx/mexapp-avisos/p%C3%A1gina-principal' }} 
+                 onMessage={onMessage}
+                 injectedJavaScript={injectJavaScript}
+                 source={{ uri: url }}
                  javaScriptEnabled={true}
                  />
           

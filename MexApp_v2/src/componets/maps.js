@@ -31,12 +31,13 @@ function Maps (props){
   const destination = { latitude: 34.0522, longitude: -118.2437 }; 
   const [beslatitud,setbestlatitud]=useState(0.0)
   const [beslongitud,sebestlongitud]=useState(0.0)
+  const [traficc,settraffic]= useState(true)
 
 
   useEffect(() => {
     setbestlatitud(milatitusd)
     sebestlongitud(milatitusd)
-
+ 
     getruta()
 
     console.log("solo una vez")
@@ -55,7 +56,7 @@ function Maps (props){
 
 
   const openMap=()=>{
-   // navigation.navigate('mapscreen',{data:props,points:points})
+   navigation.navigate('mapscreen',{data:props,points:points})
 
   }
 async function getruta(){
@@ -203,7 +204,10 @@ const getBestPoint=()=>{
 
 }
 
-
+const enableTraffic=()=>{
+  settraffic(!traficc)
+  
+}
 const storeData = async (value) => {
   try {
      
@@ -252,7 +256,7 @@ const mapa=(props)=>{
     showsUserLocation={true}
     followsUserLocation={true}
     showsMyLocationButton={true}
-    showsTraffic={false}  
+    showsTraffic={traficc}  
     initialRegion={{
       latitude: milatitusd,
       longitude: milongitud,
@@ -311,7 +315,7 @@ const mapa=(props)=>{
    
      <Polyline
      coordinates={points}
-              strokeColor="#000"
+              strokeColor="#0000FF"
               strokeWidth={4}
              />
   
@@ -331,6 +335,24 @@ const mapa=(props)=>{
               
               style={{width:25,height:25,resizeMode:'contain',alignItems: 'center',marginTop:7}}
               source={require('../drawables/full.png')}/>
+            </Pressable>
+         
+
+
+    </View>
+    <View
+        style={{
+            position: 'absolute',//use absolute position to show button on top of the map
+            top: top, //for center align
+            alignSelf: 'flex-start' //for align to right
+        }}
+    >
+            <Pressable style={{width:40,height:40,backgroundColor:'#eaeaeacc',alignItems: 'center',
+            alignContent:'center',marginLeft:10,}} onPress={enableTraffic}>
+              <Image 
+              
+              style={{width:30,height:30,resizeMode:'contain',alignItems: 'center',marginTop:7}}
+              source={require('../drawables/traffic.png')}/>
             </Pressable>
          
 

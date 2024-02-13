@@ -2,6 +2,8 @@ import React from 'react';
 import { View,Text,StyleSheet, Pressable, Alert} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Styles from '../styles/styles'
+import operations from '../utils/operations';
+
 
 
 
@@ -23,7 +25,7 @@ function Travel (props){
                 <Text style={Styles.simpletext}>{props.id}</Text>
 
             </View>
-            <Text style={Styles.simpletext}>{props.delivery_datetime}</Text>
+            <Text style={Styles.simpletext}>{operations.fechaFormateada(props.delivery_datetime)}</Text>
             </View>
            
         </Pressable>

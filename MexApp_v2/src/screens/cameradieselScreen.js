@@ -16,6 +16,8 @@ function CametaScreen (props){
     const [modalVisible1, setModalVisible1] = useState(false);
     const [urlfile,seturl]= useState('')
     const [string64,setString64]= useState('')
+    const [isload,serLoad]= useState(false);
+
 
 
     useEffect(() => {
@@ -29,14 +31,18 @@ function CametaScreen (props){
 
     }, [])
     async function createPDF(){
+      serLoad(true)
       try {
         var id=props.route.params.id
         const setevidence = await Api.setevidencediesel(string64,id)
         console.log(setevidence)
+        Alert.alert('Asignación Confirmada',"Se subio correctamente las evidencias")
+        serLoad(false)
         props.navigation.goBack()
         
       } catch (error) {
-        Alert.alert("Error al enviar")
+        serLoad(false)
+        Alert.alert("Error al enviar: " ,  error)
         console.log(error)
         
       }
@@ -114,10 +120,18 @@ function CametaScreen (props){
           console.log(err);
         }
       }
-   
+      if(isload==true){
+
+        return(
+            <View style={style.content}>
+            <Image  style={style.image} source={require('../drawables/loading.gif')}/>
+            
+        </View>
+
+        )
+    }else{
     return(
         <View style={{flex:1,width:'100%',height:'100%' }}>
-
             <Image
             style={{  width:'100%',height: '100%',resizeMode:'contain',alignSelf:'center'}}
             source={{ uri: image}}
@@ -133,14 +147,13 @@ function CametaScreen (props){
             style={style.button1}>
                 <Text style={style.textbutton}>Enviar</Text>
             </Pressable>
-
             </View>
             
         </View>
 
     )
  
-};
+}}
 
 const style = StyleSheet.create({
     button:{
@@ -167,6 +180,16 @@ const style = StyleSheet.create({
       
 
   },
+  content:{
+       
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+
+    backgroundColor:'#eaeaeacc',
+ 
+
+},
   textbutton:{
         color:'#ffffff',
         textAlign: 'center'

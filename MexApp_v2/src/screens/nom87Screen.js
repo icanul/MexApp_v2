@@ -5,6 +5,8 @@ import Api from '../api/intranet'
 import { useNavigation } from '@react-navigation/native';
 import { Table, Row,Rows } from 'react-native-table-component';
 import Styles from '../styles/styles'
+import moment from 'moment';
+
 
 var status=[]
 var fecha_ini=[]
@@ -27,7 +29,7 @@ function Nom87 (){
        
           
             const fecha = new Date();
-            var datehora=fecha.getDate()+'-'+(fecha.getMonth()+1)+'-'+fecha.getFullYear()+' '+fecha.getHours()+':'+fecha.getMinutes()
+            var datehora=moment(fecha).format('DD/MM/YYYY HH:mm');
             setday(datehora)
     
             getNom87()
@@ -114,12 +116,12 @@ function Nom87 (){
            </View>
            <View style={style.horizontal}>
                <Text style={style.textbutton}>Empresa </Text>
-               <Text style={Styles.simpletext}>TRANSPORTES MEXAMERIK S.A DE C.V</Text>
+               <Text style={Styles.simpletext}>TRANSPORTES MEXAMERIK</Text>
 
            </View>
            <View style={style.horizontal}>
                <Text style={style.textbutton}>Dirección: </Text>
-               <Text style={Styles.simpletext}>Mariano Escobedo S/N Col. Mariano Escobedo Tultitlán, Estado de México C.P. 54946</Text>
+               <Text style={Styles.simpletext}>AV. ADOLFO RUIZ CORTINES No 20, INT 53, COL  LOMAS DE ATIZAPAN 2A SECCION, MUNICIPIO ATIZAPAN DE ZARAGOZA, ESTADO DE MÉXICO, CP 52977</Text>
 
            </View>
            <View style={style.horizontal}>

@@ -11,7 +11,7 @@ import Empty from '../componets/empty'
 class Travelslist extends Component{
 
     keyExtractor = item => item.id.toString()
-    renderEmtpy=()=><Empty text=""></Empty>
+    renderEmtpy=()=><Empty text="Cargando viajes finalizados espere un momento...."></Empty>
     itemseparator=()=><Separator  color='#eaeaea' ></Separator>
     renderItem=({item})=>{
         return(

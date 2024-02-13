@@ -6,7 +6,7 @@ import {
 }from 'react-native';
 import Styles from '../styles/styles'
 import { useNavigation } from '@react-navigation/native';
-
+import operations from '../utils/operations';
 
 function Gasto (props){
   console.log(props)
@@ -117,7 +117,7 @@ function confirmar(){
     <Text style={Styles.simpletext}>{props.id}</Text>
   
     <Text style={Styles.titletext}>Fecha: </Text>
-    <Text style={Styles.simpletext}>{fechafin}</Text>
+    <Text style={Styles.simpletext}>{operations.fechaFormateada(props.requested_on)}</Text>
    
   </View>
 

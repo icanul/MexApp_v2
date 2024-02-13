@@ -1,5 +1,5 @@
 import React, { useEffect,useState } from 'react'
-import { Alert } from 'react-native';
+import { Alert, TurboModuleRegistry } from 'react-native';
 import { View,Text ,StyleSheet,Image,Linking,ScrollView,RefreshControl} from 'react-native';
 import NetInfo from "@react-native-community/netinfo";
 import Api from'../api/intranet'
@@ -13,6 +13,9 @@ import Confirmated from '../modals/confirmacion';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import Styles from '../styles/styles'
+import moment from 'moment';
+import operations from '../utils/operations';
+
 
 
 function TravelsScreen (props){
@@ -33,6 +36,12 @@ function TravelsScreen (props){
     const [bandera_c2,setBandera_c2]=useState(false)
     const [bandera_c3,setBandera_c3]=useState(false)
     const [isConnected, setIsConnected] = useState(false);
+    const [status_cs,setstatus_cs]= useState('')
+    const [status_cc,setstatus_cc]= useState('')
+    const [status_cd,setstatus_cd]= useState('')
+
+
+
 
 
     useEffect(() => {
@@ -45,10 +54,11 @@ function TravelsScreen (props){
                 console.log('buscando viaje con conexion a internet')
               setIsConnected(true);
               gettravel()
+
             }
             else{
                 console.log('buscando viaje sin estable conexion a internet')
-                dataOffline()
+                dataOffline(false)
                 setIsConnected(false);
             }
         })
@@ -69,37 +79,53 @@ function TravelsScreen (props){
         return new Promise(resolve => setTimeout(resolve, timeout));
       }
 
-    const validate_offline= async () => {
+    const validate_offline= async (bandera) => {
+
 
         const jsonValue = await AsyncStorage.getItem('@confirmarsolicitud')       
         if(jsonValue != null){
+            Alert.alert('Confirmación pendiente','')
+            setstatus_cs('pendiente')
             var convert=JSON.parse(jsonValue)
-            Confirmar(jsonValue)
-            var convert=JSON.parse(convert)
+            console.log(convert)
             setBandera_c1(true)
             setConfimated(false)
             setSolicitudcolor('#ffffffcc')
-            Alert.alert('Confirmacion de solicitud','Se ha confirmado tu solicitud guardada')
+            if(bandera){
+                Confirmar(jsonValue)
+            }
+        //    Alert.alert('Confirmacion de solicitud','Se ha confirmado tu solicitud guardada')
 
         }
         const jsonValue2 = await AsyncStorage.getItem('@confirmarcarga')
         if(jsonValue2 != null){
+            Alert.alert('Confirmación pendiente','')
+            setstatus_cc('pendiente')
             var convert=JSON.parse(jsonValue2)
-            console.log('hay confirmacion de carga pendiente')
-            Confirmar(convert)
-            bandera_c2(true)
+            setBandera_c2(true)
             setCargacolor('#ffffffcc')
-            Alert.alert('Confirmación de carga','Se ha confirmado tu carga guardada')
+            console.log('entrandoi a validacion'+bandera)
+            if(bandera){
+              
+                Confirmar(jsonValue2)
+
+            }
+         ///   Alert.alert('Confirmación de carga','Se ha confirmado tu carga guardada')
 
         }
         const jsonValue3 = await AsyncStorage.getItem('@confirmardescarga')
         if(jsonValue3 != null){
+            Alert.alert('Confirmación pendiente','')
+            setstatus_cd('pendiente')
             var convert=JSON.parse(jsonValue3)
-            console.log('hay confirmacion de descarga pendiente')
-            Confirmar(convert)
+            if(bandera){
+                
+                 Confirmar(jsonValue3)
+
+            }
             setBandera_c3(true)
             setDescargacolor('#9b9b9bcc') 
-            Alert.alert('Confirmación de descarga','Se ha confirmado tu descarga guardada')
+     ///       Alert.alert('Confirmación de descarga','Se ha confirmado tu descarga guardada')
         }
         const tmsreport = await AsyncStorage.getItem('tmsnotification')
         if(tmsreport != null){
@@ -120,6 +146,8 @@ function TravelsScreen (props){
         }
        
       }
+  
+
       const inst=()=>{
         navigation.navigate('instrucciones',{id:travel_current.id})
       }
@@ -131,6 +159,15 @@ function TravelsScreen (props){
             console.log(id_operador)
             const travel=await Api.getCurrentravel(id_operador)
             var currenttravel=travel[0]
+            if(currenttravel.pickup_confirmed){
+                setstatus_cc('enviada')
+            }
+            if(currenttravel.delivery_confirmed){
+                setstatus_cd('enviada')
+            }
+            if(currenttravel.travel_confirmed){
+                setstatus_cs('enviada')
+            }
             storeData(currenttravel)
             setIsoffline('')
             global.vehicle_id=currenttravel.vehicle_id
@@ -173,7 +210,7 @@ function TravelsScreen (props){
                 setDescargacolor('#ffffffcc')
             }
             try {
-                validate_offline()
+                validate_offline(true)
 
                 
             } catch (error) {
@@ -187,19 +224,35 @@ function TravelsScreen (props){
             dataOffline()
         }
     }
-    async function Confirmar(confirmation){
+    async function Confirmar(body){
+        var data= JSON.parse(body)
+        console.log('los datos de la confirmacion para la solicitud:'+data.id)
+        console.log(data)
+     //  
+
   
         try {
-            const confirmated=await Api.confirmar(confirmation.solicitud,confirmation.id,confirmation.observation,confirmation.datetime)
-            console.log(confirmated)
-            var id=confirmation.id
-            switch(id){
+            const confirmated=await Api.confirmar(data.solicitud,data.id,data.observation,data.datetime)
+            console.log('vaLIDANDO ESTUS DE CONFIRMACION')
+         //   console.log( confirmated)
+
+            Alert.alert('Confirmacion','Se ha Enviado tu confirmación')
+            var id=data.id
+            console.log('la solicitud enviada es de tipo:'+id)
+            switch(id)
+            {
+               
                 case 1:
+                    setstatus_cs('')
+
                     await AsyncStorage.removeItem("@confirmarsolicitud");   
                 case 2:
+                    setstatus_cc('')
+
                     await AsyncStorage.removeItem("@confirmarcarga");     
                 
                 case 3:
+                    setstatus_cd('')
                     await AsyncStorage.removeItem("@confirmardescarga");     
                 case -1:
                     await AsyncStorage.removeItem("@confirmarcarga");     
@@ -207,7 +260,8 @@ function TravelsScreen (props){
             }
 
         } catch (error) {
-            console.log(error)
+            onRefresh()
+            console.log('error al confirmar : '+error)
            
             }      
             
@@ -224,9 +278,12 @@ function TravelsScreen (props){
         }
       }
       const dataOffline = async () => {
+
         try {
           const jsonValue = await AsyncStorage.getItem('@travelCurrent_storage')
+
           if(jsonValue != null){
+
             var convert=JSON.parse(jsonValue)
             set_travel_current(convert)
             //console.log(travel_current.id)
@@ -365,7 +422,7 @@ function TravelsScreen (props){
                            <Text  style={Styles.titletext}>Carta Porte: </Text>
                            <Text  style={Styles.simpletext}>{travel_current.pro_number} </Text>
                            <Text  style={Styles.titletext}>Remolque: </Text>
-                           <Text  style={Styles.simpletext}>{global.alias}  </Text>
+                           <Text  style={Styles.simpletext}>{global.vehicle_carga}  </Text>
                         </View>
                         <View  style={[style.horizontal,{backgroundColor:solicitudcolor}]}>
                            <Text  style={Styles.titletext}>Cliente: </Text>
@@ -376,6 +433,7 @@ function TravelsScreen (props){
                             onPress={openconfirmation} style={[style.button,{backgroundColor:solicitudcolor}]}>
                             <Text style={Styles.simpletext}>Confirmacion de solicitud</Text>
                             <ConfirmatedImage confirmated={bandera_c1} />
+                            <Text style={Styles.simpletext}>{status_cs}</Text>
                         </Pressable>
                         <View  style={[style.horizontal,{backgroundColor:solicitudcolor}]}>
                             <Text style={style.text3}>Direccion origen:  </Text>
@@ -383,10 +441,10 @@ function TravelsScreen (props){
                         </View>
                         <View  style={[style.horizontal,{backgroundColor:solicitudcolor}]}>
                             <Text style={style.text3}>Cita de carga:  </Text>
-                            <Text style={style.text4}> {travel_current.pickup_datetime} </Text> 
+                            <Text style={style.text4}> {operations.fechaFormateada(travel_current.pickup_datetime)} </Text> 
                         </View>
                         <Pressable 
-                            onPress={inst} style={[style.button,{backgroundColor:solicitudcolor}]}>
+                    onPress={inst} style={[style.button,{backgroundColor:solicitudcolor}]}> 
                             <Text style={Styles.simpletext}>Instrucciones de viaje</Text>
                         </Pressable>
                         <Text style={style.textbutton}>Llegada origen: {origen}</Text>
@@ -402,6 +460,7 @@ function TravelsScreen (props){
                         style={[style.button,{backgroundColor:cargacolor}]}>
                             <Text style={Styles.simpletext}>confirmar carga  </Text>
                             <ConfirmatedImage confirmated={bandera_c2} />
+                            <Text style={Styles.simpletext}>{status_cc} </Text>
     
     
                         </Pressable>
@@ -411,7 +470,7 @@ function TravelsScreen (props){
                         </View>
                         <View  style={[style.horizontal,{backgroundColor:cargacolor}]}>
                             <Text style={style.text3}>Cita de descarga:  </Text>
-                            <Text style={style.text4}>{travel_current.delivery_datetime}</Text>
+                            <Text style={style.text4}>{operations.fechaFormateada(travel_current.delivery_datetime)}</Text>
                         </View>
                         <Text style={style.textbutton}>Llegada Destino{travel_current.destiny} </Text>
                         <Pressable
@@ -419,6 +478,8 @@ function TravelsScreen (props){
                         style={[style.button,{backgroundColor:cargacolor}]}>
                             <Text style={Styles.simpletext}>confirmar Descarga  </Text>
                             <ConfirmatedImage confirmated={bandera_c3} />
+                            <Text style={Styles.simpletext}>{status_cd}</Text>
+
                         </Pressable>
                         <Text style={style.textbutton}>Salida Destino</Text>
                         <Pressable  style={[style.button,{backgroundColor:descargacolor}]}

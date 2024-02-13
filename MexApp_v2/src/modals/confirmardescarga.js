@@ -95,7 +95,6 @@ function Cdelivery (props){
       /*/const fecha = new Date();
       var datetime=fecha.getDate()+'-'+(fecha.getMonth()+1)+'-'+fecha.getFullYear()+' '+fecha.getHours()+':'+fecha.getMinutes()/*/
       if(props.isConnected==true){
-        console.log('si estoy aqui es un maldito error')
         serLoad(true)
         try {
            const confirmated=await Api.confirmar(context.solicitud,3,observacion)
@@ -107,32 +106,32 @@ function Cdelivery (props){
           
         } catch (error) {
           var confirmation={
-            id:2,
+            id:3,
             solicitud:context.solicitud,
             observation:'',
             datetime:datetime
         }
-        confirmationStore(confirmation)
+        confirmationStore(confirmation) 
              
         }
 
       }else
       {
-        const fecha1 = new Date();
-        var datetime=fecha1.getDate()+'-'+(fecha.getMonth()+1)+'-'+fecha.getFullYear()+' '+fecha.getHours()+':'+fecha.getMinutes() 
+        const now = new Date();
+        const utcString = now.toISOString(); 
         Alert.alert
         (
           'MexApp',
-          'NO hay conexión desea guardar la confirmacion',
+          '¿NO hay conexión desea guardar la confirmacion?',
           [
             {
               text: 'si',
               onPress: () => {
                 var confirmation={
-                  id:2,
+                  id:3,
                   solicitud:context.solicitud,
                   observation:'',
-                  datetime:datetime
+                  datetime:utcString
               }
               confirmationStore(confirmation)
               send()
