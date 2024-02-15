@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 
 
 
+
 function WelcomeHome(props){
     const navigation = useNavigation();
     const [data,setdata]= useState([])
@@ -15,6 +16,28 @@ function WelcomeHome(props){
     
     
       },[])
+
+      const removedata = async (key) => {
+        try {
+            await storageData.deleteData("@user_storage")
+            await storageData.deleteData("@gasto")
+            await storageData.deleteData("@info_operador")
+            await storageData.deleteData("@evidenciagasto")
+            await storageData.deleteData("@evidence")
+            await storageData.deleteData("@confirmarcarga")
+            await storageData.deleteData("@confirmardescarga")
+            await storageData.deleteData("@confirmarsolicitud")
+            await storageData.deleteData("@dreams_current")//travelCurrent_storage
+            await storageData.deleteData("@travelCurrent_storage")//travelCurrent_storage
+           console.log('se borro todo')
+           props.setLogget(0)
+            return true;
+        }
+        catch(exception) {
+            console.log("error"+exception)
+            return false;
+        }
+    }
 
       const getdata=async () =>{
         const user=await storageData.consultData('@user_storage')
@@ -56,7 +79,7 @@ function WelcomeHome(props){
         <TouchableOpacity style={style.button} onPress={salir}>
             <Text  style={style.textbutton}>OK</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={style.button1} onPress={opencontact}>
+        <TouchableOpacity style={style.button1} onPress={removedata}>
             <Text  style={style.textbutton}>REPORTAR</Text>
         </TouchableOpacity>
         </View>

@@ -211,7 +211,7 @@ function HomeScreen (props){
                 onRequestClose={() => {
                 Alert.alert("Modal has been closed.");
                }}>
-                <WelcomeHome setModalVisible={setModalVisible}/>
+                <WelcomeHome setModalVisible={setModalVisible} setLogget={props.setLogget}/>
 
 
                 </Modal>

@@ -18,7 +18,7 @@ class Operations{
             return moment(fecha).format('DD/MM/YYYY  HH:mm');
             
         } catch (error) {
-            return error
+            return ''
         }
       }//
 
@@ -47,7 +47,7 @@ class Operations{
 
     }
     convert_utc_local(fechaOriginal){
-      const fechaFormateada = moment(fechaOriginal).format('YYYY-MM-DD HH:mm');
+      const fechaFormateada = moment(fechaOriginal).format('DD/MM/YYYY HH:mm');
       return fechaFormateada
     }
 

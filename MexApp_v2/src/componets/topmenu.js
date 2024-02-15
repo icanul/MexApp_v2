@@ -58,7 +58,7 @@ const context=props;
               }}
     
       name="Home" >
-         {props => <HomeScreen {...props} setversion={context.setversion} isConnected={context.isConnected}setConected={context.setConected}/>}
+         {props => <HomeScreen {...props} setversion={context.setversion} setLogget={context.setLogget} isConnected={context.isConnected}setConected={context.setConected}/>}
          </Tab.Screen>
 
          <Tab.Screen 

@@ -48,6 +48,7 @@ import Mexatrueke  from './src/screens/mexatrueke';
 import MapScreen from './src/screens/MapScreen';
 import packageJson from  './package.json'; // Asegúrate de ajustar la ruta según la ubicación de tu package.json
 import { LogBox } from 'react-native';
+import RepartosScreen from './src/screens/repartosScreen'
 
 LogBox.ignoreLogs(['new NativeEventEmitter']); 
 

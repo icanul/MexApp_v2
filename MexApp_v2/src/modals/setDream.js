@@ -31,7 +31,121 @@ function SetDreams (props){
         context.onRefresh()
        context.setModalVisible1(false)
     }
-    const validarDream=async()=>{
+
+    const validateDream=async()=>{
+        const bandera=props.banderadreams
+        const fecha = new Date();
+        var datehora=fecha.getDate()+'-'+(fecha.getMonth()+1)+'-'+fecha.getFullYear()+' '+fecha.getHours()+':'+fecha.getMinutes()
+        const jsonValue = await AsyncStorage.getItem('@dreams_current')
+        var convert=JSON.parse(jsonValue)
+        if(convert!=null){
+            console.log('si hay un sueño iniciado')
+            let validateStatus=convert.startStatus
+            if(validateStatus){
+                sendDream('',datehora,'Finalizar MexApp')
+            }
+            else
+            {
+                if(context.isConnected){
+                    const dreams=await Api.New_Dream(convert.start,datehora)
+                    Alert.alert("",dreams)
+                    await AsyncStorage.removeItem("@dreams_current"); 
+                    context.onRefresh()    
+                    context.setModalVisible1(false)
+                }
+                else{
+                    saveStoreDream(convert.start,convert.startStatus,datehora,false,context.id_dream)
+
+                }
+            }
+
+        }else{
+            if(bandera==1){
+                console.log('se termina normal')
+                sendDream('',datehora,'Finalizar MexApp')
+
+            }else{
+                console.log('se inica normal')
+                sendDream(datehora,'','Iniciar MexApp')
+            }
+        }
+
+    }
+    const sendDream=async(init, end,message)=>{
+        const bandera=props.banderadreams
+
+        if(context.isConnected)
+        {
+            serLoad(true)
+            try {
+                const stardream=await Api.setDream(init,end,context.id_dream,message,false)
+                var status=stardream.status
+                if(status==200){
+                    var message=await stardream.text()
+                            console.log(message)              
+                            Alert.alert("",message)
+                            context.onRefresh()   
+                            serLoad(false) 
+                            context.setModalVisible1(false)
+                }else{
+                    serLoad(false) 
+                    Alert.alert("",'Sueño insertado sin conexión')
+                   if(bandera==1){
+                    const jsonValue = await AsyncStorage.getItem('@dreams_current')
+                    var convert=JSON.parse(jsonValue)
+                    if(convert!=null)
+                    { 
+                        saveStoreDream(convert.start,convert.startStatus,end,false,context.id_dream)
+    
+                    }else{
+                        saveStoreDream('',true,end,false,context.id_dream)
+    
+                    }
+                   
+    
+                   }else{
+                    serLoad(false) 
+                    saveStoreDream(init,false,'',false,context.id_dream)
+    
+                   }
+                              
+                }
+                
+            } catch (error) {
+               
+                serLoad(false) 
+                context.setModalVisible1(false)
+                context.onRefresh()   
+                
+            }
+         
+
+        }
+        else
+        {
+            Alert.alert("",'Sueño insertado sin conexión 123............')
+            if(bandera==1){
+             const jsonValue = await AsyncStorage.getItem('@dreams_current')
+             var convert=JSON.parse(jsonValue)
+             if(convert!=null)
+             { 
+                 saveStoreDream(convert.start,convert.startStatus,end,false,context.id_dream)
+
+             }else{
+                 saveStoreDream('',true,end,false,context.id_dream)
+
+             }
+            
+
+            }else{
+             saveStoreDream(init,false,'',false,context.id_dream)
+
+            }
+
+        }
+     
+    }
+    const validarDreamOld=async()=>{
         const bandera=props.banderadreams
         const fecha = new Date();
         var datehora=fecha.getDate()+'-'+(fecha.getMonth()+1)+'-'+fecha.getFullYear()+' '+fecha.getHours()+':'+fecha.getMinutes()
@@ -121,8 +235,7 @@ function SetDreams (props){
                         saveStoreDream(init,initbandera,datehora,false,context.id_dream)
     
                     }
-                    context.onRefresh()
-                    context.setModalVisible1(false)
+                   send()
 
                 }
                 else{
@@ -192,13 +305,18 @@ function SetDreams (props){
             id:id
             
         }
-        try {
-           
-          const jsonValue = JSON.stringify(savedream)
-          await AsyncStorage.setItem('@dreams_current', jsonValue)
-          
-        } catch (e) {
-          console.log(e)
+        try 
+        {
+            serLoad(false) 
+            const jsonValue = JSON.stringify(savedream)
+            await AsyncStorage.setItem('@dreams_current', jsonValue)
+            send()
+            Alert.alert("","se guardo correctamente:::")
+              
+        } 
+        catch (e) {
+            Alert.alert("","Error:::"+e)
+           send() 
         }
       }
 
@@ -221,7 +339,7 @@ function SetDreams (props){
     
                 <View style={style.horizontal}>
                 <Pressable 
-                onPress={validarDream}
+                onPress={validateDream}
                 style={style.button}>
                     <Text style={style.textbutton}>Confirmar</Text>
                 </Pressable>

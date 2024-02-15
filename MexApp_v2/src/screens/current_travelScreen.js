@@ -1,6 +1,6 @@
 import React, { useEffect,useState } from 'react'
-import { Alert, TurboModuleRegistry } from 'react-native';
-import { View,Text ,StyleSheet,Image,Linking,ScrollView,RefreshControl} from 'react-native';
+import { Alert, Touchable, TurboModuleRegistry } from 'react-native';
+import { View,Text ,StyleSheet,Image,Linking,ScrollView,RefreshControl,TouchableOpacity} from 'react-native';
 import NetInfo from "@react-native-community/netinfo";
 import Api from'../api/intranet'
 import Maps from '../componets/maps';
@@ -429,12 +429,12 @@ function TravelsScreen (props){
                            <Text  style={Styles.simpletext}>{travel_current.client} </Text>                     
                         </View>  
                         <Text style={style.textbutton}> Asignacion de solicitud</Text>
-                        <Pressable 
+                        <TouchableOpacity 
                             onPress={openconfirmation} style={[style.button,{backgroundColor:solicitudcolor}]}>
                             <Text style={Styles.simpletext}>Confirmacion de solicitud</Text>
                             <ConfirmatedImage confirmated={bandera_c1} />
                             <Text style={Styles.simpletext}>{status_cs}</Text>
-                        </Pressable>
+                        </TouchableOpacity>
                         <View  style={[style.horizontal,{backgroundColor:solicitudcolor}]}>
                             <Text style={style.text3}>Direccion origen:  </Text>
                             <Text style={style.text4}>{travel_current.origin_address} </Text>
@@ -443,19 +443,19 @@ function TravelsScreen (props){
                             <Text style={style.text3}>Cita de carga:  </Text>
                             <Text style={style.text4}> {operations.fechaFormateada(travel_current.pickup_datetime)} </Text> 
                         </View>
-                        <Pressable 
+                        <TouchableOpacity 
                     onPress={inst} style={[style.button,{backgroundColor:solicitudcolor}]}> 
                             <Text style={Styles.simpletext}>Instrucciones de viaje</Text>
-                        </Pressable>
+                        </TouchableOpacity>
                         <Text style={style.textbutton}>Llegada origen: {origen}</Text>
-                        <Pressable 
+                        <TouchableOpacity 
                         onPress={getCP}
                          style={[style.button,{backgroundColor:cargacolor}]
                     }>
                             <Text style={Styles.simpletext}>VER Carta Porte</Text>
                             <Image source={require('../drawables/pdfattt.png')} style={style.logotel} />
-                        </Pressable>
-                        <Pressable 
+                        </TouchableOpacity>
+                        <TouchableOpacity 
                         onPress={openconfirmation2}
                         style={[style.button,{backgroundColor:cargacolor}]}>
                             <Text style={Styles.simpletext}>confirmar carga  </Text>
@@ -463,7 +463,7 @@ function TravelsScreen (props){
                             <Text style={Styles.simpletext}>{status_cc} </Text>
     
     
-                        </Pressable>
+                        </TouchableOpacity>
                         <View  style={[style.horizontal,{backgroundColor:cargacolor}]}>
                             <Text style={style.text3}>Direccion Destino:  </Text>
                             <Text style={style.text4}>{travel_current.destiny_address}  </Text>
@@ -473,20 +473,20 @@ function TravelsScreen (props){
                             <Text style={style.text4}>{operations.fechaFormateada(travel_current.delivery_datetime)}</Text>
                         </View>
                         <Text style={style.textbutton}>Llegada Destino{travel_current.destiny} </Text>
-                        <Pressable
+                        <TouchableOpacity
                         onPress={openconfirmation3}  
                         style={[style.button,{backgroundColor:cargacolor}]}>
                             <Text style={Styles.simpletext}>confirmar Descarga  </Text>
                             <ConfirmatedImage confirmated={bandera_c3} />
                             <Text style={Styles.simpletext}>{status_cd}</Text>
 
-                        </Pressable>
+                        </TouchableOpacity>
                         <Text style={style.textbutton}>Salida Destino</Text>
-                        <Pressable  style={[style.button,{backgroundColor:descargacolor}]}
+                        <TouchableOpacity  style={[style.button,{backgroundColor:descargacolor}]}
                          onPress={() => Linking.openURL('tel:+52'+global.phone)}>
                             <Text style={Styles.simpletext}>Llamar lider de flota  </Text>
                             <Image source={require('../drawables/call.png')} style={style.logotel} />
-                        </Pressable>
+                        </TouchableOpacity>
                    
     
                 </ScrollView>
@@ -527,7 +527,7 @@ const style=StyleSheet.create({
         flexDirection:'row',
         alignItems: 'center',
         borderRadius: 360,
-        elevation:6,
+        elevation:8,
         backgroundColor:'#fff',
         justifyContent: 'center',
         margin:5,      
@@ -566,13 +566,12 @@ const style=StyleSheet.create({
    
   
     horizontal:{
-       width:'100%',
-       flex:1,
+        width:'100%',
+        flex:1,
         backgroundColor:'#ffffffcc',
         flexDirection:'row',
         paddingVertical: 10,
         borderRadius: 4,
-        elevation: 3,
         marginBottom:5,
 
     },
