@@ -56,8 +56,8 @@ function Unidad(){
                <Text style={Styles.simpletext}>{unidad.tag}</Text>
            </View>
            <View style={style.horizontal}>
-               <Text style={style.textbutton}>Configuración motriz: </Text>
-               <Text style={Styles.simpletext}>{unidad.vehicle_performance_type}</Text>
+               <Text style={[style.textbutton,{width:'35%'}]}>Configuración motriz: </Text>
+               <Text style={[Styles.simpletext,{width:'60%'}]}>{unidad.vehicle_performance_type}</Text>
            </View>
            <View style={style.horizontal}>
                <Text style={style.textbutton}>Tipo de unidad: </Text>

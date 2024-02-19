@@ -39,7 +39,7 @@ function Empty (props){
 <View style={Styles.contencard}>
   <View style={Styles.horizontal}>
     <Text style={Styles.titletext}>Importe:</Text>
-    <Text style={Styles.simpletext}>{props.amount.toLocaleString()}</Text>
+    <Text style={Styles.simpletext}>${props.amount.toLocaleString()}</Text>
     <Text style={Styles.titletext}>Fecha:</Text>
     <Text style={Styles.simpletext}>{operations.fechaFormateada(props.liquidated_on)}</Text>
   </View>
@@ -54,7 +54,7 @@ function Empty (props){
     <Text style={Styles.simpletext}>{props.type}</Text>
    
   </View>
-  <View style={Styles.horizontal}>
+  <View style={Styles.horizontal}>                
     <Text style={Styles.titletext}>Subtipoipo:</Text>
     <Text style={Styles.simpletext}>{props.subtype}</Text>
    
@@ -62,8 +62,7 @@ function Empty (props){
   <View style={Styles.horizontal}>
     <Text style={Styles.titletext}>Comentario:</Text>
     <Text style={Styles.simpletext}>{props.comment}</Text>
-   
-   
+
   </View>
 
 

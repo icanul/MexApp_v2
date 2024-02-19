@@ -48,6 +48,18 @@ class Api{
         //const data = await query.json();
         return query;
       }
+      async getRepartos(id,options = {}){
+        options.headers = 
+        {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+          Authorization : ' Basic '+'YWRtaW46bTN4NG0zcjFr',
+        };
+        var url= rest_v2+'/shipments/distribution-pickup/'+id
+        const query = await fetch(url,options);
+        //const data = await query.json();
+        return query;
+      }
 
       async setevidencediesel(image,solicitud ){
         const query= await fetch(rest_v2+"/vehicles/dieselassignment/"+solicitud+"/evidence",{

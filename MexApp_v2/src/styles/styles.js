@@ -11,6 +11,12 @@ const Style=StyleSheet.create({
         margin:5
 
     },
+    simpletext1:{
+        color:'#ffffff',
+        margin:5,
+        fontWeight:'bold'
+
+    },
     simpletextm:{
         color:'#393d42',
         marginLeft:10,

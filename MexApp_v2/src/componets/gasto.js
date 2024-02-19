@@ -125,7 +125,7 @@ function confirmar(){
   <Text style={Styles.titletext}>Tipo</Text>
     <Text style={Styles.simpletext}>{props.type}</Text>
     <Text style={Styles.titletext}>Importe.</Text>
-    <Text style={Styles.simpletext}>${props.amount}</Text>
+    <Text style={Styles.simpletext}>${props.amount.toLocaleString()}</Text>
    
   </View>
 

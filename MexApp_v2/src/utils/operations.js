@@ -13,9 +13,14 @@ class Operations{
         return deg * (Math.PI / 180);
       };
 
-      fechaFormateada (fecha){
+     fechaFormateada (fecha){
         try {
-            return moment(fecha).format('DD/MM/YYYY  HH:mm');
+          const fechaFormateada = moment(fecha).format('DD/MM/YYYY HH:mm');
+          if(fechaFormateada==='Invalid date'){
+            fechaFormateada='  '
+          }
+          return fechaFormateada
+            
             
         } catch (error) {
             return ''
@@ -50,7 +55,17 @@ class Operations{
       const fechaFormateada = moment(fechaOriginal).format('DD/MM/YYYY HH:mm');
       return fechaFormateada
     }
+    convert_utc_local1(fechaOriginal){
+      let horaUTC=moment.utc(fechaOriginal)
+      let horaLocal = horaUTC.local();
+      let date=horaLocal.format('DD/MM/YYYY HH:mm')
+      if(date==='Invalid date'){
+        date='  '
 
+      }
+      console.log(horaLocal.format('DD/MM/YYYY HH:mm'))
+      return date
+    }
     dif_hour(fechaInicio,fechaFin){
 
 

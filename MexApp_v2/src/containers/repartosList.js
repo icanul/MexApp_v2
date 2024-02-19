@@ -4,6 +4,7 @@ import Separator from'../componets/separator'
 import Layout from '../componets/viajeslist_layout'
 import Empty from '../componets/empty'
 import Observacion from '../componets/observacion'
+import Reparto from "../componets/reparto";
 
 
 
@@ -15,7 +16,7 @@ class Obslist extends Component{
     itemseparator=()=><Separator  color='#eaeaea' ></Separator>
     renderItem=({item})=>{
         return(
-<Observacion {...item}></Observacion>
+<Reparto {...item}></Reparto>
         )
     }
     render(){

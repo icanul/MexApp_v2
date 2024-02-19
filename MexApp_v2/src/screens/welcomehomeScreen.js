@@ -74,13 +74,13 @@ function WelcomeHome(props){
 
             </View>
        
-        <Text style={style.text}>Sí la información no es correcta, presione el botón reportar</Text>
+        <Text style={style.text}>Sí la información no es correcta, presione el botón SALIR</Text>
         <View style={style.horizontal}>
         <TouchableOpacity style={style.button} onPress={salir}>
             <Text  style={style.textbutton}>OK</Text>
         </TouchableOpacity>
         <TouchableOpacity style={style.button1} onPress={removedata}>
-            <Text  style={style.textbutton}>REPORTAR</Text>
+            <Text  style={style.textbutton}>SALIR</Text>
         </TouchableOpacity>
         </View>
     </View>

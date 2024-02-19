@@ -1,6 +1,7 @@
 import React, { useEffect,useState } from 'react'
 import { Alert, Touchable, TurboModuleRegistry } from 'react-native';
 import { View,Text ,StyleSheet,Image,Linking,ScrollView,RefreshControl,TouchableOpacity} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import NetInfo from "@react-native-community/netinfo";
 import Api from'../api/intranet'
 import Maps from '../componets/maps';
@@ -11,9 +12,7 @@ import Cdelivery from '../modals/confirmardescarga'
 import { Pressable,Modal } from 'react-native';
 import Confirmated from '../modals/confirmacion';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
 import Styles from '../styles/styles'
-import moment from 'moment';
 import operations from '../utils/operations';
 
 
@@ -29,8 +28,11 @@ function TravelsScreen (props){
     const [isOffline, setIsoffline]=useState('')
     const [refreshing, setRefreshing] = React.useState(false);
     const [solicitudcolor,setSolicitudcolor]= useState('#ffffffcc')
+    const [solicitudcolor1,setSolicitudcolor1]= useState('#cb3234cc')
     const [cargacolor,setCargacolor]= useState('#ffffffcc')
+    const [cargacolor1,setCargacolor1]= useState('#cb3234')
     const [descargacolor,setDescargacolor]= useState('#ffffffcc')
+    const [descargacolor1,setDescargacolor1]= useState('#cb3234')
     const [message,setMessage]=useState('Cargando viaje actual...')
     const [bandera_c1,setBandera_c1]=useState(false)
     const [bandera_c2,setBandera_c2]=useState(false)
@@ -39,6 +41,9 @@ function TravelsScreen (props){
     const [status_cs,setstatus_cs]= useState('')
     const [status_cc,setstatus_cc]= useState('')
     const [status_cd,setstatus_cd]= useState('')
+    const [travel_confirmed_date,settravel_confirmed_date]=useState('')
+    const [pickup_confirmed_date,setpickup_confirmed_date]=useState('')
+    const [delivery_confirmed_date,setdelivery_confirmed_date]=useState('')
 
 
 
@@ -91,6 +96,8 @@ function TravelsScreen (props){
             setBandera_c1(true)
             setConfimated(false)
             setSolicitudcolor('#ffffffcc')
+            setSolicitudcolor1('#008f39cc')
+            settravel_confirmed_date(convert.datetime)
             if(bandera){
                 Confirmar(jsonValue)
             }
@@ -104,7 +111,9 @@ function TravelsScreen (props){
             var convert=JSON.parse(jsonValue2)
             setBandera_c2(true)
             setCargacolor('#ffffffcc')
+            setCargacolor1('#008f39cc')
             console.log('entrandoi a validacion'+bandera)
+            setpickup_confirmed_date(convert.datetime)
             if(bandera){
               
                 Confirmar(jsonValue2)
@@ -125,6 +134,8 @@ function TravelsScreen (props){
             }
             setBandera_c3(true)
             setDescargacolor('#9b9b9bcc') 
+            setDescargacolor1('#008f39cc')
+            setdelivery_confirmed_date(convert.datetime)
      ///       Alert.alert('Confirmación de descarga','Se ha confirmado tu descarga guardada')
         }
         const tmsreport = await AsyncStorage.getItem('tmsnotification')
@@ -151,6 +162,9 @@ function TravelsScreen (props){
       const inst=()=>{
         navigation.navigate('instrucciones',{id:travel_current.id})
       }
+      const repartos=()=>{
+        navigation.navigate('Repartos',{id:travel_current.id})
+      }
  
     async function gettravel(){
         console.log('buscando viaje actual')
@@ -160,14 +174,21 @@ function TravelsScreen (props){
             const travel=await Api.getCurrentravel(id_operador)
             var currenttravel=travel[0]
             if(currenttravel.pickup_confirmed){
-                setstatus_cc('enviada')
+                setstatus_cc('Enviada')
+                setCargacolor1('#008f39cc')
             }
             if(currenttravel.delivery_confirmed){
-                setstatus_cd('enviada')
+                setstatus_cd('Enviada')
+                setDescargacolor1('#008f39cc')
             }
             if(currenttravel.travel_confirmed){
-                setstatus_cs('enviada')
+                setstatus_cs('Enviada')
+                setSolicitudcolor1('#008f39cc')
+
             }
+            settravel_confirmed_date(currenttravel.travel_confirmed_date)
+            setpickup_confirmed_date(currenttravel.pickup_confirmed_date)
+            setdelivery_confirmed_date(currenttravel.delivery_confirmed_date)
             storeData(currenttravel)
             setIsoffline('')
             global.vehicle_id=currenttravel.vehicle_id
@@ -430,10 +451,10 @@ function TravelsScreen (props){
                         </View>  
                         <Text style={style.textbutton}> Asignacion de solicitud</Text>
                         <TouchableOpacity 
-                            onPress={openconfirmation} style={[style.button,{backgroundColor:solicitudcolor}]}>
-                            <Text style={Styles.simpletext}>Confirmacion de solicitud</Text>
-                            <ConfirmatedImage confirmated={bandera_c1} />
-                            <Text style={Styles.simpletext}>{status_cs}</Text>
+                            onPress={openconfirmation} style={[style.button,{backgroundColor:solicitudcolor1}]}>
+                            <Text style={Styles.simpletext1}>Confirmar Solicitud</Text>
+                            <Text style={Styles.simpletext1}>{status_cs}</Text>
+                            <Text style={Styles.simpletext1}>{operations.convert_utc_local1(travel_confirmed_date)}</Text>
                         </TouchableOpacity>
                         <View  style={[style.horizontal,{backgroundColor:solicitudcolor}]}>
                             <Text style={style.text3}>Direccion origen:  </Text>
@@ -449,21 +470,30 @@ function TravelsScreen (props){
                         </TouchableOpacity>
                         <Text style={style.textbutton}>Llegada origen: {origen}</Text>
                         <TouchableOpacity 
+                        onPress={openconfirmation2}
+                        style={[style.button,{backgroundColor:cargacolor1}]}>
+                            <Text style={Styles.simpletext1}>Confirmar Carga </Text>
+                            <Text style={Styles.simpletext1}>{status_cc} </Text>
+                            <Text style={Styles.simpletext1}>{operations.convert_utc_local1(pickup_confirmed_date)}</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity 
                         onPress={getCP}
                          style={[style.button,{backgroundColor:cargacolor}]
                     }>
                             <Text style={Styles.simpletext}>VER Carta Porte</Text>
                             <Image source={require('../drawables/pdfattt.png')} style={style.logotel} />
                         </TouchableOpacity>
+
+                   
+
                         <TouchableOpacity 
-                        onPress={openconfirmation2}
+                        onPress={repartos}
                         style={[style.button,{backgroundColor:cargacolor}]}>
-                            <Text style={Styles.simpletext}>confirmar carga  </Text>
-                            <ConfirmatedImage confirmated={bandera_c2} />
-                            <Text style={Styles.simpletext}>{status_cc} </Text>
-    
+                            <Text style={Styles.simpletext}>Repartos / Recoleccion </Text>
     
                         </TouchableOpacity>
+
                         <View  style={[style.horizontal,{backgroundColor:cargacolor}]}>
                             <Text style={style.text3}>Direccion Destino:  </Text>
                             <Text style={style.text4}>{travel_current.destiny_address}  </Text>
@@ -475,11 +505,10 @@ function TravelsScreen (props){
                         <Text style={style.textbutton}>Llegada Destino{travel_current.destiny} </Text>
                         <TouchableOpacity
                         onPress={openconfirmation3}  
-                        style={[style.button,{backgroundColor:cargacolor}]}>
-                            <Text style={Styles.simpletext}>confirmar Descarga  </Text>
-                            <ConfirmatedImage confirmated={bandera_c3} />
-                            <Text style={Styles.simpletext}>{status_cd}</Text>
-
+                        style={[style.button,{backgroundColor:descargacolor1}]}>
+                            <Text style={Styles.simpletext1}>Confirmar Descarga  </Text>
+                            <Text style={Styles.simpletext1}>{status_cd}</Text>
+                            <Text style={Styles.simpletext1}>{operations.convert_utc_local1(delivery_confirmed_date)}</Text>
                         </TouchableOpacity>
                         <Text style={style.textbutton}>Salida Destino</Text>
                         <TouchableOpacity  style={[style.button,{backgroundColor:descargacolor}]}

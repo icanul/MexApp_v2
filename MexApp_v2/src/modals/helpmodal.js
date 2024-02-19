@@ -26,7 +26,7 @@ function Help(props){
             <View style={style.modal} >
                <Text  style={style.title}>Acerca de MexApp</Text>
               
-                <Text>Version: {packageJson.version}</Text>
+                <Text style={style.title}>Version: {packageJson.version}</Text>
          
                 <View style={style.horizontal}>
               

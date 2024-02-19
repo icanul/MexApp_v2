@@ -49,6 +49,7 @@ import MapScreen from './src/screens/MapScreen';
 import packageJson from  './package.json'; // Asegúrate de ajustar la ruta según la ubicación de tu package.json
 import { LogBox } from 'react-native';
 import RepartosScreen from './src/screens/repartosScreen'
+import RepartosMaps from './src/screens/repartomaps';
 
 LogBox.ignoreLogs(['new NativeEventEmitter']); 
 
@@ -605,6 +606,31 @@ const checkToken = async () => {
           title:"Modo de navegacion"}}
       name='mapscreen'
       component={MapScreen} />
+      
+       <Stack.Screen 
+        options={{
+          unmountOnBlur: true,
+          headerShown: false,
+      
+          gesturesEnabled: false,  
+          title:"Modo de navegacion"}}
+      name='repartosmap'
+      component={RepartosMaps} />
+
+      <Stack.Screen 
+        options={{
+          unmountOnBlur: true,
+          headerShown: true,
+          headerRight :() => (
+            <Image
+            style={style.logo}
+            source={require('./src/drawables/logo.png')}/>
+          ),
+      
+          gesturesEnabled: false,  
+          title:"Repartos / Recoleción"}}
+      name='Repartos'
+      component={RepartosScreen} />
       
         </>
     )}
