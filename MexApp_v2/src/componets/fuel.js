@@ -7,6 +7,8 @@ import {
 }from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Styles from '../styles/styles'
+import operations from '../utils/operations';
+
 
 
 function Fuel (props){
@@ -14,18 +16,7 @@ function Fuel (props){
   const navigation = useNavigation();
   const [statusname,setstatusname]=useState('')
 
-  const utctolocal =(fecha)=> {
-    try {
-      var dt = new Date(fecha);
-  
-    
-      return dt.toLocaleString();
-      
-    } catch (error) {
-      return ''
-      
-    }
-  }
+ 
   function confirmar(){
     console.log(props.status)
 
@@ -133,12 +124,12 @@ function Fuel (props){
   <View style={Styles.horizontal}>
     <Text style={Styles.titletext}>Autorizados:</Text>
     <Text style={Styles.simpletext}>{props.dieselassignated} lts.</Text>
-    <Text style={Styles.simpletext}>( {utctolocal(props.time)} )</Text>
+    <Text style={Styles.simpletext}>( {operations.convert_utc_local1(props.time)} )</Text>
   </View>
   <View style={Styles.horizontal}>
     <Text style={Styles.titletext}>Confirmados:</Text>
     <Text style={Styles.simpletext}>{props.dieselassignated} lts.</Text>
-    <Text style={Styles.simpletext}>( {utctolocal(props.confirmation_date)} )</Text>
+    <Text style={Styles.simpletext}>( {operations.convert_utc_local1(props.confirmation_date)} )</Text>
   </View>
 
 </View>

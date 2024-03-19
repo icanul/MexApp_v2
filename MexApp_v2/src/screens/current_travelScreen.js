@@ -44,6 +44,8 @@ function TravelsScreen (props){
     const [travel_confirmed_date,settravel_confirmed_date]=useState('')
     const [pickup_confirmed_date,setpickup_confirmed_date]=useState('')
     const [delivery_confirmed_date,setdelivery_confirmed_date]=useState('')
+    const [arrivalOcolor, setarrivaOcolor]=useState('#000000')
+    const [arrivalDcolor, setarrivaDcolor]=useState('#eaeaea')
 
 
 
@@ -73,6 +75,7 @@ function TravelsScreen (props){
             set_travel_current([])
           } 
     }, [])
+    
 
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
@@ -173,7 +176,7 @@ function TravelsScreen (props){
             console.log(id_operador)
             const travel=await Api.getCurrentravel(id_operador)
             var currenttravel=travel[0]
-            if(currenttravel.pickup_confirmed){
+            if(currenttravel.pickup_confirmed){-
                 setstatus_cc('Enviada')
                 setCargacolor1('#008f39cc')
             }
@@ -186,6 +189,22 @@ function TravelsScreen (props){
                 setSolicitudcolor1('#008f39cc')
 
             }
+            const dateorigin = new Date(currenttravel.pickup_datetime);
+            const datearrivallorigin = new Date(currenttravel.arrival_date_origin);
+         
+            if(currenttravel.arrival_date_origin!=null&& dateorigin>=datearrivallorigin){
+                setarrivaOcolor('green')
+                console.log('cumplio origen')
+            }
+
+            const datedestiny= new Date(currenttravel.delivery_datetime)
+            const datearrivaldestunny = new Date(currenttravel.arrival_date_destiny)
+
+            if(currenttravel.arrival_date_destiny!=null&& datedestiny>=datearrivaldestunny){
+                setarrivaDcolor('green')
+                console.log('cumplio destino hgfh')
+            }
+
             settravel_confirmed_date(currenttravel.travel_confirmed_date)
             setpickup_confirmed_date(currenttravel.pickup_confirmed_date)
             setdelivery_confirmed_date(currenttravel.delivery_confirmed_date)
@@ -461,14 +480,18 @@ function TravelsScreen (props){
                             <Text style={style.text4}>{travel_current.origin_address} </Text>
                         </View>
                         <View  style={[style.horizontal,{backgroundColor:solicitudcolor}]}>
-                            <Text style={style.text3}>Cita de carga:  </Text>
+                            <Text style={style.text3}>Cita de carga:</Text>
                             <Text style={style.text4}> {operations.fechaFormateada(travel_current.pickup_datetime)} </Text> 
+                        </View>
+                        <View  style={[style.horizontal,{backgroundColor:solicitudcolor}]}>
+                            <Text style={style.text3}>Llegada Origen:</Text>
+                            <Text style={[style.text4,{color:arrivalOcolor}]}> {operations.fechaFormateada(travel_current.arrival_date_origin)} </Text> 
                         </View>
                         <TouchableOpacity 
                     onPress={inst} style={[style.button,{backgroundColor:solicitudcolor}]}> 
                             <Text style={Styles.simpletext}>Instrucciones de viaje</Text>
                         </TouchableOpacity>
-                        <Text style={style.textbutton}>Llegada origen: {origen}</Text>
+                        <Text style={style.textbutton}>Origen: {origen}</Text>
                         <TouchableOpacity 
                         onPress={openconfirmation2}
                         style={[style.button,{backgroundColor:cargacolor1}]}>
@@ -502,8 +525,13 @@ function TravelsScreen (props){
                             <Text style={style.text3}>Cita de descarga:  </Text>
                             <Text style={style.text4}>{operations.fechaFormateada(travel_current.delivery_datetime)}</Text>
                         </View>
-                        <Text style={style.textbutton}>Llegada Destino{travel_current.destiny} </Text>
+                        <View  style={[style.horizontal,{backgroundColor:descargacolor}]}>
+                            <Text style={style.text3}>Llegada Destino:</Text>
+                            <Text style={[style.text4,{color:arrivalDcolor}]}> {operations.fechaFormateada(travel_current.arrival_date_destiny)} </Text> 
+                        </View>
+                        <Text style={style.textbutton}>Destino{travel_current.destiny} </Text>
                         <TouchableOpacity
+
                         onPress={openconfirmation3}  
                         style={[style.button,{backgroundColor:descargacolor1}]}>
                             <Text style={Styles.simpletext1}>Confirmar Descarga  </Text>

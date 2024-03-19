@@ -25,6 +25,7 @@ function WelcomeHome(props){
             await storageData.deleteData("@evidenciagasto")
             await storageData.deleteData("@evidence")
             await storageData.deleteData("@confirmarcarga")
+            await storageData.deleteData("@PHOTO_operador")
             await storageData.deleteData("@confirmardescarga")
             await storageData.deleteData("@confirmarsolicitud")
             await storageData.deleteData("@dreams_current")//travelCurrent_storage

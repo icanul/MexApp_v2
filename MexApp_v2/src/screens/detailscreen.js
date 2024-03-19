@@ -3,12 +3,46 @@ import { View,Text,ScrollView,StyleSheet,Image,Pressable, Alert,Modal} from 'rea
 import { useNavigation } from '@react-navigation/native';
 import storageData from '../utils/storageData';
 import Help from '../modals/helpmodal';
+import TMS from '../api/tms'
 
 function Detailscreen (props){
     const context=props 
     const [helpmodal,setHelpmodal]=useState(false)
     const [helpmodal1,setHelpmodal1]=useState(false)
     const navigation = useNavigation();
+    const [photo,setPhoto]=useState('')
+
+    useEffect(() => {
+        getfoto()
+
+    },[])
+    const getfoto=async ()=>{
+        console.log('buscando foto')
+        const savephoto = await storageData.consultData('@PHOTO_operador')
+        if(savephoto==null){
+            try {
+                const operador=await TMS.getOperador( id_operador)
+                console.log(operador)
+                setPhoto(operador.image)
+                const save = await storageData.insertData('@PHOTO_operador',operador)
+                
+            } catch (error) {
+                console.log(error)
+                
+            }
+
+        }
+        else{
+            console.log('hay una foto guardada')
+            var convert=JSON.parse(savephoto)
+            console.log(convert)
+            setPhoto(convert.image)
+
+        }
+
+    }
+
+
     const removedata = async (key) => {
       
         try {
@@ -17,6 +51,7 @@ function Detailscreen (props){
             await storageData.deleteData("@info_operador")
             await storageData.deleteData("@evidenciagasto")
             await storageData.deleteData("@evidence")
+            await storageData.deleteData("@PHOTO_operador")
             await storageData.deleteData("@confirmarcarga")
             await storageData.deleteData("@confirmardescarga")
             await storageData.deleteData("@confirmarsolicitud")
@@ -102,19 +137,18 @@ function Detailscreen (props){
             </Modal>
          
             <View style={style.header}>
-                <View>
-                <Image  source={require('../drawables/userlogo.png')} style={style.logo}/>
-                <Pressable
-                     style={style.button}
-                     onPress={openOperator}             >  
-                    <Text style={style.textbutton}>Ver Perfil</Text>
-                    </Pressable>
+                <Image  source={{uri: `data:image/jpeg;base64,${photo}`}}  style={style.logo}/> 
+             
 
-                </View>
               
                 <View style={style.vertical}>
                     <Text style={style.name}>{ global.nombre}</Text>
                     <Text style={style.name}>CEOP { global.celula}</Text>
+                    <Pressable
+                     style={style.button}
+                     onPress={openOperator}             >  
+                    <Text style={style.textbutton}>Ver Perfil</Text>
+                    </Pressable>
                   
                 </View>
              
@@ -219,11 +253,16 @@ function Detailscreen (props){
 
 const style=StyleSheet.create({
     logo:{
-        marginTop:20,
-        width:65,
-        height:65,
+        marginTop:5,
+        width:105,
+        height:115,
+        borderWidth: 3, // Ancho del borde en píxeles
+        borderColor: '#eaeaea', // Color del borde
         borderRadius:360,
         resizeMode:'contain',
+        elevation:9,
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
     },
     button: {
         alignItems: 'center',
@@ -269,7 +308,7 @@ const style=StyleSheet.create({
         backgroundColor:'#ffffffcc',
         flexDirection:'row',
         paddingVertical: 10,
-        paddingHorizontal: 39,
+        paddingHorizontal: 5,
         borderRadius: 4,
         elevation: 3,
      
@@ -281,7 +320,7 @@ const style=StyleSheet.create({
         backgroundColor:'#CB333Bcc',
         flexDirection:'row',
         paddingVertical: 10,
-        paddingHorizontal: 39,
+        paddingHorizontal: 9,
         borderRadius: 10,
         marginBottom:5,
         margin: 5,

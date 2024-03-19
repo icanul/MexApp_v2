@@ -56,7 +56,7 @@ function Maps (props){
 
 
   const openMap=()=>{
-   navigation.navigate('mapscreen',{data:props,points:points})
+  // navigation.navigate('mapscreen',{data:props,points:points})
 
   }
 async function getruta(){

@@ -16,8 +16,8 @@ function Reparto(props){
         <TouchableOpacity onPress={map} style={Styles.contencard}>
 
         <View style={Styles.horizontal}>
-            <Text style={Styles.titletext}>{props.name} </Text>
-            <Text style={[Styles.titletext,{justifyContent: 'flex-end' }]}>Tipo: </Text>
+            <Text style={[Styles.titletext,{width:'60%'}]}>{props.name} </Text>
+            <Text style={Styles.titletext}>Tipo: </Text>
             <Text style={[Styles.titletext,{justifyContent: 'flex-end' }]}>{props.point_type_name}</Text>
         </View>
         <View style={Styles.horizontal}>
@@ -31,7 +31,7 @@ function Reparto(props){
 
         </View>
         <View style={Styles.horizontal}>
-            <Text style={Styles.titletext}>Entrada: </Text>
+            <Text style={Styles.titletext}>Llegada: </Text>
             <Text style={Styles.simpletext}>{operations.convert_utc_local1(props.arrival_time)}</Text>
 
         </View>
