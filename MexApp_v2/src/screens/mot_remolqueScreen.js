@@ -5,10 +5,8 @@ import Api from'../api/tms'
 import moment from 'moment/moment';
 import { useNavigation } from '@react-navigation/native';
 import storageData from '../utils/storageData';
-import Maintenance from '../modals/new_mto';
+import Maintenance from '../modals/new_mto_r';
 import tms from '../api/tms';
-
-
 
 
 function ReporterScreen (){

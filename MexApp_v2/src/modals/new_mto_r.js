@@ -13,7 +13,7 @@ var arraynames=[]
 var arrayurls=[]
 
 
-function Maintenance(props){
+function Maintenance_R(props){
     const [milatitusd,setMilatitud]=useState(0.0)
     const [milongitud,setMilongitud]=useState(0.0)
     const [names,setNames]=useState()
@@ -90,8 +90,7 @@ function Maintenance(props){
         var time2=time+':00.000'
         const formData = new FormData()
         formData.append('report_type_id',report_type_id)
-        console.log(selected1)
-        formData.append('vehicle_id',global.vehicle_id)
+        formData.append('vehicle_id',global.id_remolque)
         formData.append('driver_id',global.id_operador)
         formData.append('observation',text)
         formData.append('shipment_id',global.solicitud)
@@ -224,7 +223,7 @@ function Maintenance(props){
                 <View style={ModalStyle.modal}>
                 <Text style={ModalStyle.title}></Text>
         
-                    <Text style={ModalStyle.title}>Reportar Unidad</Text>
+                    <Text style={ModalStyle.title}>Reportar Remolque</Text>
                     <Text style={ModalStyle.title}></Text>
         
                     <View style={ModalStyle.horizontal}>
@@ -232,13 +231,13 @@ function Maintenance(props){
                     </View>
                     < Text style={ModalStyle.texto}>{global.nombre}:</Text>
         
+            
                     <View style={ModalStyle.horizontal}>
-                        <Text style={ModalStyle.title}>Unidad: </Text>
-                    <    Text style={ModalStyle.texto}>{global.alias}</Text>
+                        <Text style={ModalStyle.title}>U. de arrastre: </Text>
+                    <    Text style={ModalStyle.texto}>{global.vehicle_carga}</Text>
                     </View>
                     <Text style={ModalStyle.title}></Text>
-                    <Text style={ModalStyle.title}>Reportar por </Text>
-        
+                  
         
                     <Text style={ModalStyle.title}>Tipo de  Falla</Text>
                    
@@ -297,4 +296,4 @@ function Maintenance(props){
 
 
 }
-export default Maintenance;
+export default Maintenance_R;

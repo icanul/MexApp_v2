@@ -58,7 +58,7 @@ function Reporter(props){
                 visible={isModalvisible}>
                 <Ot_validationModal data={props} setModalVisible={setModalVisible}/>
             </Modal>
-             <Text style={{textAlign:'right',marginTop:10}}>{props.status} </Text>
+             <Text style={{textAlign:'right',marginTop:10,color:'#000'}}>{props.status} </Text>
             <View  style={Styles.horizontal}>
                 <Text style={Styles.titletext}>FOLIO: {props.id}</Text>
                 <Text style={Styles.titletext}>Creado el: </Text>

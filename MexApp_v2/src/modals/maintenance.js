@@ -207,7 +207,6 @@ function Maintenance(props){
 
                     // Imprimir el resultado
                     console.log(arrayurls);             
-                
                 }
             })
     }

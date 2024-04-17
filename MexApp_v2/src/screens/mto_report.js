@@ -35,12 +35,7 @@ function MtoDetail(props){
             console.log('Error:::'+error)
             
           }
-
-
     }
-
-
-
 
     return(
         <Tab.Navigator

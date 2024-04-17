@@ -9,8 +9,6 @@ import Maintenance from '../modals/new_mto';
 import tms from '../api/tms';
 
 
-
-
 function ReporterScreen (){
     const [items, setItems] = useState([]);
     const [refreshing, setRefreshing] = React.useState(false);

@@ -14,17 +14,27 @@ class Operations{
       };
 
      fechaFormateada (fecha){
+      const fechaFormateada=''
         try {
-          const fechaFormateada = moment(fecha).format('DD/MM/YYYY HH:mm');
+          if(fecha=='1753-01-01 00:00:00+00:00'){
+            fechaFormateada='  '
+
+
+          }else{
+            fechaFormateada = moment(fecha).format('DD/MM/YYYY HH:mm');
           if(fechaFormateada==='Invalid date'){
             fechaFormateada='  '
           }
+
+          }
+        } catch (error) {
+          return ''
+      }
+          
           return fechaFormateada
             
             
-        } catch (error) {
-            return ''
-        }
+       
       }//
 
     calculateDistance(point1, point2){

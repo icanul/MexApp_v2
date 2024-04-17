@@ -2,7 +2,7 @@ import React,{ useState,useEffect} from 'react';
 import { View,Text,StyleSheet,Image, Pressable,Modal, Alert} from 'react-native';
 import TMS from '../api/tms'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Maintenance from './new_mto';
+import Maintenance from './maintenance';
 
 function Confirmated (props){
   const context=props
