@@ -12,11 +12,10 @@ function LoginScreen (props){
       serLoad(true)   
         try {
             const user=await Api.login( number,global.version, global.fcmToken)
-            console.log(user)
-            user.driver_image=''
-            console.log(user)
+    
             storeData(user)
             global.id_operador = user.id;
+            global.imageOperador=user.image
             global.nombre = user.nombre;
             global.alias= user.unidad;
             global.driver_image= user.driver_image

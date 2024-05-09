@@ -14,26 +14,20 @@ class Operations{
       };
 
      fechaFormateada (fecha){
-      const fechaFormateada=''
+      if(fecha=='1753-01-01 00:00:00+00:00'|| fecha==null){
+        return ''
+
+      }else{
         try {
-          if(fecha=='1753-01-01 00:00:00+00:00'){
-            fechaFormateada='  '
-
-
-          }else{
-            fechaFormateada = moment(fecha).format('DD/MM/YYYY HH:mm');
-          if(fechaFormateada==='Invalid date'){
-            fechaFormateada='  '
-          }
-
-          }
+          fechaFormateada = moment(fecha).format('DD/MM/YYYY HH:mm');
+            return fechaFormateada
+          
         } catch (error) {
           return ''
-      }
           
-          return fechaFormateada
-            
-            
+        }
+
+      }        
        
       }//
 
@@ -94,11 +88,9 @@ const horas = duracion.hours();
 const minutos = duracion.minutes();
 return horas+' hrs con '+minutos+' min'
 
-    }
-   
+    }   
   
 }
-
 
 export default new Operations();
 
