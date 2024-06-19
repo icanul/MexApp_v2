@@ -122,6 +122,11 @@ function Detailscreen (props){
           navigation.navigate('pandape')
           
       }
+      const noty=()=>{
+        // setHelpmodal1(true)
+          navigation.navigate('noty')
+          
+      }
       const mexatrueke=()=>{
         // setHelpmodal1(true)
           navigation.navigate('mexatrueke')
@@ -222,6 +227,12 @@ function Detailscreen (props){
                     <Image source={require('../drawables/mexatrueke.png')} style={style.menuicon} />
                     <Text style={style.menutext}>MEXA TRUEKE</Text>
                 </Pressable>
+                <Pressable style={style.menuitems}
+                 onPress={noty}>
+                    <Image source={require('../drawables/noty.png')} style={style.menuicon} />
+                    <Text style={style.menutext}>NOTIFICACIONES</Text>
+
+                </Pressable>
 
                 <Pressable style={style.menuitems}
                  onPress={help}>
@@ -237,6 +248,7 @@ function Detailscreen (props){
                     <Text style={style.menutext}>CERRAR SESSION</Text>
 
                 </Pressable>
+                
                
 
             

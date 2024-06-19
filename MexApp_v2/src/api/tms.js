@@ -4,6 +4,7 @@ const BASE_API='https://tms.logsys.com.mx/tms/v1/'
 const rest_v2='https://app.mexamerik.com/tms/api/v2.0'
 const tmsapi='https://tms.logsys.com.mx/maintenance/'
 const tmsliqap='https://tms.logsys.com.mx/liquidations.api/api/'
+const basic='TWV4QXBwOk0zeDRwcCYq'
 
 class Api{
      
@@ -12,7 +13,7 @@ class Api{
         {
           'Content-Type': 'application/json',
           Accept: 'application/json',
-          Authorization : ' Basic '+'YWRtaW46bTN4NG0zcjFr',
+          Authorization : ' Basic '+basic,
         
         };
         var url='https://tms.logsys.com.mx/tms/v1/drivers/'+id_Operador
@@ -26,7 +27,7 @@ class Api{
         {
           'Content-Type': 'application/json',
           Accept: 'application/json',
-          Authorization : ' Basic '+'YWRtaW46bTN4NG0zcjFr',
+          Authorization : ' Basic '+basic,
         };
         var url='https://tms.logsys.com.mx/tms/v1/vehicles/'+id_unidad
         const query = await fetch(url,options);
@@ -41,7 +42,7 @@ class Api{
         {
           'Content-Type': 'application/json',
           Accept: 'application/json',
-          Authorization : ' Basic '+'YWRtaW46bTN4NG0zcjFr',
+          Authorization : ' Basic '+basic,
         };
         var url= rest_v2+'/instructions/shipment/'+id
         const query = await fetch(url,options);
@@ -53,7 +54,7 @@ class Api{
         {
           'Content-Type': 'application/json',
           Accept: 'application/json',
-          Authorization : ' Basic '+'YWRtaW46bTN4NG0zcjFr',
+          Authorization : ' Basic '+basic,
         };
         var url= rest_v2+'/shipments/distribution-pickup/'+id
         const query = await fetch(url,options);
@@ -67,7 +68,7 @@ class Api{
           headers: {   
             'Content-Type': 'application/json',
           'Accept': 'application/json',
-          'Authorization' : ' Basic '+'YWRtaW46bTN4NG0zcjFr',
+          'Authorization' : ' Basic '+basic,
            },
            body: JSON.stringify({
             "image":image,
@@ -197,7 +198,7 @@ class Api{
         {
           'Content-Type': 'application/json',
           Accept: 'application/json',
-          Authorization : ' Basic '+'YWRtaW46bTN4NG0zcjFr',
+          Authorization : ' Basic '+basic,
         };
         var url= rest_v2+'/vehicles/dieselassignment/assignments?vehicles=-1&vendors=-1&drivers='+id_Operador+'&status=-1&vendor_type=-1&sort(-time)&from_time='+fechainicio+"&to_time="+fechaActual
         console.log(url)

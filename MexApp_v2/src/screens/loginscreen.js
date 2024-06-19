@@ -21,7 +21,6 @@ function LoginScreen (props){
             global.driver_image= user.driver_image
             global.vehicle_id=user.unidad_id
             console.log('el isd unidad'+user.unidad_id)
-          
             global.token=true
             props.setLogget(1)
             

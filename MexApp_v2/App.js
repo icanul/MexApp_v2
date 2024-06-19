@@ -7,7 +7,7 @@
  */
 
 import React,{useState,useEffect} from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer,useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import {Image,Text,StyleSheet, Modal, Pressable, Alert}from 'react-native'
 import messaging from '@react-native-firebase/messaging';
@@ -50,6 +50,8 @@ import packageJson from  './package.json'; // Asegúrate de ajustar la ruta seg�
 import { LogBox } from 'react-native';
 import RepartosScreen from './src/screens/repartosScreen'
 import RepartosMaps from './src/screens/repartomaps';
+import OpenNotificaton from './src/modals/openNotification';
+import Notification from './src/screens/notificationScreen';
 
 LogBox.ignoreLogs(['new NativeEventEmitter']); 
 
@@ -60,6 +62,7 @@ LogBox.ignoreLogs(['new NativeEventEmitter']);
 
 const Stack = createNativeStackNavigator();
 
+
 const App  =()=> {
   //const netInfo = useNetInfo();
   const[is_logged, setLogget]=useState(0)
@@ -67,6 +70,10 @@ const App  =()=> {
   const [actual_version, setversion] = useState('')
   const[is_conected,setConected]=useState(require('./src/drawables/online.png'))
   const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisible1, setModalVisible1] = useState(false);
+  const [messageData,setMessageData]= useState({})
+
+
 
 
 
@@ -76,10 +83,15 @@ useEffect(() => {
   global.version = packageJson.version//
   getData()
   messaging().onMessage(async remoteMessage => {
+    setMessageData(remoteMessage.data)
+   // console.log(remoteMessage)
     Alert.alert(remoteMessage.notification.title, remoteMessage.notification.body);
-    console.log(remoteMessage.data)
+    //openmessage()
   });
+  const openmessage=()=>{
+    setModalVisible1(true)
 
+  }
   const unsubscribe = NetInfo.addEventListener(state => {
 
     var stade_conection=state.isConnected
@@ -151,13 +163,21 @@ const getData = async () => {
     if(user!= null){
       var convert=JSON.parse(user)
       console.log(convert.cell_data[0].phone)
+      var cedula=convert.cell_data[0].cell__name
         global.id_operador=convert.id
         global.phone=convert.cell_data[0].phone
         global.nombre = convert.nombre;
         global.alias= convert.unidad;
         messaging()
         .subscribeToTopic(convert.id+"")
-        .then(() => console.log('Subscribed to topic!'));  
+        .then(() => console.log('Subscribed to topic!: '+convert.id+""));  
+        messaging()
+        .subscribeToTopic('all')
+        .then(() => console.log('Subscribed to topic!: '+'all'));  
+        messaging()
+        .subscribeToTopic(cedula+'')
+        .then(() => console.log('Subscribed to topic!: '+cedula+'')); 
+
         setLogget(1)
       
     }
@@ -189,6 +209,15 @@ const checkToken = async () => {
         visible={modalVisible}
       >
      <Voicemodal setModalVisible={setModalVisible}/>
+
+      </Modal>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible1}
+      >
+     <OpenNotificaton setModalVisible={setModalVisible1} messageData={messageData} />
 
       </Modal>
      <Stack.Navigator
@@ -631,6 +660,23 @@ const checkToken = async () => {
           title:"Repartos / Recoleción"}}
       name='Repartos'
       component={RepartosScreen} />
+
+<Stack.Screen 
+        options={{
+          unmountOnBlur: true,
+          headerShown: true,
+          headerRight :() => (
+            <Image
+            style={style.logo}
+            source={require('./src/drawables/logo.png')}/>
+          ),
+      
+          gesturesEnabled: false,  
+          title:"Notificaciones"}}
+      name='noty'
+      component={Notification} />
+
+       
       
         </>
     )}

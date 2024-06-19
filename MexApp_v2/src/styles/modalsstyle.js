@@ -26,9 +26,27 @@ const Style=StyleSheet.create({
         width:200,
         height:200,
     },
+    image_noty:{
+      width:'90%',
+      height:'80%',
+      
+      resizeMode:'contain'
+     
+  },
     
     modal:{
       width:300,
+      alignContent:'center',
+      alignContent:'center',
+      justifyContent: 'center',
+      alignItems: "center",
+      backgroundColor: '#ffffffd9',
+      elevation: 5
+    
+    
+    },
+    modal_noty:{
+      width:'95%',
       alignContent:'center',
       alignContent:'center',
       justifyContent: 'center',
