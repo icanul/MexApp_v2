@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { View,Text,Alert,StatusBar,StyleSheet,Platorm,Pressable,TextInput, ImageBackground,ScrollView,Image} from 'react-native';
 import Api from'../api/intranet'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import messaging from '@react-native-firebase/messaging';
 
 
 function LoginScreen (props){
@@ -12,7 +13,7 @@ function LoginScreen (props){
       serLoad(true)   
         try {
             const user=await Api.login( number,global.version, global.fcmToken)
-    
+           console.log(user)
             storeData(user)
             global.id_operador = user.id;
             global.imageOperador=user.image
@@ -22,11 +23,20 @@ function LoginScreen (props){
             global.vehicle_id=user.unidad_id
             console.log('el isd unidad'+user.unidad_id)
             global.token=true
+            messaging()
+            .subscribeToTopic("TODOS")
+            .then(() => console.log('Subscribed to topic!: '+"TODOS"));  
+            messaging()
+            .subscribeToTopic("all")
+            .then(() => console.log('Subscribed to topic!: '+"TODOS"));  
+            messaging()
+            .subscribeToTopic(""+user.id)
+            .then(() => console.log('Subscribed to topic!: '+user.id)); 
             props.setLogget(1)
             
         } catch (error) {
             global.token=false
-            Alert.alert("no estas asignado:")
+            Alert.alert("no estas asignado:",'error:'+error)
             serLoad(false) 
             
         }

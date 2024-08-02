@@ -26,9 +26,15 @@ const Style=StyleSheet.create({
 
 
     },
+    minilogo:{
+        height:20,
+        width:20,
+        margin:5,   
+    },
     titletext:{
         color:'#393d42',
         fontWeight: 'bold',
+        fontSize:15,
         margin:5
 
     },
@@ -64,7 +70,23 @@ const Style=StyleSheet.create({
         elevation: 3,
         backgroundColor:'#ffffffcc',
         justifyContent:'space-between'
-    }
+    },
+    contencard2:{
+        flex: 1,
+        margin:2,
+        borderRadius: 30 / 2,
+        backgroundColor:'#ffffffcc',
+        justifyContent:'space-between'
+    },
+    fechacard:{
+        color:'#393d42',
+        marginLeft:10,
+        fontSize: 14,
+    lineHeight: 21,
+    textAlign:'right',
+    marginTop:5,
+    letterSpacing: 0.25,
+    },
     
    
 

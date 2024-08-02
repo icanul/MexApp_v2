@@ -3,11 +3,10 @@ import { Image } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import HomeScreen from '../screens/homescreen';
 import Detailscreen from '../screens/detailscreen';
-import CameraScreen from '../screens/cameraScreen'
 import TravelsTabs from './travels_tabs';
 import DreamsScreen from '../screens/dreamsScreen';
-import MLoginScreen from '../screens/mloginscreen';
-import NLoginScreen from '../screens/nloginscreen';
+import HomeNotificationScreen from '../screens/HomenotificationScreen';
+
 
 
 const Tab = createMaterialTopTabNavigator();

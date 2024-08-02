@@ -11,9 +11,17 @@ const Style=StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
+        alignContent:'center',
         backgroundColor:'#eaeaeacc',
     },
-
+    content1:{
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      alignContent:'center',
+      backgroundColor:'#fff',
+      margin:10
+  },
     checkbox:{
         flexDirection:'row',
     
@@ -36,6 +44,18 @@ const Style=StyleSheet.create({
     
     modal:{
       width:300,
+      alignContent:'center',
+      alignContent:'center',
+      justifyContent: 'center',
+      alignItems: "center",
+      backgroundColor: '#ffffffd9',
+      elevation: 5
+    
+    
+    },
+    modal1:{
+      width:'100%',
+      height:'70%',
       alignContent:'center',
       alignContent:'center',
       justifyContent: 'center',

@@ -18,7 +18,7 @@ class UrlsLists extends Component{
         )
     }
     render(){
-        console.log(this.props.events)
+        console.log(this.props.images)
 
         return(
             
@@ -28,7 +28,7 @@ class UrlsLists extends Component{
         
             <FlatList
              keyExtractor={this.keyExtractor}
-             data={this.props.data}
+             data={this.props.images}
              ListEmptyComponent={this.renderEmtpy}
              ItemSeparatorComponent={this.itemseparator}
              renderItem={this.renderItem}/>
@@ -42,5 +42,5 @@ class UrlsLists extends Component{
 }
 
 
-export default InstrucctionList
+export default UrlsLists
 

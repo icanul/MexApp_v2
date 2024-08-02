@@ -52,6 +52,7 @@ import RepartosScreen from './src/screens/repartosScreen'
 import RepartosMaps from './src/screens/repartomaps';
 import OpenNotificaton from './src/modals/openNotification';
 import Notification from './src/screens/notificationScreen';
+import Incidencias_Screen from './src/screens/incidencias_Screen';
 
 LogBox.ignoreLogs(['new NativeEventEmitter']); 
 
@@ -84,7 +85,6 @@ useEffect(() => {
   getData()
   messaging().onMessage(async remoteMessage => {
     setMessageData(remoteMessage.data)
-   // console.log(remoteMessage)
     Alert.alert(remoteMessage.notification.title, remoteMessage.notification.body);
     //openmessage()
   });
@@ -125,7 +125,6 @@ async function requestUserPermission() {
     authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
   if (enabled) {
-    console.log(' yes Authorization status:', authStatus);
   }else{
     console.log(' no Authorization status:', authStatus);
 
@@ -134,11 +133,9 @@ async function requestUserPermission() {
 const getevidence= async () => {
   const evidence= await storageData.consultData('@evidenciagasto')
 
-  console.log(evidence)
   if(evidence!= null){
     var convert=JSON.parse(evidence)
     var id=convert.id
-    console.log('id:'+id)
     var coment=convert.comment
     const data = {uri:convert.url, type:"image/jpeg", name:'profile.jpg', filename:'afiletest'};
     const formData = new FormData()
@@ -162,22 +159,18 @@ const getData = async () => {
     const user=await storageData.consultData('@user_storage')
     if(user!= null){
       var convert=JSON.parse(user)
-      console.log(convert.cell_data[0].phone)
-      var cedula=convert.cell_data[0].cell__name
         global.id_operador=convert.id
-        global.phone=convert.cell_data[0].phone
         global.nombre = convert.nombre;
         global.alias= convert.unidad;
         messaging()
         .subscribeToTopic(convert.id+"")
-        .then(() => console.log('Subscribed to topic!: '+convert.id+""));  
+        .then(() => console.log('Subscribed to topic!: '+conv|  ert.id+""));  
         messaging()
         .subscribeToTopic('all')
         .then(() => console.log('Subscribed to topic!: '+'all'));  
         messaging()
-        .subscribeToTopic(cedula+'')
-        .then(() => console.log('Subscribed to topic!: '+cedula+'')); 
-
+        .subscribeToTopic("TODOS")
+        .then(() => console.log('Subscribed to topic!: '+convert.id+"TODOS"));  
         setLogget(1)
       
     }
@@ -489,9 +482,9 @@ const checkToken = async () => {
             source={require('./src/drawables/logo.png')}/>
           ),
           gesturesEnabled: false,  
-          title:"Evidencias"}}
+          title:"Incidencias"}}
       name='evidencias'
-      component={EvidenciasScreen} />
+      component={Incidencias_Screen} />
 
 <Stack.Screen 
         options={{

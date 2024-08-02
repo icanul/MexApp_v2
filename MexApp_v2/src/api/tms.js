@@ -5,6 +5,7 @@ const rest_v2='https://app.mexamerik.com/tms/api/v2.0'
 const tmsapi='https://tms.logsys.com.mx/maintenance/'
 const tmsliqap='https://tms.logsys.com.mx/liquidations.api/api/'
 const basic='TWV4QXBwOk0zeDRwcCYq'
+const incident_api='https://tms.logsys.com.mx/shipments.incidents.api/'
 
 class Api{
      
@@ -352,6 +353,62 @@ class Api{
 
         console.log(query)      
         return query;
+      }
+      async get_token_incidencias(){
+        const query= await fetch(incident_api+'auth/login',{
+          method: 'POST',
+          headers: {   
+            'Content-Type': 'application/json',
+          'Accept': 'application/json',
+           },
+           body: JSON.stringify({
+            "username":'MexApp',
+            "password":'M3x4pp&*',
+           }),
+        });
+        var data= await query.json();
+        return data;
+
+      }
+      async insert_incidents(token,data){
+        
+        const query= await fetch(incident_api+'incidents',{
+          method: 'POST',
+          headers: {   
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}` 
+           },
+           body: JSON.stringify(data),
+         
+        });
+         var data= await query.json();
+        return data;
+
+      }
+      async insert_evidencias_incidents(token,data,id){
+
+        console.log('enviando foto:::')
+        console.log(data)
+
+        try {
+        const query= await fetch(incident_api+'incidents/'+id+'/attach-evidences',{
+          method: 'POST',
+          headers: {   
+            
+          'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${token}` 
+
+           },
+
+           body: data,
+        });
+        return query;
+        } catch (error) {
+          console.log(error)
+          return error
+          
+        }
+
       }
 
 }

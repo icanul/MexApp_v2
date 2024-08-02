@@ -35,7 +35,6 @@ function Detailscreen (props){
         else{
             console.log('hay una foto guardada')
             var convert=JSON.parse(savephoto)
-            console.log(convert)
             setPhoto(convert.image)
 
         }
@@ -172,6 +171,12 @@ function Detailscreen (props){
                     <Text style={style.menutext}>CONTACTOS</Text>
 
                 </Pressable>
+                <Pressable style={style.menuitems}
+                 onPress={opencamera}>
+                    <Image source={require('../drawables/camera.png')} style={style.menuicon} />
+                    <Text style={style.menutext}>INCIDENCIAS</Text>
+
+                </Pressable>
                 <Pressable 
                  onPress={openNom87} 
                 style={style.menuitems}>
@@ -199,12 +204,7 @@ function Detailscreen (props){
 
                 </Pressable>
 
-                <Pressable style={style.menuitems}
-                 onPress={opencamera}>
-                    <Image source={require('../drawables/camera.png')} style={style.menuicon} />
-                    <Text style={style.menutext}>EVIDENCIAS</Text>
-
-                </Pressable>
+           
                 <Pressable style={style.menuitems}
                  onPress={openfuel}>
                     <Image source={require('../drawables/fuel.png')} style={style.menuicon} />

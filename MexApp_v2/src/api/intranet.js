@@ -2,7 +2,7 @@ import RNFS from 'react-native-fs';
 import moment from 'moment/moment';
 
 const restAPI='https://intranet.mexamerik.com'
-const restAPI_dev='192.168.0.8:8080'
+const restAPI_dev='192.168.0.6:8080'
 
 const rutaArchivo = RNFS.DocumentDirectoryPath + '/log.txt';
 const hora = moment().format('YYYY-MM-DDTHH:MM:SS')
@@ -377,18 +377,6 @@ return response
   }
 
   async setevidence(idoperado,lat,lon,base64,fecha,description,evidence_type ){
-    var test={
-      "driver_id":idoperado,
-      "evidence_type":evidence_type,
-      "lat":lat,
-      "lon":lon,
-      "attachedFile64":base64,
-      "mexapp_datetime":fecha,
-      "description":description
-
-    }
-    console.log(test)
-  
     const query= await fetch('https://intranet.mexamerik.com/evidences/send',{
       method: 'POST',
       headers: {   
@@ -409,6 +397,43 @@ return response
     const responseSize = query.headers.get('content-length') || '0';
     const line=hora+' '+query. url+' '+responseSize+'b'
     writeline(line)  
+
+    return query;
+  }
+  async get_notification_topi_mexapp(topic){
+    console.log('buscando notificaiones con el topic:'+topic)
+    const query= await fetch('http://192.168.0.7:8000/infographics/get_notification_topi_mexapp/',{
+      method: 'POST',
+      headers: {   
+        'Content-Type': 'application/json',
+        'Accept': 'application/json', 
+       },
+       body: JSON.stringify({
+        "topic":topic,
+ 
+       }),
+    });
+
+
+    return query;
+  }
+
+  async insert_review(id_notification, id_driver){
+    console.log('insertando:'+id_notification)
+    const query= await fetch('http://192.168.0.7:8000/infographics/insert_review/',{
+      method: 'POST',
+      headers: {   
+        'Content-Type': 'application/json',
+        'Accept': 'application/json', 
+       },
+       body: JSON.stringify({
+        "id_notification":id_notification,
+        "id_driver":id_driver,
+ 
+ 
+       }),
+    });
+
 
     return query;
   }

@@ -44,7 +44,7 @@ function Maps (props){
     const interval = setInterval(() => {
       //console.log('no mames')
       if (Platform.OS === 'android') {
-        requestLocationPermission()
+        //requestLocationPermission()
       } else {
        geolocation()
        console.log('permission ios')

@@ -44,7 +44,6 @@ function WelcomeHome(props){
         const user=await storageData.consultData('@user_storage')
         if(user!= null){
             var convert=JSON.parse(user)
-            setcedula(convert.cell_data[0].cell__name)
             setdata(convert)
         }
 
