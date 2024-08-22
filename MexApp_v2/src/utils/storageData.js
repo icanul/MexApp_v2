@@ -12,10 +12,10 @@ class StoreData{
           const jsonValue = JSON.stringify(value)
           await AsyncStorage.setItem(key, jsonValue)
           console.log('Se gusrada '+ key)
-          return 'ok'
+          return 'Se guardo correctamente'
         } catch (e) {
           console.log(e)
-          return 'fail'
+          return 'Error: '+ e
         }
       }
 

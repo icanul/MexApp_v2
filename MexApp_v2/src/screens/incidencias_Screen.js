@@ -4,6 +4,7 @@ import tms from '../api/tms';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import EvidenciasScreen from './evidenciasScreen';
 import Incidencia_solicitud from './incidencia_solicitud';
+import Incidencia_solicitud_sc from './incidencia_solicitud_sc';
 
 
 const Tab = createMaterialTopTabNavigator();
@@ -15,8 +16,6 @@ function Incidencias_Screen(props){
 
     useEffect(() => {
       setSolicitud('Solicitud '+global.solicitud)
-   
-
     },[])
 
 
@@ -34,14 +33,14 @@ function Incidencias_Screen(props){
                 backgroundColor: '#ffffffcc',
                 height:45, },
           }}>
-            <Tab.Screen 
+       <Tab.Screen 
      name="incidencias"
      options={{
         unmountOnBlur: true,
      
         headerShown: false,
         gesturesEnabled: false,   
-        title: solicitud}}>
+        title: 'Enviadas'}}>
 
      {props => <Incidencia_solicitud {...props} observations={observation}/>}
      </Tab.Screen>
@@ -52,9 +51,9 @@ function Incidencias_Screen(props){
         headerLeft: null,
         headerShown: false,
         gesturesEnabled: false,   
-        title: 'Otros' }}>
+        title: 'No enviados' }}>
 
-     {props => <EvidenciasScreen {...props} evidences={evidences}/>}
+     {props => <Incidencia_solicitud_sc {...props} evidences={evidences}/>}
      </Tab.Screen>
 
 

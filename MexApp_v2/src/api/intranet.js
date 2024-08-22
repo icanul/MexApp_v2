@@ -420,7 +420,7 @@ return response
 
   async insert_review(id_notification, id_driver){
     console.log('insertando:'+id_notification)
-    const query= await fetch('http://192.168.0.7:8000/infographics/insert_review/',{
+    const query= await fetch('http://192.168.100.35:8000/infographics/insert_review/',{
       method: 'POST',
       headers: {   
         'Content-Type': 'application/json',

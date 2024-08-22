@@ -40,7 +40,13 @@ function Evidence_ins_modal(props){
         };
           axios.get(url, config)
           .then(response =>{
-            setImages(response.data.evidences)
+            let imagenes=response.data.evidences
+            setImages(imagenes)
+            if(imagenes==0){
+              close()
+              Alert.alert('MexApp','No hay imagenes para mostrar')
+
+            }
             console.log(images.length)
            
             

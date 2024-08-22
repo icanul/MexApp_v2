@@ -59,6 +59,19 @@ class Operations{
       const fechaFormateada = moment(fechaOriginal).format('DD/MM/YYYY HH:mm');
       return fechaFormateada
     }
+    fecha_utc_actual(){
+      let fechaActual = new Date();
+      let year = fechaActual.getUTCFullYear();
+      let month = (fechaActual.getUTCMonth() + 1).toString().padStart(2, '0'); // Meses de 0-11, agregar 1
+      let day = fechaActual.getUTCDate().toString().padStart(2, '0');
+      let hours = fechaActual.getUTCHours().toString().padStart(2, '0');
+      let minutes = fechaActual.getUTCMinutes().toString().padStart(2, '0');
+      let seconds = fechaActual.getUTCSeconds().toString().padStart(2, '0');
+      let fechaHoraUTC = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}Z`;
+      return fechaHoraUTC
+
+
+    }
     convert_utc_local1(fechaOriginal){
       let horaUTC=moment.utc(fechaOriginal)
       let horaLocal = horaUTC.local();

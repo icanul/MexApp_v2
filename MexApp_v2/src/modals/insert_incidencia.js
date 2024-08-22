@@ -1,9 +1,11 @@
 import React ,{ useState,useEffect }from "react";
-import { View,Text,Pressable,TextInput ,Image, Alert,PermissionsAndroid} from "react-native";
+import { View,Text,Pressable,TextInput ,Image, StyleSheet,PermissionsAndroid ,SafeAreaView,ScrollView, Alert} from "react-native";
 import { SelectList } from 'react-native-dropdown-select-list'
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import storageData from '../utils/storageData';
+import StorageData from '../utils/storageData';
+import NetInfo from "@react-native-community/netinfo";
 import ModalStyle from '../styles/modalsstyle'
+import Operations from "../utils/operations";
 import TMS from '../api/tms'
 import Reload from "./reload";
 
@@ -15,12 +17,34 @@ function Insert_insidencias(props){
     const [selected1, setSelected1] = useState("");
     const [types,setTypes]=useState([])
     const [load,setLoad]=useState(false)
+    const [banderaconection,setBanderaConection]=useState(false)
+
 
     useEffect(() => {
         var array=props.types
         cambiarLlave(array,'name','value')
         console.log(array)
         setTypes(array)
+         
+        const unsubscribe = NetInfo.addEventListener(state => {
+            var stade_conection=state.isConnected
+            var isInternetReachable=state.isInternetReachable
+           
+    
+            if(stade_conection==true&&isInternetReachable==true){
+                setBanderaConection(true);
+    
+            }
+            else{
+                setBanderaConection(false);
+             
+            }
+          });
+  
+          return () => {
+            unsubscribe();
+          };
+    
          
       }, [])
     function cambiarLlave(array, llaveAntigua, llaveNueva) {
@@ -37,6 +61,30 @@ function Insert_insidencias(props){
         let objeto = array.find(obj => obj.value === nombre);
         return objeto ? objeto.id : null;
     }
+
+    const save_incidents=async(incidencia)=>{
+        var itmes_saves=[]
+
+        const incidents=await StorageData.consultData('@incidents_saves')
+        if(incidents!= null){
+          var convert=JSON.parse(incidents)
+          itmes_saves.push(convert)
+          itmes_saves.push(incidencia)
+          const save = await StorageData.insertData('@incidents_saves',itmes_saves)
+          console.log(save)
+          Alert.alert('incidencia Guardada sin conexion ',save)
+          close()
+         
+    
+        }else{
+            const save = await StorageData.insertData('@incidents_saves',incidencia)
+            console.log(save)
+            Alert.alert('MexApp','incidencia Guardada sin conexion '+save)
+            close()
+
+        }       
+    
+       }
     
 
     const close= () =>{
@@ -44,20 +92,69 @@ function Insert_insidencias(props){
         props.setModalVisible(false)
     
     }
+    const validate_c=()=>{
+
+
+        if(banderaconection===true){
+            send_Report()
+
+        }
+        else{
+            setBanderaConection(false);
+            Alert.alert('Guardando sin conexión')
+            let fechaHoraUTC = Operations.fecha_utc_actual
+            var tipo_id=obtenerIdPorNombre(types,selected1)
+             var imaegenes=[]
+
+            var incident ={
+                "incident":{
+                    "incident_time":fechaHoraUTC,
+                    "shipment_Id":global.solicitud,
+                    "type_Id":tipo_id,
+                    "type":selected1,
+                    "comment":text,
+                    "vehicle_id":global.vehicle_id,
+                    "driver_id":global.id_operador,
+                    "vehicle_vehicle_id":null ,
+                  
+                }
+            }
+            if(images.length>0){
+                for(var i=0;i<images.length;i++){
+                    var image=images[i]
+                
+                    const data = {
+                        uri:image.uri, 
+                        type:"image/jpeg", 
+                        name:'profile'+'.jpg', 
+                        filename:'afiletest'
+                    };
+                    imaegenes.push(data)
+                }
+
+
+            }
+            var data={
+                incident:incident,
+                imaegenes:imaegenes
+            }
+            save_incidents(data) 
+
+        }
+              
+        
+        
+    }
+
+
     const send_Report= async()=>{
         setLoad(true)
 
 
-        let fechaActual = new Date();
-        let year = fechaActual.getUTCFullYear();
-        let month = (fechaActual.getUTCMonth() + 1).toString().padStart(2, '0'); // Meses de 0-11, agregar 1
-        let day = fechaActual.getUTCDate().toString().padStart(2, '0');
-        let hours = fechaActual.getUTCHours().toString().padStart(2, '0');
-        let minutes = fechaActual.getUTCMinutes().toString().padStart(2, '0');
-        let seconds = fechaActual.getUTCSeconds().toString().padStart(2, '0');
-        let fechaHoraUTC = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}Z`;
+        let fechaHoraUTC = Operations.fecha_utc_actual
         
         var tipo_id=obtenerIdPorNombre(types,selected1)
+        
 
         var incident ={
             "incident":{
@@ -190,10 +287,14 @@ function Insert_insidencias(props){
         
                     <Text style={ModalStyle.title}>Generar Incidencia</Text>
                     <Text style={ModalStyle.title}></Text>
+                    <View style={ModalStyle.horizontal}>
+                        <Text style={ModalStyle.title}>Solicitud: </Text>
+                    <    Text style={ModalStyle.texto}>{global.solicitud}</Text>
+                    </View>
         
                     <View style={ModalStyle.horizontal}>
                         <Text style={ModalStyle.title}>Operador: </Text>
-                    <    Text style={ModalStyle.texto}>{global.nombre}:</Text>
+                    <    Text style={ModalStyle.texto}>{global.nombre}</Text>
                     </View>
                     <View style={ModalStyle.horizontal}>
                         <Text style={ModalStyle.title}>Unidad: </Text>
@@ -233,16 +334,16 @@ function Insert_insidencias(props){
                          source={require('../drawables/attach.png')}
                           />
                     </Pressable>
-                    <View style={{margin:15}}>
+                    <ScrollView horizontal={true} style={styles.scrollView}>
                     {images.map((image, index) => (
                         <View style={ModalStyle.horizontal}>
-                            <Text style={ModalStyle.title}>{index+1} </Text>
-        
-                 <Text style={ModalStyle.texto}>{image.fileName} </Text>
+                     <Image
+        source={{ uri: image.uri }}
+        style={{width:90,height:180,resizeMode:'contain',margin:3}}/>
                  </View>
                 
                 ))}
-                </View>
+                </ScrollView>
                    
                    
                     <View style={ModalStyle.horizontal}>
@@ -252,7 +353,7 @@ function Insert_insidencias(props){
                         <Text style={ModalStyle.textbutton}>Cerrar</Text>
                     </Pressable>
                     <Pressable 
-                    onPress={send_Report}
+                    onPress={validate_c}
                     style={ModalStyle.button}>
                         <Text style={ModalStyle.textbutton}>Enviar</Text>
                     </Pressable>
@@ -276,4 +377,18 @@ function Insert_insidencias(props){
 
 
 }
+const styles = StyleSheet.create({
+    scrollView: {
+      flexDirection: 'row',
+    },
+    box: {
+      width: 500,
+      height: 100,
+      justifyContent: 'center',
+      alignItems: 'center',
+      margin: 10,
+      backgroundColor: '#f0f0f0',
+    },
+  });
+  
 export default Insert_insidencias;
