@@ -256,6 +256,30 @@ class Api{
         var data= await query.json();
         return data;
       }
+      async gettypes_m(){
+        try {
+          options.headers = 
+          {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+            Authorization : ' Bearer '+token,
+            'sort':'-time'
+          
+          };
+          var url = tmsapi+'api/reports/types?name=*'
+          const query = await fetch(url,options);
+          const data = await query.json();
+         console.log(query)
+  
+          return data;   
+          
+        } catch (error) {
+
+          return error
+          
+        }
+
+      }
       async setreportM(body){
 
         console.log('enviando foto:::')
