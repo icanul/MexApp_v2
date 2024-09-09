@@ -174,7 +174,7 @@ function Detailscreen (props){
                 <Pressable style={style.menuitems}
                  onPress={opencamera}>
                     <Image source={require('../drawables/camera.png')} style={style.menuicon} />
-                    <Text style={style.menutext}>INCIDENCIAS</Text>
+                    <Text style={style.menutext}>INCIDENCIAS SOLICITUD</Text>
 
                 </Pressable>
                 <Pressable 

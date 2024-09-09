@@ -77,7 +77,8 @@ function Insert_insidencias(props){
          
     
         }else{
-            const save = await StorageData.insertData('@incidents_saves',incidencia)
+            itmes_saves.push(incidencia)
+            const save = await StorageData.insertData('@incidents_saves',itmes_saves)
             console.log(save)
             Alert.alert('MexApp','incidencia Guardada sin conexion '+save)
             close()
@@ -101,14 +102,16 @@ function Insert_insidencias(props){
         }
         else{
             setBanderaConection(false);
-            Alert.alert('Guardando sin conexión')
-            let fechaHoraUTC = Operations.fecha_utc_actual
+         
+            const now = new Date();
+            const utcDate = now.toISOString();
+            
             var tipo_id=obtenerIdPorNombre(types,selected1)
              var imaegenes=[]
 
             var incident ={
                 "incident":{
-                    "incident_time":fechaHoraUTC,
+                    "incident_time":utcDate,
                     "shipment_Id":global.solicitud,
                     "type_Id":tipo_id,
                     "type":selected1,
@@ -136,7 +139,7 @@ function Insert_insidencias(props){
             }
             var data={
                 incident:incident,
-                imaegenes:imaegenes
+                imagenes:imaegenes
             }
             save_incidents(data) 
 
@@ -151,7 +154,8 @@ function Insert_insidencias(props){
         setLoad(true)
 
 
-        let fechaHoraUTC = Operations.fecha_utc_actual
+        const now = new Date();
+        const utcDate = now.toISOString();
         
         var tipo_id=obtenerIdPorNombre(types,selected1)
         
@@ -164,7 +168,7 @@ function Insert_insidencias(props){
                 "vehicle_id":global.vehicle_id,
                 "driver_id":global.id_operador,
                 "vehicle_vehicle_id":null ,
-                "incident_time":fechaHoraUTC
+                "incident_time":utcDate
             }
           
         }

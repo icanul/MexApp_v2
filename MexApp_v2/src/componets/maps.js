@@ -44,7 +44,7 @@ function Maps (props){
     const interval = setInterval(() => {
       //console.log('no mames')
       if (Platform.OS === 'android') {
-        //requestLocationPermission()
+        requestLocationPermission()
       } else {
        geolocation()
        console.log('permission ios')
@@ -278,7 +278,7 @@ const mapa=(props)=>{
       onPress={openMap}
       title={"Mi ubicación"}
       description="unidad localizada">
-         <Image source={require('../drawables/camion2.png')} style={{height: 30, width:40,resizeMode:'contain' }} />
+         <Image source={require('../drawables/icon_truck.png')} style={{height: 30, width:40,resizeMode:'contain' }} />
      </Marker>
      <Marker
       

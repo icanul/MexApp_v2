@@ -13,7 +13,6 @@ function LoginScreen (props){
       serLoad(true)   
         try {
             const user=await Api.login( number,global.version, global.fcmToken)
-           console.log(user)
             storeData(user)
             global.id_operador = user.id;
             global.imageOperador=user.image
@@ -21,7 +20,9 @@ function LoginScreen (props){
             global.alias= user.unidad;
             global.driver_image= user.driver_image
             global.vehicle_id=user.unidad_id
-            console.log('el isd unidad'+user.unidad_id)
+            console.log('la unidad es:'+ user.unidad_id+' y la unidad es : '+ user.unidad)
+            console.log('la unidad es:'+  global.vehicle_id+' y la unidad es : '+  global.alias)
+
             global.token=true
             messaging()
             .subscribeToTopic("TODOS")

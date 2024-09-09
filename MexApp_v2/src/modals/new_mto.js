@@ -1,5 +1,5 @@
 import React ,{ useState,useEffect }from "react";
-import { View,Text,Pressable,TextInput ,Image, Alert,PermissionsAndroid, TouchableOpacity} from "react-native";
+import { View,Text,ScrollView,TextInput ,Image, Alert,PermissionsAndroid, TouchableOpacity,StyleSheet} from "react-native";
 import { SelectList } from 'react-native-dropdown-select-list'
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import storageData from '../utils/storageData';
@@ -14,9 +14,10 @@ var arrayurls=[]
 
 
 function Maintenance(props){
+    const [images, setImages] = useState([]);
     const [milatitusd,setMilatitud]=useState(0.0)
     const [milongitud,setMilongitud]=useState(0.0)
-    const [names,setNames]=useState()
+    const [data, setData] = useState([]);
     const [isload,setisload]=useState(false)
     const [urls,setUrl]=useState('https://media.istockphoto.com/id/1369813814/es/vector/fondo-de-transparencia-de-mosaico-a-cuadros-underlay-para-mostrar-elementos-gr%C3%A1ficos-y.jpg?s=1024x1024&w=is&k=20&c=3ldZFjOoh4aNqpZ_cqvSz9hOxJT3acit4ZF_K4TLJAc=')
     const [count, setCount] = useState(0);
@@ -25,6 +26,7 @@ function Maintenance(props){
     const [selected1, setSelected1] = useState("");
 
     useEffect(() => {
+        get_datos()
         geolocation()
         console.log(global.token)
          
@@ -46,6 +48,19 @@ function Maintenance(props){
       {key:'9', value:'SISTEMA ELECTRICO E INSTRUMENTOS'},
       {key:'10', value:'TREN MOTRIZ'},
   ]
+  const get_datos=async()=>{
+    console.log('buscando tipo')
+    const filter_mantenimiento = await TMS.gettypes_m()
+    const transformedData = filter_mantenimiento.map(item => ({
+        key: item.id,
+        value: item.name, // Cambia esto según los datos de tu API
+      }));
+      console.log(transformedData)
+      setData(transformedData);
+ 
+   
+
+  }
    
  
 
@@ -84,7 +99,7 @@ function Maintenance(props){
     const send_Report= async()=>{
         geolocation()
      
-        let d= datatext.filter(d=> d.value==selected)
+        let d= data.filter(d=> d.value==selected)
         let report_type_id=d[0].key
         var time=moment().format('YYYY-MM-DDTHH:MM')
         var time2=time+':00.000'
@@ -99,19 +114,18 @@ function Maintenance(props){
         formData.append('lat',milatitusd)
         formData.append('time',time2)
 
-
-       /*/ if(arrayurls.length>0){
+        if(images.length>0){
             console.log(arrayurls)
             
-            for (var i = 0; i < arrayurls.length; i++) {
-                var imagen=arrayurls[i]
-                const data = {uri:imagen, type:"image/jpeg", name:'profile.jpg', filename:'afiletest'};
+            for(var i=0;i<images.length;i++){
+                var image=images[i]
+                const data = {uri:image.uri, type:"image/jpeg", name:'profile.jpg', filename:'afiletest'};
                 formData.append('', data)
                
              }        
 
-        }/*/
-        var imagen=urls
+        }
+      /*/  var imagen=urls
         if(imagen=='https://media.istockphoto.com/id/1369813814/es/vector/fondo-de-transparencia-de-mosaico-a-cuadros-underlay-para-mostrar-elementos-gr%C3%A1ficos-y.jpg?s=1024x1024&w=is&k=20&c=3ldZFjOoh4aNqpZ_cqvSz9hOxJT3acit4ZF_K4TLJAc='){
 
 
@@ -119,7 +133,7 @@ function Maintenance(props){
             const data = {uri:imagen, type:"image/jpeg", name:'profile.jpg', filename:'afiletest'};
             formData.append('', data)
 
-        }
+        }/*/
        
         console.log(formData)
         try {
@@ -198,6 +212,7 @@ function Maintenance(props){
 
                 }
                 else if(response.assets){
+                    setImages([...images, ...response.assets]);
                     var name=response.assets[0].fileName
                     var url=response.assets[0].uri
                     console.log(url)
@@ -224,30 +239,25 @@ function Maintenance(props){
                 <View style={ModalStyle.modal}>
                 <Text style={ModalStyle.title}></Text>
         
-                    <Text style={ModalStyle.title}>Reportar Unidad</Text>
-                    <Text style={ModalStyle.title}></Text>
+                    <Text style={ModalStyle.title}>Reportar falla en </Text>
+                    <Text style={ModalStyle.title}>Unidad {global.alias}</Text>
         
                     <View style={ModalStyle.horizontal}>
-                        <Text style={ModalStyle.title}>Operador: </Text>
+                        <Text style={ModalStyle.title}>Reporta operador: </Text>
                     </View>
                     < Text style={ModalStyle.texto}>{global.nombre}:</Text>
         
-                    <View style={ModalStyle.horizontal}>
-                        <Text style={ModalStyle.title}>Unidad: </Text>
-                    <    Text style={ModalStyle.texto}>{global.alias}</Text>
-                    </View>
-                    <Text style={ModalStyle.title}></Text>
-                    <Text style={ModalStyle.title}>Reportar por </Text>
-        
-        
-                    <Text style={ModalStyle.title}>Tipo de  Falla</Text>
+                
                    
                         <SelectList 
                         style={{color:'#000000',width:260}}
                         setSelected={setSelected}
-                        data={datatext}
+                        data={data}
                         dropdownTextStyles	={{color:'#000000'} }
-                        inputStyles={{color:'#000000'} }
+                        inputStyles={{color:'#000000',width:190} }
+                        label="Incidencias"
+                         searchPlaceholder='Seleciona una opcion'
+                         placeholder='Tipo de falla '
                         save="value"/>
                          <TextInput
                         disabled={true}
@@ -269,11 +279,17 @@ function Maintenance(props){
                           />
         
                     </TouchableOpacity>
-                    <Image
-                    style={{  width:80,height: 140,resizeMode:'contain',alignSelf:'center'}}
-                    source={{ uri: urls}}
-                    />
-                   
+                    <ScrollView horizontal={true} style={styles.scrollView}>
+                    {images.map((image, index) => (
+                        <View style={ModalStyle.horizontal}>
+                     <Image
+        source={{ uri: image.uri }}
+        style={{width:90,height:180,resizeMode:'contain',margin:3}}/>
+                 </View>
+                
+                ))}
+                </ScrollView>
+                < Text style={ModalStyle.texto}>Maximo 3</Text>
                     <View style={ModalStyle.horizontal}>
                     <TouchableOpacity 
                     onPress={close}
@@ -297,4 +313,17 @@ function Maintenance(props){
 
 
 }
+const styles = StyleSheet.create({
+    scrollView: {
+      flexDirection: 'row',
+    },
+    box: {
+      width: 500,
+      height: 100,
+      justifyContent: 'center',
+      alignItems: 'center',
+      margin: 10,
+      backgroundColor: '#f0f0f0',
+    },
+  });
 export default Maintenance;

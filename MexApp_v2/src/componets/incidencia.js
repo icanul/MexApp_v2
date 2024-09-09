@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { View,Image,Text, TouchableOpacity,Modal } from 'react-native';
 import Styles from '../styles/styles'
 import Evidence_ins_modal from '../modals/evidence_inc_modal';
+import operations from '../utils/operations';
+
 
 
 
@@ -22,18 +24,17 @@ function Incidencia (props){
           animationType="slide"
           transparent={true}
           visible={modalVisible}>
-
             <Evidence_ins_modal setModalVisible={setModalVisible} id={props.id} />
 
           </Modal>
           <View style={Styles.horizontal}>
-            <Text style={Styles.titletext}>Folio</Text>
-            <Text style={Styles.simpletext}>{props.id}</Text>
+            <Text style={Styles.titletext}>Estatus</Text>
+            <Text style={Styles.simpletext}>Enviada</Text>
           </View>
           <View style={Styles.horizontal}>
             <Text style={Styles.titletext}>Creado por</Text>
             <Text style={Styles.simpletext}>{props.created_by}</Text>
-            <Text style={Styles.simpletext}>({props.incident_time})</Text>
+            <Text style={Styles.simpletext}> {operations.convert_utc_local1(props.incident_time)}</Text>
           </View>
           <View style={Styles.horizontal}>
 

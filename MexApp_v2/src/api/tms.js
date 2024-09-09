@@ -24,6 +24,8 @@ class Api{
       }
 
     async getUnIdad(id_unidad,options = {}){
+
+      console.log(global.vehicle_id)
         options.headers = 
         {
           'Content-Type': 'application/json',
@@ -256,7 +258,7 @@ class Api{
         var data= await query.json();
         return data;
       }
-      async gettypes_m(){
+      async gettypes_m(options = {}){
         try {
           options.headers = 
           {

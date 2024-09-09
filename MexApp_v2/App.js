@@ -52,7 +52,8 @@ import RepartosScreen from './src/screens/repartosScreen'
 import RepartosMaps from './src/screens/repartomaps';
 import OpenNotificaton from './src/modals/openNotification';
 import Notification from './src/screens/notificationScreen';
-import Incidencias_Screen from './src/screens/incidencias_Screen';
+import Incidencias_Screen from './src/screens/incidencia_solicitud';
+import Send_Data from './src/utils/sendStorage';
 
 LogBox.ignoreLogs(['new NativeEventEmitter']); 
 
@@ -101,6 +102,7 @@ useEffect(() => {
       setIsConnected(true);
 
       getevidence()
+      saved_requests()
       setConected(require('./src/drawables/online.png'))
 
 
@@ -152,6 +154,13 @@ const getevidence= async () => {
     }
 
   }
+
+}
+const saved_requests= async()=>{
+  const send_incidencias = await Send_Data.send_incidencia()
+  console.log(send_incidencias)
+
+
 
 }
 const getData = async () => {

@@ -95,6 +95,7 @@ function TravelsScreen (props){
             Alert.alert('Confirmación pendiente','')
             setstatus_cs('pendiente')
             var convert=JSON.parse(jsonValue)
+            global.solicitud=convert.id
             console.log(convert)
             setBandera_c1(true)
             setConfimated(false)
