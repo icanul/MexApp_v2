@@ -28,11 +28,14 @@ function TravelsScreen (props){
     const [isOffline, setIsoffline]=useState('')
     const [refreshing, setRefreshing] = React.useState(false);
     const [solicitudcolor,setSolicitudcolor]= useState('#ffffffcc')
-    const [solicitudcolor1,setSolicitudcolor1]= useState('#cb3234cc')
+    const [solicitudcolor1,setSolicitudcolor1]= useState('#606060')
+    const [iconsoliciud,setIconsolicitud]=useState(require('../drawables/novisto.png'))
     const [cargacolor,setCargacolor]= useState('#ffffffcc')
-    const [cargacolor1,setCargacolor1]= useState('#cb3234')
+    const [cargacolor1,setCargacolor1]= useState('#606060')
+    const [iconCarga,setIconcarga]=useState(require('../drawables/novisto.png'))
     const [descargacolor,setDescargacolor]= useState('#ffffffcc')
-    const [descargacolor1,setDescargacolor1]= useState('#cb3234')
+    const [descargacolor1,setDescargacolor1]= useState('#606060')
+    const [iconDescarga,setIcondescarga]=useState(require('../drawables/novisto.png'))
     const [message,setMessage]=useState('Cargando viaje actual...')
     const [bandera_c1,setBandera_c1]=useState(false)
     const [bandera_c2,setBandera_c2]=useState(false)
@@ -94,6 +97,7 @@ function TravelsScreen (props){
         if(jsonValue != null){
             Alert.alert('Confirmación pendiente','')
             setstatus_cs('pendiente')
+            setIconsolicitud(require('../drawables/relog.png'))
             var convert=JSON.parse(jsonValue)
             global.solicitud=convert.id
             console.log(convert)
@@ -112,6 +116,7 @@ function TravelsScreen (props){
         if(jsonValue2 != null){
             Alert.alert('Confirmación pendiente','')
             setstatus_cc('pendiente')
+            setIconcarga(require('../drawables/relog.png'))
             var convert=JSON.parse(jsonValue2)
             setBandera_c2(true)
             setCargacolor('#ffffffcc')
@@ -130,6 +135,7 @@ function TravelsScreen (props){
         if(jsonValue3 != null){
             Alert.alert('Confirmación pendiente','')
             setstatus_cd('pendiente')
+            setIcondescarga(require('../drawables/relog.png'))
             var convert=JSON.parse(jsonValue3)
             if(bandera){
                 
@@ -179,15 +185,18 @@ function TravelsScreen (props){
             var currenttravel=travel[0]
             if(currenttravel.pickup_confirmed){-
                 setstatus_cc('Enviada')
-                setCargacolor1('#008f39cc')
+                setCargacolor1('#005eff')
+                setIconcarga(require('../drawables/visto.png'))
             }
             if(currenttravel.delivery_confirmed){
                 setstatus_cd('Enviada')
-                setDescargacolor1('#008f39cc')
+                setDescargacolor1('#005eff')
+                setIcondescarga(require('../drawables/visto.png'))
             }
             if(currenttravel.travel_confirmed){
                 setstatus_cs('Enviada')
-                setSolicitudcolor1('#008f39cc')
+                setSolicitudcolor1('#005eff')
+                setIconsolicitud(require('../drawables/visto.png'))
 
             }
             const dateorigin = new Date(currenttravel.pickup_datetime);
@@ -472,9 +481,21 @@ function TravelsScreen (props){
                         <Text style={style.textbutton}> Asignacion de solicitud</Text>
                         <TouchableOpacity 
                             onPress={openconfirmation} style={[style.button,{backgroundColor:solicitudcolor1}]}>
-                            <Text style={Styles.simpletext1}>Confirmar Solicitud</Text>
-                            <Text style={Styles.simpletext1}>{status_cs}</Text>
-                            <Text style={Styles.simpletext1}>{operations.convert_utc_local1(travel_confirmed_date)}</Text>
+                                <View >
+                                    <View style={{flexDirection:'row'}}>
+                                        <Text style={Styles.simpletextb}>Confirmar Solicitud </Text>
+                                        <Text style={Styles.simpletextb}>{status_cs}</Text>
+
+                                    </View>
+                                    <View style={{flexDirection:'row'}}>
+                                        <Text style={Styles.simpletextb}>{operations.convert_utc_local1(travel_confirmed_date)}</Text>
+                                        <Image source={iconsoliciud} // Ruta de tu imagen local
+                                         style={{width:20,height:20,resizeMode:'contain',marginLeft:10}}
+                                         />
+                                   </View>
+                                </View>
+                              
+                    
                         </TouchableOpacity>
                         <View  style={[style.horizontal,{backgroundColor:solicitudcolor}]}>
                             <Text style={style.text3}>Direccion origen:  </Text>
@@ -496,9 +517,21 @@ function TravelsScreen (props){
                         <TouchableOpacity 
                         onPress={openconfirmation2}
                         style={[style.button,{backgroundColor:cargacolor1}]}>
-                            <Text style={Styles.simpletext1}>Confirmar Carga </Text>
-                            <Text style={Styles.simpletext1}>{status_cc} </Text>
-                            <Text style={Styles.simpletext1}>{operations.convert_utc_local1(pickup_confirmed_date)}</Text>
+                                 <View >
+                                    <View style={{flexDirection:'row'}}>
+                                    <Text style={Styles.simpletextb}>Confirmar Carga </Text>
+                                    <Text style={Styles.simpletextb}>{status_cc} </Text>
+
+                                    </View>
+                                    <View style={{flexDirection:'row'}}>
+                                    <Text style={Styles.simpletextb}>{operations.convert_utc_local1(pickup_confirmed_date)}</Text>
+                                    <Image source={iconCarga} // Ruta de tu imagen local
+                                         style={{width:20,height:20,resizeMode:'contain',marginLeft:10}}
+                                         />
+                                   </View>
+                                </View>
+
+                           
                         </TouchableOpacity>
 
                         <TouchableOpacity 
@@ -535,9 +568,20 @@ function TravelsScreen (props){
 
                         onPress={openconfirmation3}  
                         style={[style.button,{backgroundColor:descargacolor1}]}>
-                            <Text style={Styles.simpletext1}>Confirmar Descarga  </Text>
-                            <Text style={Styles.simpletext1}>{status_cd}</Text>
-                            <Text style={Styles.simpletext1}>{operations.convert_utc_local1(delivery_confirmed_date)}</Text>
+                                 <View >
+                                    <View style={{flexDirection:'row'}}>
+                                    <Text style={Styles.simpletextb}>Confirmar Descarga  </Text>
+                                    <Text style={Styles.simpletextb}>{status_cd}</Text>
+
+                                    </View>
+                                    <View style={{flexDirection:'row'}}>
+                                    <Text style={Styles.simpletextb}>{operations.convert_utc_local1(delivery_confirmed_date)}</Text>
+                                    <Image source={iconDescarga} // Ruta de tu imagen local
+                                         style={{width:20,height:20,resizeMode:'contain',marginLeft:10}}
+                                         />
+                                   </View>
+                                </View>
+                        
                         </TouchableOpacity>
                         <Text style={style.textbutton}>Salida Destino</Text>
                         <TouchableOpacity  style={[style.button,{backgroundColor:descargacolor}]}
@@ -588,7 +632,6 @@ const style=StyleSheet.create({
         elevation:8,
         backgroundColor:'#fff',
         justifyContent: 'center',
-        margin:5,      
     
       },
       name:{
