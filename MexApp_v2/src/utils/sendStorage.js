@@ -1,14 +1,11 @@
-import { Alert } from "react-native"
 import StorageData from "./storageData"
 import TMS from "../api/tms"
-import { RectButton } from "react-native-gesture-handler"
 
 
 class SendData {
 
     
     send_incidencia=async()=>{
-      console.log('buscarndo incidencioas:::::::::::::::::::::::::::::::')
         var id=''
         const resp = await TMS.get_token_incidencias()
         var token=resp.token
@@ -17,7 +14,7 @@ class SendData {
         if(incidents!= null){
           var convert=JSON.parse(incidents)
           for(var i=0;i<incidents.length;i++){
-            console.log(incidents[i])
+          //  console.log(incidents[i])
             var iteratio=convert[i]
             const objetoEncontrado = iteratio[0]//convert.find(objeto => objeto.incident.incident.incident_time === props.incident.incident.incident_time);
            
@@ -39,12 +36,11 @@ class SendData {
             }
       
             try {
-              console.log('enviando sin conexion')
 
               var response = await TMS.insert_incidents(token,incident)
               id = response.id
-              console.log( 'se subio: ' +id, ' guardada sin conexion')
-              console.log('total de imagenes:'+imaegenes.length)
+             // console.log( 'se subio: ' +id, ' guardada sin conexion')
+              //console.log('total de imagenes:'+imaegenes.length)
               if(imaegenes.length>0){
                 for(var i=0;i<imaegenes.length;i++){
                   var image=imaegenes[i]
@@ -62,19 +58,16 @@ class SendData {
                       console.log(error)
                     }
               }
-              const clean_data= StorageData.deleteData('@incidents_saves')
-              console.log('Datos borrados:::'+clean_data)         
+              const clean_data = StorageData.deleteData('@incidents_saves')
     
         
               }else{
-                const clean_data= StorageData.deleteData('@incidents_saves')
-                console.log('no habia imagenes')         
+                const clean_data = StorageData.deleteData('@incidents_saves')
       
                 
               }
               
             } catch (error) {
-              console.log(error)
               
               
             }

@@ -50,16 +50,29 @@ function CPicked (props){
            
             try {
                 const confirmated=await Api.confirmar(context.solicitud,2,"",utcString)
+           
+                console.log( confirmated.status)
                 if( confirmated.status==200|| confirmated.status==202){
-                    Alert.alert("Se confirmo correctamente")
+                    Alert.alert("Confirmación de Carga","Se confirmo correctamente")
                 }
+                else{
+                  Alert.alert("hay problemas con la conexion","En cuanto este restaurado se enviara la confirmacion con fecha "+ now)
+                  var confirmation={
+                    id:3,
+                    solicitud:context.solicitud,
+                    observation:'',
+                    datetime:utcString
+                }
+                confirmationStore(confirmation) 
+                  
+                }  
                 send()
             } catch (error) {
                 var confirmation={
                     id:2,
                     solicitud:context.solicitud,
                     observation:'',
-                    datetime:datetime
+                    datetime:utcString
                 }
                 confirmationStore(confirmation)
                 console.log(error)

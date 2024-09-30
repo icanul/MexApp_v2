@@ -90,18 +90,28 @@ function Cdelivery (props){
     async function Confirmar(){
       const now = new Date();
       const utcString = now.toISOString(); 
-      console.log('hora utc de mexico:'+utcString)
 
       /*/const fecha = new Date();
       var datetime=fecha.getDate()+'-'+(fecha.getMonth()+1)+'-'+fecha.getFullYear()+' '+fecha.getHours()+':'+fecha.getMinutes()/*/
       if(props.isConnected==true){
         serLoad(true)
         try {
-           const confirmated=await Api.confirmar(context.solicitud,3,observacion)
+           const confirmated=await Api.confirmar(context.solicitud,3,observacion,utcString)
           console.log( confirmated.status)
             if( confirmated.status==200|| confirmated.status==202){
-                Alert.alert("Se confirmo correctamente, llama a tu lider de flota")
-            }      
+                Alert.alert("Confirmación de Descarga","Se confirmo correctamente, llama a tu lider de flota")
+            }
+            else{
+              Alert.alert("hay problemas con la conexion","En cuanto este restaurado se enviara la confirmacion con fecha "+ now)
+              var confirmation={
+                id:3,
+                solicitud:context.solicitud,
+                observation:'',
+                datetime:utcString
+            }
+            confirmationStore(confirmation) 
+              
+            }     
             send()
           
         } catch (error) {
@@ -109,7 +119,7 @@ function Cdelivery (props){
             id:3,
             solicitud:context.solicitud,
             observation:'',
-            datetime:datetime
+            datetime:utcString
         }
         confirmationStore(confirmation) 
              

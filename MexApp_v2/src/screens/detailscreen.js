@@ -22,7 +22,6 @@ function Detailscreen (props){
         if(savephoto==null){
             try {
                 const operador=await TMS.getOperador( id_operador)
-                console.log(operador)
                 setPhoto(operador.image)
                 const save = await storageData.insertData('@PHOTO_operador',operador)
                 

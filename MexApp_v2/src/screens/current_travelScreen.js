@@ -41,9 +41,9 @@ function TravelsScreen (props){
     const [bandera_c2,setBandera_c2]=useState(false)
     const [bandera_c3,setBandera_c3]=useState(false)
     const [isConnected, setIsConnected] = useState(false);
-    const [status_cs,setstatus_cs]= useState('')
-    const [status_cc,setstatus_cc]= useState('')
-    const [status_cd,setstatus_cd]= useState('')
+    const [status_cs,setstatus_cs]= useState('Confirmar Soloicitud')
+    const [status_cc,setstatus_cc]= useState('Confirmar Carga')
+    const [status_cd,setstatus_cd]= useState('Confirmar Descarga')
     const [travel_confirmed_date,settravel_confirmed_date]=useState('')
     const [pickup_confirmed_date,setpickup_confirmed_date]=useState('')
     const [delivery_confirmed_date,setdelivery_confirmed_date]=useState('')
@@ -62,8 +62,8 @@ function TravelsScreen (props){
             var strength=state.details.strength
             if(stade_conection==true&&isInternetReachable==true){
                 console.log('buscando viaje con conexion a internet')
-              setIsConnected(true);
-              gettravel()
+                setIsConnected(true);
+                gettravel()             
 
             }
             else{
@@ -78,6 +78,40 @@ function TravelsScreen (props){
             set_travel_current([])
           } 
     }, [])
+    const fetchWithTimeout = async (url, options = {}, timeout = 10000) => {
+        // Crea una promesa que se rechaza después del tiempo especificado
+        const timeoutPromise = new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('Tiempo de espera agotado')), timeout)
+        );
+      
+        // Usa Promise.race para competir entre la promesa del fetch y la del timeout
+        const fetchPromise = fetch(url, options);
+      
+        try {
+          const response = await Promise.race([fetchPromise, timeoutPromise]);
+          return response; // Devuelve la respuesta si fetch se completa a tiempo
+        } catch (error) {
+          // Maneja el error si fetch tarda más de lo esperado o falla
+          console.error('Error en la petición:', error.message);
+          throw error; // Lanza el error para que pueda ser manejado externamente
+        }
+      };
+      
+      const makeRequest = async () => {
+        try {
+          const response = await fetchWithTimeout('https://intranet.mexamerik.com');
+          if (response.ok) {
+      
+      
+          } else {
+            console.log('buscando viaje sin estable conexion a internet')
+            dataOffline(false)
+            setIsConnected(false);
+          }
+        } catch (error) {
+          console.error('Error en la solicitud:', error.message);
+        }
+      };
     
 
     const onRefresh = React.useCallback(() => {
@@ -96,7 +130,7 @@ function TravelsScreen (props){
         const jsonValue = await AsyncStorage.getItem('@confirmarsolicitud')       
         if(jsonValue != null){
             Alert.alert('Confirmación pendiente','')
-            setstatus_cs('pendiente')
+            setstatus_cs('Confirmación de Solicitud pendiente Se enviara cuando tengas conexion con esta fecha:')
             setIconsolicitud(require('../drawables/relog.png'))
             var convert=JSON.parse(jsonValue)
             global.solicitud=convert.id
@@ -104,7 +138,7 @@ function TravelsScreen (props){
             setBandera_c1(true)
             setConfimated(false)
             setSolicitudcolor('#ffffffcc')
-            setSolicitudcolor1('#008f39cc')
+            setSolicitudcolor1('#005eff')
             settravel_confirmed_date(convert.datetime)
             if(bandera){
                 Confirmar(jsonValue)
@@ -115,12 +149,12 @@ function TravelsScreen (props){
         const jsonValue2 = await AsyncStorage.getItem('@confirmarcarga')
         if(jsonValue2 != null){
             Alert.alert('Confirmación pendiente','')
-            setstatus_cc('pendiente')
+            setstatus_cc('Confirmación de Carga pendiente. Se enviara cuando tengas conexion, con esta fecha:')
             setIconcarga(require('../drawables/relog.png'))
             var convert=JSON.parse(jsonValue2)
             setBandera_c2(true)
             setCargacolor('#ffffffcc')
-            setCargacolor1('#008f39cc')
+            setCargacolor1('#005eff')
             console.log('entrandoi a validacion'+bandera)
             setpickup_confirmed_date(convert.datetime)
             if(bandera){
@@ -134,7 +168,7 @@ function TravelsScreen (props){
         const jsonValue3 = await AsyncStorage.getItem('@confirmardescarga')
         if(jsonValue3 != null){
             Alert.alert('Confirmación pendiente','')
-            setstatus_cd('pendiente')
+            setstatus_cd('Confirmación de Descarga pendiente. Se enviara cuando tengas conexion con esta fecha: ')
             setIcondescarga(require('../drawables/relog.png'))
             var convert=JSON.parse(jsonValue3)
             if(bandera){
@@ -144,7 +178,7 @@ function TravelsScreen (props){
             }
             setBandera_c3(true)
             setDescargacolor('#9b9b9bcc') 
-            setDescargacolor1('#008f39cc')
+            setDescargacolor1('#005eff')
             setdelivery_confirmed_date(convert.datetime)
      ///       Alert.alert('Confirmación de descarga','Se ha confirmado tu descarga guardada')
         }
@@ -155,14 +189,23 @@ function TravelsScreen (props){
         }
     }
     const getCP=()=>{
+        
         console.log('carta porte'+travel_current.cfdi)
         if(travel_current.cfdi==""||travel_current.cfdi==null){
             console.log("no hay carta porte, se abrira")
             navigation.navigate('pdf',{sol:travel_current.id})
 
         }else{
-            console.log(travel_current.cfdi)
-            navigation.navigate('cartaporte',{id:travel_current.cfdi})
+            if(travel_current.download_cp){
+                console.log(travel_current.cfdi)
+                navigation.navigate('cartaporte',{id:travel_current.cfdi})
+
+            }else{
+                console.log("no hay carta porte, se abrira")
+                navigation.navigate('pdf',{sol:travel_current.id})
+
+            }
+          
 
         }
        
@@ -184,17 +227,17 @@ function TravelsScreen (props){
             const travel=await Api.getCurrentravel(id_operador)
             var currenttravel=travel[0]
             if(currenttravel.pickup_confirmed){-
-                setstatus_cc('Enviada')
+                setstatus_cc('Confirmación de Carga Enviada')
                 setCargacolor1('#005eff')
                 setIconcarga(require('../drawables/visto.png'))
             }
             if(currenttravel.delivery_confirmed){
-                setstatus_cd('Enviada')
+                setstatus_cd('Confirmación de Descarga Enviada') 
                 setDescargacolor1('#005eff')
                 setIcondescarga(require('../drawables/visto.png'))
             }
             if(currenttravel.travel_confirmed){
-                setstatus_cs('Enviada')
+                setstatus_cs('Confirmación de Solicitud Enviada')
                 setSolicitudcolor1('#005eff')
                 setIconsolicitud(require('../drawables/visto.png'))
 
@@ -278,36 +321,41 @@ function TravelsScreen (props){
         var data= JSON.parse(body)
         console.log('los datos de la confirmacion para la solicitud:'+data.id)
         console.log(data)
+        var id=data.id
+
      //  
 
   
         try {
             const confirmated=await Api.confirmar(data.solicitud,data.id,data.observation,data.datetime)
-            console.log('vaLIDANDO ESTUS DE CONFIRMACION')
-         //   console.log( confirmated)
-
-            Alert.alert('Confirmacion','Se ha Enviado tu confirmación')
-            var id=data.id
-            console.log('la solicitud enviada es de tipo:'+id)
+            if( confirmated.status==200|| confirmated.status==202){
+                Alert.alert("Se Envio correctamente"," Se envio confirmacion guardada")
+                  
             switch(id)
             {
                
                 case 1:
-                    setstatus_cs('')
+                    setstatus_cs('Confirmación de Solicitud Enviada')
 
                     await AsyncStorage.removeItem("@confirmarsolicitud");   
                 case 2:
-                    setstatus_cc('')
+                    setstatus_cc('Confirmación de Carga Enviada')
 
                     await AsyncStorage.removeItem("@confirmarcarga");     
                 
                 case 3:
-                    setstatus_cd('')
+                    setstatus_cd('Confirmación de Descarga Enviada')
                     await AsyncStorage.removeItem("@confirmardescarga");     
                 case -1:
                     await AsyncStorage.removeItem("@confirmarcarga");     
 
             }
+            }
+            else
+            {
+              Alert.alert("hay problemas con la conexion","no se púdo enviar confirmacion guadada")
+            }        
+
 
         } catch (error) {
             onRefresh()
@@ -480,13 +528,10 @@ function TravelsScreen (props){
                         </View>  
                         <Text style={style.textbutton}> Asignacion de solicitud</Text>
                         <TouchableOpacity 
-                            onPress={openconfirmation} style={[style.button,{backgroundColor:solicitudcolor1}]}>
-                                <View >
-                                    <View style={{flexDirection:'row'}}>
-                                        <Text style={Styles.simpletextb}>Confirmar Solicitud </Text>
-                                        <Text style={Styles.simpletextb}>{status_cs}</Text>
+                            onPress={openconfirmation} style={[style.button,{backgroundColor:solicitudcolor1,margin:10}]}>
+                                 <View style={{width:'80%',margin:3, alignContent:'center',alignItems:'center'}} >
+                                 <Text style={Styles.simpletextb}>{status_cs}</Text>
 
-                                    </View>
                                     <View style={{flexDirection:'row'}}>
                                         <Text style={Styles.simpletextb}>{operations.convert_utc_local1(travel_confirmed_date)}</Text>
                                         <Image source={iconsoliciud} // Ruta de tu imagen local
@@ -516,13 +561,10 @@ function TravelsScreen (props){
                         <Text style={style.textbutton}>Origen: {origen}</Text>
                         <TouchableOpacity 
                         onPress={openconfirmation2}
-                        style={[style.button,{backgroundColor:cargacolor1}]}>
-                                 <View >
-                                    <View style={{flexDirection:'row'}}>
-                                    <Text style={Styles.simpletextb}>Confirmar Carga </Text>
+                        style={[style.button,{backgroundColor:cargacolor1,margin:10}]}>
+                                 <View style={{width:'80%',margin:3, alignContent:'center',alignItems:'center'}} >
+                                    
                                     <Text style={Styles.simpletextb}>{status_cc} </Text>
-
-                                    </View>
                                     <View style={{flexDirection:'row'}}>
                                     <Text style={Styles.simpletextb}>{operations.convert_utc_local1(pickup_confirmed_date)}</Text>
                                     <Image source={iconCarga} // Ruta de tu imagen local
@@ -567,13 +609,10 @@ function TravelsScreen (props){
                         <TouchableOpacity
 
                         onPress={openconfirmation3}  
-                        style={[style.button,{backgroundColor:descargacolor1}]}>
-                                 <View >
-                                    <View style={{flexDirection:'row'}}>
-                                    <Text style={Styles.simpletextb}>Confirmar Descarga  </Text>
-                                    <Text style={Styles.simpletextb}>{status_cd}</Text>
+                        style={[style.button,{backgroundColor:descargacolor1, margin:10}]}>
+                                 <View style={{width:'80%',margin:3, alignContent:'center',alignItems:'center'}} >
+                                 <Text style={Styles.simpletextb}>{status_cd}</Text>
 
-                                    </View>
                                     <View style={{flexDirection:'row'}}>
                                     <Text style={Styles.simpletextb}>{operations.convert_utc_local1(delivery_confirmed_date)}</Text>
                                     <Image source={iconDescarga} // Ruta de tu imagen local

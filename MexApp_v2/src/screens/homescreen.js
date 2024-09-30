@@ -26,35 +26,57 @@ function HomeScreen (props){
   const [modalVisible,setModalVisible]=useState(true)
   const appVersion = packageJson.version;
   const [url, setUrl] = useState('https://sites.google.com/logsys.com.mx/mexapp-avisos/p%C3%A1gina-principal');
-
-
+  const [executionCount, setExecutionCount] = useState(0);
   
   
 
     useEffect(() => {
-      const unsubscribe = NetInfo.addEventListener(state => {
+  
+      if (executionCount < 2) {
+        const timer = setTimeout(() => {
+          
+        //  console.log('estado de la conexion es '+ props.isConnected)
+          if(props.isConnected){
+            getData()
+            messaging().onMessage(async remoteMessage => {
+              if(remoteMessage.data.id_screen==1){
+                onRefresh()
+              }
+            });
+            setTimeout(() => {
+              getInfographics()
+            }, 8000);
+
+          }else{
+            getData()
+
+          }
+      
+          setExecutionCount(prev => prev + 1);
+        }, 2000); // 2 segundos de intervalo
+  
+        // Limpiar el timeout cuando el componente se desmonte
+        return () => {
+          setInphograpics([])
+          setItems([]) 
+          clearTimeout(timer)};
+      }
+  
+
+
+
+    /*/  const unsubscribe = NetInfo.addEventListener(state => {
         if(state.isConnected==true&&state.isInternetReachable==true){
           setIsConnected(true);
-
-
         }
       });
 
-          getData()
-          messaging().onMessage(async remoteMessage => {
-            if(remoteMessage.data.id_screen==1){
-              onRefresh()
-            }
-          });
-          setTimeout(() => {
-            getInfographics()
-          }, 8000);
+      
        return () =>{
         unsubscribe();
-          setInphograpics([])
-          setItems([])    
-        } 
-    }, [])
+        
+        } /*/
+      }, [executionCount]); // Dependencia en executionCount
 
     const handleNavigate = () => {
       if (url) {
@@ -97,6 +119,7 @@ function HomeScreen (props){
   `;
  
     const getInfographics= async()=> {
+      console.log('buscando infografias')
     
       try {       
         console.log('executev infographics')
@@ -157,6 +180,7 @@ function HomeScreen (props){
     }
 
     const getData = async () => {
+      console.log('')
         try {
           const jsonValue = await AsyncStorage.getItem('@user_storage')
           var convert=JSON.parse(jsonValue)
@@ -172,6 +196,7 @@ function HomeScreen (props){
          return ""
         }
       }
+
       const storeData = async (value) => {
         try {
           const jsonValue = JSON.stringify(value)
@@ -193,7 +218,7 @@ function HomeScreen (props){
       }
 
 
-      if(isConnected){
+      if(props.isConnected){
         return(
           <ScrollView 
           style={{backgroundColor:'#c0c0c0'}}

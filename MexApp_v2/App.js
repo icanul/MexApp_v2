@@ -9,7 +9,7 @@
 import React,{useState,useEffect} from 'react';
 import { NavigationContainer,useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import {Image,Text,StyleSheet, Modal, Pressable, Alert}from 'react-native'
+import {Image,Text,StyleSheet, Modal, Pressable, Alert, TouchableOpacity}from 'react-native'
 import messaging from '@react-native-firebase/messaging';
 import NetInfo from "@react-native-community/netinfo";
 import TravelDetails from './src/screens/travelDetails';
@@ -89,23 +89,14 @@ useEffect(() => {
     Alert.alert(remoteMessage.notification.title, remoteMessage.notification.body);
     //openmessage()
   });
-  const openmessage=()=>{
-    setModalVisible1(true)
 
-  }
   const unsubscribe = NetInfo.addEventListener(state => {
 
     var stade_conection=state.isConnected
     var isInternetReachable=state.isInternetReachable
     var strength=state.details.strength
     if(stade_conection==true&&isInternetReachable==true){
-      setIsConnected(true);
-
-      getevidence()
-      saved_requests()
-      setConected(require('./src/drawables/online.png'))
-
-
+      makeRequest()
     }else{
       setIsConnected(false)
       Alert.alert('No hay Conexión a INTERNET')
@@ -119,6 +110,51 @@ useEffect(() => {
     unsubscribe();
   };
 }, []);
+
+
+const openmessage=()=>{
+  setModalVisible1(true)
+
+}
+const fetchWithTimeout = async (url, options = {}, timeout = 10000) => {
+  // Crea una promesa que se rechaza después del tiempo especificado
+  const timeoutPromise = new Promise((_, reject) =>
+    setTimeout(() => reject(new Error('Tiempo de espera agotado')), timeout)
+  );
+
+  // Usa Promise.race para competir entre la promesa del fetch y la del timeout
+  const fetchPromise = fetch(url, options);
+
+  try {
+    const response = await Promise.race([fetchPromise, timeoutPromise]);
+    return response; // Devuelve la respuesta si fetch se completa a tiempo
+  } catch (error) {
+    // Maneja el error si fetch tarda más de lo esperado o falla
+    console.error('Error en la petición:', error.message);
+    throw error; // Lanza el error para que pueda ser manejado externamente
+  }
+};
+
+const makeRequest = async () => {
+  try {
+    const response = await fetchWithTimeout('https://intranet.mexamerik.com');
+    if (response.ok) {
+      console.log('servidor en linea')
+      setIsConnected(true);
+      getevidence()
+      saved_requests()
+      setConected(require('./src/drawables/online.png'))
+
+    } else {
+      setIsConnected(false)
+      setConected(require('./src/drawables/offline2.png'))
+      Alert.alert('Error de Conexion','no se pudo conectar al srvidor remoto, se activara el modo sin conexion')
+      console.error('Error en la respuesta:', response.status);
+    }
+  } catch (error) {
+    console.error('Error en la solicitud:', error.message);
+  }
+};
 
 async function requestUserPermission() {
   const authStatus = await messaging().requestPermission();
@@ -266,9 +302,13 @@ const checkToken = async () => {
            </Pressable>
         ),
         headerRight :() => (
+          <TouchableOpacity
+          onPress={makeRequest}
+          >
           <Image
           style={style.logo2}
           source={is_conected}/>
+          </TouchableOpacity>
         ),
         title: '' }}>
      {props => <TopMenu {...props} setLogget={setLogget} isConnected={isConnected} setversion={setversion} setConected={setConected}/>}

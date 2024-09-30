@@ -35,10 +35,22 @@ function Confirmated (props){
      
         try {
           const confirmated=await Api.confirmar(context.solicitud,1,"",utcString)
-          if( confirmated.status==200|| confirmated.status==202)
-          {
-              Alert.alert("Se confirmo correctamente")
+
+          console.log( confirmated.status)
+          if( confirmated.status==200|| confirmated.status==202){
+              Alert.alert("Confirmación de Carga","Se confirmo correctamente")
           }
+          else{
+            Alert.alert("hay problemas con la conexion","En cuanto este restaurado se enviara la confirmacion con fecha "+ now)
+            var confirmation={
+              id:3,
+              solicitud:context.solicitud,
+              observation:'',
+              datetime:utcString
+          }
+          confirmationStore(confirmation) 
+            
+          }  
           send()
 
         } catch (error) 

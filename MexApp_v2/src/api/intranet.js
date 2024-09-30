@@ -217,7 +217,7 @@ return response
   }
   async confirmar(solicitud,id_confirmacion,observation,datetime){
 
-    const query= await fetch(restAPI+'/travels/confirmaciones/',{
+    const query= await fetch(restAPI+'/travels/confirmacioness/',{
       method: 'POST',
       headers: {   
         'Content-Type': 'application/json',
@@ -232,7 +232,7 @@ return response
        }),
 
     });
-    console.log(query.body)
+    console.log(query)
     const responseSize = query.headers.get('content-length') || '0';
     const line=hora+' '+query.url+' '+responseSize+'b'
     writeline(line)  
